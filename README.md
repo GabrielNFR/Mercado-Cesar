@@ -1,4 +1,5 @@
 # Mercado-Cesar
+<img width="200" height="200" alt="Mercado (1)" src="https://github.com/user-attachments/assets/52315aa4-eb91-4376-bf8c-fd4a127e79f4" />
 
 - https://github.com/GabrielNFR
 - https://github.com/Renato-Augusto0-68
