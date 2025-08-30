@@ -11,7 +11,7 @@
 
 # Sobre o Projeto
 
-O Mercado Cesar é um aplicativo web desenvolvido para otimizar a experiência de compra na nossa loja de atacarejo. Nosso objetivo é proporcionar aos nossos clientes uma plataforma intuitiva para planejar e realizar suas compras com facilidade.
+O Mercado Cesar é um aplicativo web desenvolvido para otimizar a experiência de compra na nossa loja de atacarejo. Nosso objetivo é proporcionar aos nossos clientes uma plataforma intuitiva para planejar e realizar suas compras com facilidade, através da tecnologia.
 
 # Link do arquivo doc com as Histórias
 
