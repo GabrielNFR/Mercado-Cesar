@@ -15,10 +15,8 @@ O Mercado Cesar é um aplicativo web desenvolvido para otimizar a experiência d
 
 # Entrega 1
 
-## Link do arquivo doc com as Histórias
+- **Arquivo com as Histórias**  
+  [Link para o documento](https://docs.google.com/document/d/1Thg1XWT-2qRbtW8FtkkfUA7jPVyV2t_D02Ml_3Ot1Yc/edit?tab=t.0)
 
-- https://docs.google.com/document/d/1Thg1XWT-2qRbtW8FtkkfUA7jPVyV2t_D02Ml_3Ot1Yc/edit?tab=t.0
-
-## Link do protótipo Figma
-
-- https://www.figma.com/design/PY07iuI9rTkpNqudv6XKpt/Mercado-Cesar?node-id=0-1&t=WOChUomwqRsKcepr-1
+- **Protótipo Figma**  
+  [Link para o protótipo](https://www.figma.com/design/PY07iuI9rTkpNqudv6XKpt/Mercado-Cesar?node-id=0-1&t=WOChUomwqRsKcepr-1)
