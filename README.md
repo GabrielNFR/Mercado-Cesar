@@ -20,3 +20,8 @@ O Mercado Cesar é um aplicativo web desenvolvido para otimizar a experiência d
 
 - **Protótipo Figma**  
   [Link para o protótipo](https://www.figma.com/design/PY07iuI9rTkpNqudv6XKpt/Mercado-Cesar?node-id=0-1&t=WOChUomwqRsKcepr-1)
+
+<img width="1677" height="553" alt="image" src="https://github.com/user-attachments/assets/187193be-c2c7-4fa1-8432-f1cb85b2a7d7" />
+
+<img width="1605" height="372" alt="image" src="https://github.com/user-attachments/assets/4b2923e3-153b-4eaa-92c0-9d947bc030a3" />
+
