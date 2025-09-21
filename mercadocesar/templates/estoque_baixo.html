@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Estoque Baixo</title>
+</head>
+<body>
+    <h1>Produtos com Estoque Baixo (menos de 30 unidades)</h1>
+    
+    <a href="{% url 'home' %}">← Voltar</a>
+    
+    {% if estoques %}
+        <table border="1">
+            <tr>
+                <th>Produto</th>
+                <th>Categoria</th>
+                <th>Armazém</th>
+                <th>Quantidade</th>
+            </tr>
+            {% for estoque in estoques %}
+            <tr>
+                <td>{{ estoque.produto.codigo }}</td>
+                <td>{{ estoque.produto.categoria }}</td>
+                <td>{{ estoque.armazem.nome }}</td>
+                <td>{{ estoque.quantidade }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <p><strong>Total:</strong> {{ estoques|length }} produto(s) precisam de reposição</p>
+    {% else %}
+        <p>Todos os produtos estão com estoque adequado!</p>
+    {% endif %}
+</body>
+</html>

@@ -6,6 +6,15 @@
 <body>
     <h1>Bem-vindo ao Mercado Cesar!</h1>
     <p>Você está autenticado como {{ user.username }}.</p>
+    
+    {% if user.is_staff %}
+    <h3>Menu do Gerente:</h3>
+    <ul>
+        <li><a href="{% url 'estoque_baixo' %}">Ver Estoque Baixo</a></li>
+        <li><a href="/admin/">Administração</a></li>
+    </ul>
+    {% endif %}
+    
     <a href="/accounts/logout/">Sair</a>
 </body>
 </html>
