@@ -12,5 +12,8 @@
     </ul>
     {% endif %}
     
-    <a href="/accounts/logout/">Sair</a>
+    <form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <input type="submit" value="Sair">
+    </form>
 {% endblock %}
