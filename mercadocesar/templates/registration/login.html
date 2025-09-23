@@ -27,7 +27,7 @@
         <nav class="menu">
             <a href="#">Cadastro de Produtos</a>
             <a href="#">Visualizar Estoque</a>
-            <button class="loginpopup">Login</button>
+            <button class="login.popup"> <a href="{% url 'register' %}" class="cadastro">Login</a></button>
         </nav>
     </header>
 
@@ -43,17 +43,16 @@
 	    {% endif %}
 
             <form method="post">
-    		{% csrf_token %}
+            {% csrf_token %}
                 <div class="input">
-                    <label for="usuario">Usuário</label>
+                    <p>Email</p>
                     {{ form.username }}
                 </div>
 
                 <div class="input">
-                    <label for="senha">Senha</label>
+                    <p>Senha</p>
                     {{ form.password }}
                 </div>
-
             <button type="submit" class="btn">Entrar</button>
             
             <!-- Pra ir pro cadastro-->
@@ -62,7 +61,11 @@
             </div>
 
             </form>
+            <footer>
+            &copy; 2025 Mercado Cesar. Todos os direitos reservados.
+            </footer>
         </div>
+
     </main>
 
 </body>
