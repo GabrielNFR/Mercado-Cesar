@@ -20,6 +20,9 @@ class Armazem(models.Model):
 	def __str__(self):
 		return self.nome
 
+	class Meta:
+		verbose_name_plural = "Armazéns"
+
 
 class Estoque(models.Model):
 	produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
