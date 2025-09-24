@@ -11,7 +11,8 @@
     {% if estoques %}
         <table border="1">
             <tr>
-                <th>Produto</th>
+                <th>Código</th>
+                <th>Descrição</th>
                 <th>Categoria</th>
                 <th>Armazém</th>
                 <th>Quantidade</th>
@@ -19,6 +20,7 @@
             {% for estoque in estoques %}
             <tr>
                 <td>{{ estoque.produto.codigo }}</td>
+                <td>{{ estoque.produto.descricao }}</td>
                 <td>{{ estoque.produto.categoria }}</td>
                 <td>{{ estoque.armazem.nome }}</td>
                 <td>{{ estoque.quantidade }}</td>
