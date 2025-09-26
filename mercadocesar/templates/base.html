@@ -17,13 +17,23 @@
 <body>
     <header>
         <div class="logo">
-            <img src="img/Mercado.png" alt="Logo Mercado Cesar">
+            <img src="{% static 'img/Mercado.png' %}" alt="Logo Mercado Cesar">
         </div>
 
         <nav class="menu">
-            <a href="#">Cadastro de Produtos</a>
-            <a href="#">Visualizar Estoque</a>
-            <button class="loginpopup">Login</button>
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <a href="{% url 'estoque_baixo' %}">Visualizar Estoque</a>
+                    <a href="{% url 'admin:index' %}" target="_blank">Admin</a>
+                {% endif %}
+                <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="loginpopup" style="background: #d9534f;">Sair</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="loginpopup">Login</a>
+                <a href="{% url 'register' %}" class="cadastro">Cadastro</a>
+            {% endif %}
         </nav>
     </header>
 
