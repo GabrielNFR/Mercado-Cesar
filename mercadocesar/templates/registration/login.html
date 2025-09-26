@@ -27,7 +27,7 @@
         <nav class="menu">
             <a href="#">Cadastro de Produtos</a>
             <a href="#">Visualizar Estoque</a>
-            <button class="login.popup"> <a href="{% url 'register' %}" class="cadastro">Login</a></button>
+            <button class="login.popup"> <a href="{% url 'register' %}" class="cadastro">Cadastro</a></button>
         </nav>
     </header>
 
@@ -45,7 +45,7 @@
             <form method="post">
             {% csrf_token %}
                 <div class="input">
-                    <p>Email</p>
+                    <p>Nome de usuário</p>
                     {{ form.username }}
                 </div>
 

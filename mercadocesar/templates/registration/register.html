@@ -35,22 +35,31 @@
             <h2>Registre-se</h2>
 		
 	    {% if form.errors %}
-    		<p style="color:red;">Usuário ou senha inválidos.</p>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <p style="color:red;">{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
 	    {% endif %}
 
             <form method="post">
             {% csrf_token %}
                 <div class="input">
-                    <p>Email</p>
+                    <p>Nome de usuário</p>
                     {{ form.username }}
                 </div>
 
                 <div class="input">
-                        <p>Senha</p>
-                        <input type="password" name="password" autocomplete="current-password" required="" id="id_password">
-                        {{ form.password }}
+                    <p>Senha</p>
+                    {{ form.password1 }}
                 </div>
-                <button type="submit" class="btn">Entrar</button>
+
+                <div class="input">
+                    <p>Confirme a senha</p>
+                    {{ form.password2 }}
+                </div>
+
+                <button type="submit" class="btn">Registrar</button>
             
             <div class="link-cadastro">
                 <p>Tem uma conta? <a href="{% url 'login' %}" class="Login">Login</a></p>
