@@ -7,7 +7,7 @@ gunicorn==21.2.0
 h11==0.16.0
 idna==3.10
 outcome==1.3.0.post0
-PyMySQL==1.1.0
+PyMySQL==1.1.2
 pycparser==2.23
 python-decouple==3.8
 PySocks==1.7.1
