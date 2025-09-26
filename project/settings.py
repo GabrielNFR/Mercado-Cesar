@@ -81,9 +81,16 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASE_URL = config('DATABASE_URL', default=None)
 
 if DATABASE_URL:
-    # Production database (PostgreSQL)
+    # Production database (PostgreSQL with pg8000)
+    db_config = dj_database_url.parse(DATABASE_URL)
+    # Force PostgreSQL backend (pg8000 is compatible)
+    db_config['ENGINE'] = 'django.db.backends.postgresql'
+    # Add SSL mode for Render PostgreSQL
+    db_config['OPTIONS'] = {
+        'sslmode': 'require',
+    }
     DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
+        'default': db_config
     }
 else:
     # Development database (SQLite)
