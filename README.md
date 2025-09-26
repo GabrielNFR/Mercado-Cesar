@@ -13,6 +13,8 @@
 
 O Mercado Cesar é um aplicativo web desenvolvido para otimizar a experiência de compra na nossa loja de atacarejo. Nosso objetivo é proporcionar aos nossos clientes uma plataforma intuitiva para planejar e realizar suas compras com facilidade, através da tecnologia.
 
+--------------------------------------------------------------------------------------------------------------------------------
+
 # Entrega 1
 
 - **Arquivo com as Histórias**
@@ -37,5 +39,18 @@ O Mercado Cesar é um aplicativo web desenvolvido para otimizar a experiência d
 - **Print do Sprint**
 <img width="1334" height="303" alt="image" src="https://github.com/user-attachments/assets/bb2017ad-5a4a-4182-975c-041761c74ab0" />
 
+--------------------------------------------------------------------------------------------------------------------------------
 
+# Entrega 2
 
+- **Print da Sprint**
+<img width="1336" height="344" alt="image" src="https://github.com/user-attachments/assets/e2b6d213-7ca9-4eaa-820a-24317845ad25" />
+
+- **Print do Issue/Bug Tracker**
+<img width="1236" height="681" alt="image" src="https://github.com/user-attachments/assets/1a224c3f-ef86-45b8-a59f-36532f2d4bec" />
+
+- **Link para o Screencast apresentando as funcionalidades implementadas**
+  Adicionar link aqui depois
+
+- **Link para o Relatório**
+https://docs.google.com/document/d/18t_iI6TZSML6AZr-2HrT7N1Ynz0z88Nkn99jd7EkClU/edit?tab=t.0
