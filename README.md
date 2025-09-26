@@ -46,8 +46,14 @@ O Mercado Cesar é um aplicativo web desenvolvido para otimizar a experiência d
 - **Print da Sprint**
 <img width="1336" height="344" alt="image" src="https://github.com/user-attachments/assets/e2b6d213-7ca9-4eaa-820a-24317845ad25" />
 
+
+- **Print do backlog**
+<img width="1347" height="173" alt="image" src="https://github.com/user-attachments/assets/6c3e0c62-5be3-45cd-8831-85e322e03d60" />
+
+
 - **Print do Issue/Bug Tracker**
 <img width="1236" height="681" alt="image" src="https://github.com/user-attachments/assets/1a224c3f-ef86-45b8-a59f-36532f2d4bec" />
+
 
 - **Link para o Screencast apresentando as funcionalidades implementadas**
   Adicionar link aqui depois
