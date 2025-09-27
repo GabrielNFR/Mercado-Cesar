@@ -1,14 +1,35 @@
 <!DOCTYPE html>
-<html>
+{% load static %}
+<html lang="pt-br">
 <head>
-    <title>Estoque Baixo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Isso aqui é pra pegar a fonte-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <!-- Isso aqui é pra ele pegar o css-->
+    <link rel="stylesheet" href="{% static 'css/testelogin.css' %}">
+    
+    <title>Estoque-Baixo</title>
 </head>
 <body>
-    <h1>Produtos com Estoque Baixo (menos de 30 unidades)</h1>
+    <header>
+        <div class="logo">
+            <img src="{% static 'img/Mercado.png' %}" alt="Logo Mercado Cesar">
+        </div>
+        <h1>Produtos com Estoque Baixo (menos de 30 unidades)</h1>
+        <nav class="menu">
+            <button class="login.popup"> <a href="{% url 'home' %}" class="cadastro">← Voltar</a></button>
+        </nav>
+    </header>
+
+    <main class="regis">
+        <div class="caixa">
     
-    <a href="{% url 'home' %}">← Voltar</a>
-    
-    {% if estoques %}
+ {% if estoques %}
         <table border="1">
             <tr>
                 <th>Código</th>
@@ -32,5 +53,12 @@
     {% else %}
         <p>Todos os produtos estão com estoque adequado!</p>
     {% endif %}
+    </div>
+    <br>    
+    <footer>
+            &copy; 2025 Mercado Cesar. Todos os direitos reservados.
+    </footer>
+</div>
+</main>
 </body>
 </html>
