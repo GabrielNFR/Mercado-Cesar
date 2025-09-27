@@ -1,64 +1,76 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
 {% load static %}
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Isso aqui é pra pegar a fonte-->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
-    <!-- Isso aqui é pra ele pegar o css-->
-    <link rel="stylesheet" href="{% static 'css/testelogin.css' %}">
-    
-    <title>Estoque-Baixo</title>
-</head>
-<body>
-    <header>
-        <div class="logo">
-            <img src="{% static 'img/Mercado.png' %}" alt="Logo Mercado Cesar">
-        </div>
-        <h1>Produtos com Estoque Baixo (menos de 30 unidades)</h1>
-        <nav class="menu">
-            <button class="login.popup"> <a href="{% url 'home' %}" class="cadastro">← Voltar</a></button>
-        </nav>
-    </header>
-
-    <main class="regis">
-        <div class="caixa">
-    
- {% if estoques %}
-        <table border="1">
-            <tr>
-                <th>Código</th>
-                <th>Descrição</th>
-                <th>Categoria</th>
-                <th>Armazém</th>
-                <th>Quantidade</th>
-            </tr>
-            {% for estoque in estoques %}
-            <tr>
-                <td>{{ estoque.produto.codigo }}</td>
-                <td>{{ estoque.produto.descricao }}</td>
-                <td>{{ estoque.produto.categoria }}</td>
-                <td>{{ estoque.armazem.nome }}</td>
-                <td>{{ estoque.quantidade }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+{% block content %}
+<main class="regis">
+    <div class="caixa" style="max-width: 900px; margin-top: 20px;">
+        <h2 style="text-align: center; color: #e74c3c; margin-bottom: 20px;">
+            Produtos com Estoque Baixo
+        </h2>
+        <p style="text-align: center; color: #7f8c8d; margin-bottom: 30px;">
+            Produtos com menos de 30 unidades em estoque
+        </p>
         
-        <p><strong>Total:</strong> {{ estoques|length }} produto(s) precisam de reposição</p>
-    {% else %}
-        <p>Todos os produtos estão com estoque adequado!</p>
-    {% endif %}
+        {% if estoques %}
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <thead style="background-color: #e8ae8a; color: white;">
+                        <tr>
+                            <th style="padding: 15px; text-align: left; font-weight: 600;">Código</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600;">Descrição</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600;">Categoria</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600;">Armazém</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600;">Quantidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for estoque in estoques %}
+                        <tr style="border-bottom: 1px solid #ecf0f1; transition: background-color 0.3s;" 
+                            onmouseover="this.style.backgroundColor='#f8f9fa'" 
+                            onmouseout="this.style.backgroundColor='white'">
+                            <td style="padding: 12px 15px; font-weight: 500;">{{ estoque.produto.codigo }}</td>
+                            <td style="padding: 12px 15px;">{{ estoque.produto.descricao }}</td>
+                            <td style="padding: 12px 15px;">
+                                <span style="background-color: #3498db; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px;">
+                                    {{ estoque.produto.categoria }}
+                                </span>
+                            </td>
+                            <td style="padding: 12px 15px;">{{ estoque.armazem.nome }}</td>
+                            <td style="padding: 12px 15px; text-align: center;">
+                                <span style="background-color: #e74c3c; color: white; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 14px;">
+                                    {{ estoque.quantidade }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; margin-top: 20px; border-left: 4px solid #e74c3c;">
+                <p style="margin: 0; font-weight: 600; color: #2c3e50;">
+                    <strong>Total:</strong> {{ estoques|length }} produto(s) precisam de reposição urgente
+                </p>
+            </div>
+        {% else %}
+            <div style="text-align: center; padding: 40px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; color: #155724;">
+                <h3 style="margin: 0 0 10px 0; color: #155724;">Estoque Adequado!</h3>
+                <p style="margin: 0; font-size: 16px;">Todos os produtos estão com estoque adequado.</p>
+            </div>
+        {% endif %}
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{% url 'home' %}" 
+               style="display: inline-block; background: #e8ae8a; color: white; padding: 12px 25px; text-decoration: none; border-radius: 25px; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"
+               onmouseover="this.style.backgroundColor='#d4956f'; this.style.transform='translateY(-2px)'"
+               onmouseout="this.style.backgroundColor='#e8ae8a'; this.style.transform='translateY(0)'">
+                ← Voltar ao Início
+            </a>
+        </div>
     </div>
-    <br>    
-    <footer>
-            &copy; 2025 Mercado Cesar. Todos os direitos reservados.
+
+    <footer style="text-align: center; margin-top: 30px; padding: 20px; color: #7f8c8d; font-size: 14px;">
+        &copy; 2025 Mercado Cesar. Todos os direitos reservados.
     </footer>
-</div>
 </main>
-</body>
-</html>
+{% endblock %}
