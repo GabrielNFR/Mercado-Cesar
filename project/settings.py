@@ -82,8 +82,13 @@ DATABASE_URL = config('DATABASE_URL', default=None)
 
 if DATABASE_URL:
     # Production database (PostgreSQL on Render)
+    db_config = dj_database_url.parse(DATABASE_URL)
+    # Ensure PostgreSQL backend is explicitly set
+    if 'postgres' in DATABASE_URL:
+        db_config['ENGINE'] = 'django.db.backends.postgresql'
+    
     DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL)
+        'default': db_config
     }
 else:
     # Development database (SQLite)
