@@ -54,3 +54,27 @@ class ProdutoModelTest(TestCase):
                 preco_venda=Decimal('35.00'),
                 unidade_medida="unidade"
             )
+    
+    def test_descricao_unico(self):
+        """Testa se o produto não foi criado de forma duplicada"""       
+        produto1  = Produto.objects.create(
+            codigo="ABC321",
+            descricao="Produto-Teste",
+            categoria="Categoria-Teste",
+            preco_custo=Decimal('20.00'),
+            preco_venda=Decimal('55.00'),
+            unidade_medida="Unidade"
+        )
+        from django.db import IntegrityError
+        with self.assertRaises(IntegrityError):
+
+         produto2 = Produto.objects.create(
+            codigo="ABC123",
+            descricao="Produto-Teste",
+            categoria="Categoria-Teste",
+            preco_custo=Decimal('20.00'),
+            preco_venda=Decimal('55.00'),
+            unidade_medida="Unidade"
+        )
+         
+        
