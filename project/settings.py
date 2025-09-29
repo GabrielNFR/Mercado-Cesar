@@ -14,10 +14,6 @@ from pathlib import Path
 import os
 from decouple import config
 import dj_database_url
-import pymysql
-
-# MySQL compatibility
-pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,21 +77,13 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Use MySQL in production, SQLite in development
+# Use PostgreSQL in production, SQLite in development
 DATABASE_URL = config('DATABASE_URL', default=None)
 
 if DATABASE_URL:
-    # Production database (PlanetScale MySQL)
-    db_config = dj_database_url.parse(DATABASE_URL)
-    # Force MySQL backend
-    db_config['ENGINE'] = 'django.db.backends.mysql'
-    # MySQL specific options
-    db_config['OPTIONS'] = {
-        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        'charset': 'utf8mb4',
-    }
+    # Production database (PostgreSQL on Render)
     DATABASES = {
-        'default': db_config
+        'default': dj_database_url.parse(DATABASE_URL)
     }
 else:
     # Development database (SQLite)
