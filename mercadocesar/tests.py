@@ -1,7 +1,7 @@
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from decimal import Decimal
 from .models import Produto, Armazem, Estoque
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 
 class ProdutoModelTest(TestCase):
     """Testes para o modelo Produto."""
@@ -81,66 +81,72 @@ class ProdutoModelTest(TestCase):
         
         # Teste 1: codigo não pode ser vazio
         with self.assertRaises(IntegrityError):
-            Produto.objects.create(
-                codigo="",
-                descricao="Produto Teste 1",
-                categoria="Categoria Teste 1",
-                preco_custo=Decimal('10.00'),
-                preco_venda=Decimal('15.00'),
-                unidade_medida="unidade"
-            )
+            with transaction.atomic():
+                Produto.objects.create(
+                    codigo="",
+                    descricao="Produto Teste 1",
+                    categoria="Categoria Teste 1",
+                    preco_custo=Decimal('10.00'),
+                    preco_venda=Decimal('15.00'),
+                    unidade_medida="unidade"
+                )
         
         # Teste 2: descrição não pode ser vazia
         with self.assertRaises(IntegrityError):
-            Produto.objects.create(
-                codigo="Código Teste 1",
-                descricao="",
-                categoria="Categoria Teste 2",
-                preco_custo=Decimal('10.00'),
-                preco_venda=Decimal('15.00'),
-                unidade_medida="unidade"
-            )
+            with transaction.atomic():
+                Produto.objects.create(
+                    codigo="Código Teste 1",
+                    descricao="",
+                    categoria="Categoria Teste 2",
+                    preco_custo=Decimal('10.00'),
+                    preco_venda=Decimal('15.00'),
+                    unidade_medida="unidade"
+                )
         
         # Teste 3: categoria não pode ser vazia
         with self.assertRaises(IntegrityError):
-            Produto.objects.create(
-                codigo="Código Teste 2",
-                descricao="Produto Teste 2",
-                categoria="",
-                preco_custo=Decimal('10.00'),
-                preco_venda=Decimal('15.00'),
-                unidade_medida="unidade"
-            )
+            with transaction.atomic():
+                Produto.objects.create(
+                    codigo="Código Teste 2",
+                    descricao="Produto Teste 2",
+                    categoria="",
+                    preco_custo=Decimal('10.00'),
+                    preco_venda=Decimal('15.00'),
+                    unidade_medida="unidade"
+                )
             
         # Teste 4: unidade_medida não pode ser None
         with self.assertRaises(IntegrityError):
-            Produto.objects.create(
-                codigo="Código Teste 3",
-                descricao="Produto Teste 3",
-                categoria="Categoria Teste 3",
-                preco_custo=Decimal('10.00'),
-                preco_venda=Decimal('15.00'),
-                unidade_medida=""
-            )
+            with transaction.atomic():
+                Produto.objects.create(
+                    codigo="Código Teste 3",
+                    descricao="Produto Teste 3",
+                    categoria="Categoria Teste 3",
+                    preco_custo=Decimal('10.00'),
+                    preco_venda=Decimal('15.00'),
+                    unidade_medida=""
+                )
         
         # Teste 5: preco_custo não pode ser None
         with self.assertRaises(IntegrityError):
-            Produto.objects.create(
-                codigo="Código Teste 4",
-                descricao="Produto Teste 4",
-                categoria="Categoria Teste 4",
-                preco_custo=None,
-                preco_venda=Decimal('15.00'),
-                unidade_medida="unidade"
-            )
+            with transaction.atomic():
+                Produto.objects.create(
+                    codigo="Código Teste 4",
+                    descricao="Produto Teste 4",
+                    categoria="Categoria Teste 4",
+                    preco_custo=None,
+                    preco_venda=Decimal('15.00'),
+                    unidade_medida="unidade"
+                )
             
         # Teste 6: preco_venda não pode ser None
         with self.assertRaises(IntegrityError):
-            Produto.objects.create(
-                codigo="Código Teste 5",
-                descricao="Produto Teste 5",
-                categoria="Categoria Teste 5",
-                preco_custo=Decimal('10.00'),
-                preco_venda=None,
-                unidade_medida="unidade"
-            )  
+            with transaction.atomic():
+                Produto.objects.create(
+                    codigo="Código Teste 5",
+                    descricao="Produto Teste 5",
+                    categoria="Categoria Teste 5",
+                    preco_custo=Decimal('10.00'),
+                    preco_venda=None,
+                    unidade_medida="unidade"
+                )  

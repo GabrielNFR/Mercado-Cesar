@@ -1,13 +1,22 @@
 from django.db import models
+from django.db.models import CheckConstraint, Q
 
 
 class Produto(models.Model):
-	codigo = models.CharField(max_length=30, unique=True, blank=False)
-	descricao = models.CharField(max_length=200, default="", unique=True, blank=False)
-	categoria = models.CharField(max_length=50, blank=False)
+	codigo = models.CharField(max_length=30, unique=True)
+	descricao = models.CharField(max_length=200, default="", unique=True)
+	categoria = models.CharField(max_length=50)
 	preco_custo = models.DecimalField(max_digits=10, decimal_places=2)
 	preco_venda = models.DecimalField(max_digits=10, decimal_places=2)
-	unidade_medida = models.CharField(max_length=20, blank=False)
+	unidade_medida = models.CharField(max_length=20)
+
+	class Meta:
+		constraints = [
+			CheckConstraint(check=~Q(codigo=""), name='codigo_nao_vazio'),
+   			CheckConstraint(check=~Q(descricao=""), name='descricao_nao_vazia'),
+			CheckConstraint(check=~Q(categoria=""), name='categoria_nao_vazia'),
+			CheckConstraint(check=~Q(unidade_medida=""), name='unidade_medida_nao_vazia'),
+		]
 
 	def __str__(self):
 		return f"{self.codigo} - {self.descricao} - {self.categoria}"
