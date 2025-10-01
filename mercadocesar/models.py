@@ -2,12 +2,12 @@ from django.db import models
 
 
 class Produto(models.Model):
-	codigo = models.CharField(max_length=30, unique=True)
-	descricao = models.CharField(max_length=200, default="", unique=True)
-	categoria = models.CharField(max_length=50)
+	codigo = models.CharField(max_length=30, unique=True, blank=False)
+	descricao = models.CharField(max_length=200, default="", unique=True, blank=False)
+	categoria = models.CharField(max_length=50, blank=False)
 	preco_custo = models.DecimalField(max_digits=10, decimal_places=2)
 	preco_venda = models.DecimalField(max_digits=10, decimal_places=2)
-	unidade_medida = models.CharField(max_length=20)
+	unidade_medida = models.CharField(max_length=20, blank=False)
 
 	def __str__(self):
 		return f"{self.codigo} - {self.descricao} - {self.categoria}"
@@ -38,4 +38,5 @@ class Estoque(models.Model):
 	@staticmethod
 	def abaixo_estoque_minimo(minimo=30):
 		return Estoque.objects.filter(quantidade__lt=minimo)
+
 
