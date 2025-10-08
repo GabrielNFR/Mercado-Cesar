@@ -3,12 +3,71 @@ name: Deploy Pipeline
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_e2e_tests:
+        description: 'Executar testes E2E?'
+        required: false
+        default: false
+        type: boolean
 
 jobs:
+  e2e-tests:
+    name: E2E Tests 
+    runs-on: ubuntu-latest
+    if: github.event.inputs.run_e2e_tests == 'true'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Setup Chrome
+      uses: browser-actions/setup-chrome@v1
+    
+    - name: Setup ChromeDriver
+      uses: nanasess/setup-chromedriver@v2
+    
+    - name: Instalar dependências
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Setup do Django 
+      run: |
+        echo "SECRET_KEY=test-secret-key-e2e" >> $GITHUB_ENV
+        echo "DEBUG=True" >> $GITHUB_ENV
+    
+    - name: Preparar aplicação
+      run: |
+        python manage.py migrate
+        python manage.py collectstatic --noinput
+        # Criar superuser para testes
+        python manage.py shell -c "
+        from django.contrib.auth import get_user_model;
+        User = get_user_model();
+        if not User.objects.filter(username='admin').exists():
+            User.objects.create_superuser('admin', 'admin@test.com', 'admin123')
+        "
+    
+    - name: Iniciar servidor
+      run: |
+        python manage.py runserver &
+        sleep 5
+        echo "Django server started"
+    
+    - name: Testes E2E
+      run: |
+        python e2e_tests.py
+        echo "Testes E2E concluídos com sucesso"
+
   deploy:
     name: Deploy to Render
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    needs: [e2e-tests]
+    if: always() && github.ref == 'refs/heads/main'
 
     steps: 
       - name: Deploy to production
