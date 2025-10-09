@@ -31,16 +31,16 @@ jobs:
     - name: Setup ChromeDriver
       uses: nanasess/setup-chromedriver@v2
     
-    - name: Instalar dependências
+    - name: Install dependencies
       run: |
         pip install -r requirements.txt
     
-    - name: Setup do Django 
+    - name: Setup Django environment
       run: |
         echo "SECRET_KEY=test-secret-key-e2e" >> $GITHUB_ENV
         echo "DEBUG=True" >> $GITHUB_ENV
     
-    - name: Preparar aplicação
+    - name: Prepare Django app
       run: |
         python manage.py migrate
         python manage.py collectstatic --noinput
@@ -52,16 +52,21 @@ jobs:
             User.objects.create_superuser('admin', 'admin@test.com', 'admin123')
         "
     
-    - name: Iniciar servidor
+    - name: Start Django server
       run: |
         python manage.py runserver &
         sleep 5
         echo "Django server started"
     
-    - name: Testes E2E
+    - name: Run E2E Tests
       run: |
-        python e2e_tests.py
-        echo "Testes E2E concluídos com sucesso"
+        for test_file in mercadocesar/selenium/e2e/*.py; do
+          if [ -f "$test_file" ]; then
+            echo "Running test: $test_file"
+            python "$test_file"
+          fi
+        done
+        echo "E2E tests completed"
 
   deploy:
     name: Deploy to Render

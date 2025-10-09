@@ -1,1 +1,0 @@
-# Criar testes e2e aqui
