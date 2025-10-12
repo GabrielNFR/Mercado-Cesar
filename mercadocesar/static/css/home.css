@@ -1,0 +1,114 @@
+/* GERAL E FONTE */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+    --primary-color: #FF7B25; 
+    --secondary-color: #333333; 
+    --background-color: #f0f2f5; 
+    --card-background: #ffffff; 
+}
+
+/* Base reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+/* CENTRALIZAÇÃO TOTAL DA PÁGINA */
+body {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+    background-color: var(--background-color);
+    /* Se o cabeçalho for fixo, o min-height deve ser ajustado para a área visível, mas este é um bom ponto de partida. */
+}
+
+/* CONTEÚDO PRINCIPAL: O CARTÃO DE BOAS-VINDAS */
+.welcome-container {
+    width: 90%;
+    max-width: 450px; 
+    margin: auto; 
+    padding: 40px;
+    background-color: var(--card-background);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    text-align: center;
+}
+
+.welcome-title {
+    color: var(--primary-color);
+    font-size: 2em;
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.auth-message {
+    color: var(--secondary-color);
+    font-size: 1.1em;
+    margin-bottom: 25px;
+}
+
+.username {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* ESTILO DO MENU DO GERENTE */
+.manager-card {
+    background-color: #fff8f5; 
+    border: 1px solid #f9d8c4;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.manager-title {
+    color: var(--secondary-color);
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #ccc;
+    padding-bottom: 5px;
+}
+
+.manager-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.manager-list li {
+    margin: 8px 0;
+}
+
+.menu-link {
+    color: #007bff; 
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.menu-link:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* BOTÃO SAIR */
+.logout-button {
+    display: block; 
+    width: 100%;
+    padding: 10px 0;
+    background-color: #922c36; 
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 8px;
+    margin-top: 30px;
+    transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+    background-color: #53282c;
+}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pesquisa de Produtos | Mercado Cesar{% endblock %}
+
+{% block content %}
+    
+    <div class="search-bar">
+        <input type="text" id="barraPesquisa" placeholder="Pesquisar por produtos">
+        <button>Buscar</button> 
+    </div>
+
+    <div class="categories">
+        <button class="category-button active" data-filter="all">Todos os corredores</button>
+        <button class="category-button" data-filter="Alimentos">Alimentos</button>
+        <button class="category-button" data-filter="bebidas">bebidas</button>
+        <button class="category-button" data-filter="Limpeza">Limpeza</button>
+        <button class="category-button" data-filter="Comida">Comida</button>
+    </div>
+
+    <h2 style="margin-top: 30px; text-align: center;">Destaques por Categoria</h2>
+    <div id="destaqueGrid" class="highlight-grid product-grid">
+        {% for produto in produtos_destaque %}
+            <div class="product-card highlight" data-categoria="{{ produto.categoria }}"> 
+                <h3 class="nomeProduto">{{ produto.nome|default:'Nome Ausente' }}</h3> 
+                <p>Descrição: {{ produto.descricao }}</p>
+                <p>R$ {{ produto.preco|default:'???' }}</p> 
+                <button>Adicionar</button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <hr style="margin: 40px 0;">
+
+    <h2 id="todosProdutosTitulo" style="text-align: center; display: none;">Todos os Produtos Da Categoria</h2>
+    <div id="allProductsGridContainer" style="display: none;">
+        <div class="all-products-grid product-grid"> 
+            {% for produto in todos_produtos %}
+                <div class="product-card" data-categoria="{{ produto.categoria }}">
+                    <h3 class="nomeProduto">{{ produto.nome|default:'Nome Ausente' }}</h3> 
+                    <p>Descrição: {{ produto.descricao }}</p>
+                    <p>R$ {{ produto.preco|default:'???' }}</p> 
+                    <button>Adicionar</button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <p id="semResultados" style="display: none; text-align: center; font-size: 1.2rem; margin-top: 20px;">
+        Nenhum produto encontrado.
+    </p>
+    
+{% endblock content %}

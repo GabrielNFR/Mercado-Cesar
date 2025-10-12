@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -8,10 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
-    {% load static %}
     <link rel="stylesheet" href="{% static 'css/testelogin.css' %}">
+    <link rel="stylesheet" href="{% static 'css/buscar_itens.css' %}">
     
-    <title>Mercado Cesar</title>
+    <title>{% block title %}Mercado Cesar{% endblock %}</title>
 </head>
 
 <body>
@@ -21,9 +22,13 @@
         </div>
 
         <nav class="menu">
+            <a href="{% url 'home' %}">Início</a> 
+            
             {% if user.is_authenticated %}
+                <a href="{% url 'busca' %}">Buscar Produtos</a> 
+                
                 {% if user.is_staff %}
-                    <a href="{% url 'estoque_baixo' %}">Visualizar Estoque</a>
+                    <a href="{% url 'estoque_baixo' %}">Estoque Baixo</a>
                     <a href="{% url 'admin:index' %}" target="_blank">Admin</a>
                 {% endif %}
                 <form method="post" action="{% url 'logout' %}" style="display: inline;">
@@ -31,14 +36,17 @@
                     <button type="submit" class="loginpopup" style="background: #d9534f;">Sair</button>
                 </form>
             {% else %}
-                <a href="{% url 'login' %}" class="loginpopup">Login</a>
+                <a href="{% url 'busca' %}">Produtos</a> <a href="{% url 'login' %}" class="loginpopup">Login</a>
                 <a href="{% url 'register' %}" class="cadastro">Cadastro</a>
             {% endif %}
         </nav>
     </header>
 
-    {% block content %}
-    {% endblock %}
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
 
+    <script src="{% static 'js/buscar_itens.js' %}"></script>
 </body>
 </html>

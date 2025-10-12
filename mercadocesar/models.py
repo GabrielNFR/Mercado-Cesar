@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator
 
 
 class Produto(models.Model):
+	nome = models.CharField(max_length=30, unique=True)
 	codigo = models.CharField(max_length=30, unique=True)
 	descricao = models.CharField(max_length=200, default="", unique=True)
 	categoria = models.CharField(max_length=50)
@@ -12,7 +13,7 @@ class Produto(models.Model):
 		decimal_places=2,
 		validators=[MinValueValidator(0)] 
 	)
-	preco_venda = models.DecimalField(
+	preco = models.DecimalField(
 		max_digits=10, 
 		decimal_places=2,
 		validators=[MinValueValidator(0)] 
