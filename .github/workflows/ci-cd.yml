@@ -8,14 +8,15 @@ on:
       run_e2e_tests:
         description: 'Executar testes E2E?'
         required: false
-        default: false
+        default: true
         type: boolean
 
 jobs:
   e2e-tests:
     name: E2E Tests 
     runs-on: ubuntu-latest
-    if: github.event.inputs.run_e2e_tests == 'true'
+    # Roda em push para main OU quando manualmente ativado
+    if: github.event_name == 'push' || github.event.inputs.run_e2e_tests == 'true'
     
     steps:
     - uses: actions/checkout@v4
@@ -72,7 +73,8 @@ jobs:
     name: Deploy to Render
     runs-on: ubuntu-latest
     needs: [e2e-tests]
-    if: always() && github.ref == 'refs/heads/main'
+    # Roda sempre que os testes passarem OU forem skippados (mas não se falharem)
+    if: (success() || needs.e2e-tests.result == 'skipped') && github.ref == 'refs/heads/main'
 
     steps: 
       - name: Deploy to production
