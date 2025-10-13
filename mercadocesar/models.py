@@ -30,6 +30,11 @@ class Produto(models.Model):
 
 	def __str__(self):
 		return f"{self.codigo} - {self.descricao} - {self.categoria}"
+	
+	def estoque_total(self):
+		from django.db.models import Sum
+		total = self.estoque_set.aggregate(Sum('quantidade'))['quantidade__sum']
+		return total if total is not None else 0
 
 
 class Armazem(models.Model):

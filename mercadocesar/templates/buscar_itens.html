@@ -24,7 +24,8 @@
             <div class="product-card highlight" data-categoria="{{ produto.categoria }}"> 
                 <h3 class="nomeProduto">{{ produto.nome|default:'Nome Ausente' }}</h3> 
                 <p>Descrição: {{ produto.descricao }}</p>
-                <p>R$ {{ produto.preco|default:'???' }}</p> 
+                <p>R$ {{ produto.preco|default:'???' }}</p>
+                <p class="estoque">{{ produto.estoque_total }} unidades disponíveis</p>
                 <button>Adicionar</button>
             </div>
         {% endfor %}
@@ -39,7 +40,8 @@
                 <div class="product-card" data-categoria="{{ produto.categoria }}">
                     <h3 class="nomeProduto">{{ produto.nome|default:'Nome Ausente' }}</h3> 
                     <p>Descrição: {{ produto.descricao }}</p>
-                    <p>R$ {{ produto.preco|default:'???' }}</p> 
+                    <p>R$ {{ produto.preco|default:'???' }}</p>
+                    <p class="estoque">{{ produto.estoque_total }} unidades disponíveis</p>
                     <button>Adicionar</button>
                 </div>
             {% endfor %}

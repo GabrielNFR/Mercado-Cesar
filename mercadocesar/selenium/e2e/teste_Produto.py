@@ -36,10 +36,17 @@ def fazer_login(driver, base_url):
     
     username_field = wait.until(EC.presence_of_element_located((By.NAME, "username")))
     username_field.send_keys("admin")
-    driver.find_element(By.NAME, "password").send_keys("admin123")
-    driver.find_element(By.XPATH, "//input[@type='submit']").click()
     
+    password_field = driver.find_element(By.NAME, "password")
+    password_field.send_keys("admin123")
+    
+    # Usar JavaScript para clicar (evita interceptação)
+    submit_btn = driver.find_element(By.XPATH, "//input[@type='submit']")
+    driver.execute_script("arguments[0].click();", submit_btn)
+    
+    # Aguardar redirect
     wait.until(EC.url_contains("/admin/"))
+    time.sleep(1)
 
 
 def cenario_1_cadastro_completo():
@@ -51,13 +58,19 @@ def cenario_1_cadastro_completo():
         fazer_login(driver, "http://localhost:8000")
         driver.get("http://localhost:8000/admin/mercadocesar/produto/add/")
         
+        # Aguardar página de formulário carregar
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.presence_of_element_located((By.NAME, "codigo")))
+        time.sleep(1)
+        
         timestamp = str(int(time.time() * 1000))
         driver.find_element(By.NAME, "codigo").send_keys(f"PROD123{timestamp}")
+        driver.find_element(By.NAME, "nome").send_keys(f"Arroz {timestamp}")
         driver.find_element(By.NAME, "descricao").send_keys(f"Arroz Integral 5kg {timestamp}")
         driver.find_element(By.NAME, "categoria").send_keys("Comida")
         driver.find_element(By.NAME, "unidade_medida").send_keys("kg")
         driver.find_element(By.NAME, "preco_custo").send_keys("10.50")
-        driver.find_element(By.NAME, "preco_venda").send_keys("18.70")
+        driver.find_element(By.NAME, "preco").send_keys("18.70")
         driver.find_element(By.NAME, "_save").click()
         
         time.sleep(2)
@@ -85,8 +98,14 @@ def cenario_2_campos_ausentes():
         fazer_login(driver, "http://localhost:8000")
         driver.get("http://localhost:8000/admin/mercadocesar/produto/add/")
         
+        # Aguardar página de formulário carregar
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.presence_of_element_located((By.NAME, "codigo")))
+        time.sleep(1)
+        
         timestamp = str(int(time.time() * 1000))
         driver.find_element(By.NAME, "codigo").send_keys(f"PROD{timestamp}")
+        driver.find_element(By.NAME, "nome").send_keys(f"Feijão {timestamp}")
         driver.find_element(By.NAME, "descricao").send_keys(f"Feijão Preto {timestamp}")
         driver.find_element(By.NAME, "categoria").send_keys("Alimentos")
         driver.find_element(By.NAME, "unidade_medida").send_keys("kg")
@@ -118,13 +137,19 @@ def cenario_3_valores_invalidos():
         fazer_login(driver, "http://localhost:8000")
         driver.get("http://localhost:8000/admin/mercadocesar/produto/add/")
         
+        # Aguardar página de formulário carregar
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.presence_of_element_located((By.NAME, "codigo")))
+        time.sleep(1)
+        
         timestamp = str(int(time.time() * 1000))
         driver.find_element(By.NAME, "codigo").send_keys(f"PROD{timestamp}")
+        driver.find_element(By.NAME, "nome").send_keys(f"Macarrão {timestamp}")
         driver.find_element(By.NAME, "descricao").send_keys(f"Macarrão {timestamp}")
         driver.find_element(By.NAME, "categoria").send_keys("Alimentos")
         driver.find_element(By.NAME, "unidade_medida").send_keys("kg")
         driver.find_element(By.NAME, "preco_custo").send_keys("-10.50")
-        driver.find_element(By.NAME, "preco_venda").send_keys("-5.90")
+        driver.find_element(By.NAME, "preco").send_keys("-5.90")
         driver.find_element(By.NAME, "_save").click()
         
         time.sleep(2)
