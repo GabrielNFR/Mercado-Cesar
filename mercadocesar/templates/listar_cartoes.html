@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="cartao">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Meus Cartões</h2>
+        <a href="{% url 'cadastrar_cartao' %}" class="btn">+ Adicionar Cartão</a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color: {% if message.tags == 'success' %}green{% else %}red{% endif %};">
+                {{ message }}
+            </p>
+        {% endfor %}
+    {% endif %}
+
+    {% if cartoes %}
+        <div class="cartoes-lista">
+            {% for cartao in cartoes %}
+                <div class="cartao-item">
+                    <div class="cartao-info">
+                        <strong>{{ cartao.bandeira }}</strong> •••• {{ cartao.ultimos_4_digitos }}
+                        {% if cartao.apelido %}
+                            <br><small>{{ cartao.apelido }}</small>
+                        {% endif %}
+                    </div>
+                    <div class="cartao-validade">
+                        Validade: {{ cartao.mes_validade|stringformat:"02d" }}/{{ cartao.ano_validade }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="muted">Nenhum cartão cadastrado ainda.</p>
+        <a href="{% url 'cadastrar_cartao' %}" class="btn">Cadastrar Primeiro Cartão</a>
+    {% endif %}
+
+    <br>
+    <a href="{% url 'home' %}">← Voltar</a>
+</main>
+{% endblock %}

@@ -1,0 +1,99 @@
+/* Estilos para páginas de cartão */
+.cartao {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.cartao h2 {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 15px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.muted {
+    color: #666;
+    font-size: 12px;
+    margin-top: 15px;
+}
+
+/* Lista de cartões */
+.cartoes-lista {
+    display: grid;
+    gap: 15px;
+}
+
+.cartao-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.cartao-info strong {
+    font-size: 16px;
+}
+
+.cartao-validade {
+    font-size: 14px;
+    opacity: 0.9;
+}

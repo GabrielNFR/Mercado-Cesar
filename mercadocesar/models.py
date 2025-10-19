@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import CheckConstraint, Q
 from django.core.validators import MinValueValidator
+from django.conf import settings
 
 
 class Produto(models.Model):
@@ -63,4 +64,21 @@ class Estoque(models.Model):
 	def abaixo_estoque_minimo(minimo=30):
 		return Estoque.objects.filter(quantidade__lt=minimo)
 
+class CartaoCredito(models.Model):
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE,
+        related_name='cartoes'
+    )
+    bandeira = models.CharField(max_length=20)
+    ultimos_4_digitos = models.CharField(max_length=4)
+    mes_validade = models.IntegerField()
+    ano_validade = models.IntegerField()
+    apelido = models.CharField(max_length=50, blank=True, null=True, help_text="Ex: Cartão Principal")
 
+    def __str__(self):
+        return f"{self.bandeira} terminado em {self.ultimos_4_digitos}"
+
+    class Meta:
+        verbose_name = "Cartão de Crédito"
+        verbose_name_plural = "Cartões de Crédito"

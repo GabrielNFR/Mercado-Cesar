@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="cartao">
+    <h2>Cadastrar Cartão de Crédito</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color: {% if message.tags == 'success' %}green{% else %}red{% endif %};">
+                {{ message }}
+            </p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label>Número do Cartão *</label>
+            <input type="text" name="numero_cartao" maxlength="19" 
+                   placeholder="0000 0000 0000 0000" required>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>Validade (MM/AA) *</label>
+                <input type="text" name="validade" maxlength="5" 
+                       placeholder="12/25" required>
+            </div>
+            
+            <div class="form-group">
+                <label>CVV *</label>
+                <input type="text" name="cvv" maxlength="4" 
+                       placeholder="123" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Nome do Titular *</label>
+            <input type="text" name="nome_titular" 
+                   placeholder="Nome como no cartão" required>
+        </div>
+
+        <div class="form-group">
+            <label>Apelido (opcional)</label>
+            <input type="text" name="apelido" 
+                   placeholder="Ex: Cartão Principal">
+        </div>
+
+        <button type="submit" class="btn">Cadastrar Cartão</button>
+        <a href="{% url 'listar_cartoes' %}" class="btn-secondary">Cancelar</a>
+        
+    </form>
+</main>
+{% endblock %}

@@ -11,6 +11,7 @@
 
     <link rel="stylesheet" href="{% static 'css/testelogin.css' %}">
     <link rel="stylesheet" href="{% static 'css/buscar_itens.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cartao.css' %}">
     
     <title>{% block title %}Mercado Cesar{% endblock %}</title>
 </head>
@@ -25,7 +26,8 @@
             <a href="{% url 'home' %}">Início</a> 
             
             {% if user.is_authenticated %}
-                <a href="{% url 'busca' %}">Buscar Produtos</a> 
+                <a href="{% url 'busca' %}">Buscar Produtos</a>
+                <a href="{% url 'listar_cartoes' %}">Meus Cartões</a>
                 
                 {% if user.is_staff %}
                     <a href="{% url 'estoque_baixo' %}">Estoque Baixo</a>
