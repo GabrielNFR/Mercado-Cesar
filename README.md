@@ -23,6 +23,8 @@
 
 O **Mercado Cesar** é um aplicativo web desenvolvido para otimizar a experiência de compra na nossa loja de atacarejo. Nosso objetivo é proporcionar aos nossos clientes uma plataforma intuitiva para planejar e realizar suas compras com facilidade, através da tecnologia.
 
+### 🌐 Link do Deploy
+- **🔗 Aplicação em Produção:** [mercado-cesar.onrender.com](https://mercado-cesar.onrender.com)
 ---
 
 ## 📦 Entregas do Projeto
@@ -98,5 +100,41 @@ O **Mercado Cesar** é um aplicativo web desenvolvido para otimizar a experiênc
   
   [📄 Link para o relatório](https://docs.google.com/document/d/18t_iI6TZSML6AZr-2HrT7N1Ynz0z88Nkn99jd7EkClU/edit?tab=t.0)
 
+
+</details>
+
+<details>
+<summary><strong>💻 Entrega 3 - Testes E2E e Mais Funcionalidades</strong></summary>
+
+### ✅ Funcionalidades Implementadas
+- ✅ Sistema de busca de produtos 
+- ✅ Sistema de cadastro de cartão de crédito
+- ✅ Testes E2E do cadastro de produtos
+- ✅ Testes E2E do gerenciamento de estoque
+- ✅ Testes E2E da busca de produtos
+- ✅ Testes E2E do cadastro de cartão de crédito
+- ✅ Pipeline com CI/CD e deploy automático
+
+### 📊 Gestão de Projeto
+
+**🏃‍♂️ Quadro da Sprint - Entrega 3**
+<img width="1341" height="192" alt="image" src="https://github.com/user-attachments/assets/ed87b514-cd4c-4edf-9868-513a15295f34" />
+
+**📋 Quadro do Backlog**
+<img width="1347" height="173" alt="Backlog Atualizado" src="https://github.com/user-attachments/assets/6c3e0c62-5be3-45cd-8831-85e322e03d60" />
+
+### 🐛 Controle de Issues
+- **Issue/Bug Tracker**
+
+<img width="1233" height="731" alt="image" src="https://github.com/user-attachments/assets/249939c3-394d-4516-83c2-08a337b2e29d" />
+
+### 🎥 Apresentação
+- **Screencast das Funcionalidades**
+[PARA FAZER]
+  
+### 📋 Documentação
+- **Relatório de Programação em Par**
+  
+  [📄 Link para o relatório](https://docs.google.com/document/d/18t_iI6TZSML6AZr-2HrT7N1Ynz0z88Nkn99jd7EkClU/edit?tab=t.0)
 
 </details>
