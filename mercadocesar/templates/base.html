@@ -27,6 +27,7 @@
             
             {% if user.is_authenticated %}
                 <a href="{% url 'busca' %}">Buscar Produtos</a>
+                <a href="{% url 'cadastrar_cartao' %}">Cadastrar Cartão</a>
                 <a href="{% url 'listar_cartoes' %}">Meus Cartões</a>
                 
                 {% if user.is_staff %}

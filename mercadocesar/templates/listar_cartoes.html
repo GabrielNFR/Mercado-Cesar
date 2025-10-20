@@ -29,6 +29,14 @@
                     <div class="cartao-validade">
                         Validade: {{ cartao.mes_validade|stringformat:"02d" }}/{{ cartao.ano_validade }}
                     </div>
+                    <div class="cartao-acoes">
+                        <form method="post" action="{% url 'deletar_cartao' cartao.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" onclick="return confirm('Deseja realmente excluir este cartão?');" style="background: none; border: none; color: red; cursor: pointer; text-decoration: underline;">
+                                Excluir
+                            </button>
+                        </form>
+                    </div>
                 </div>
             {% endfor %}
         </div>

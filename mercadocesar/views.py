@@ -174,3 +174,19 @@ def listar_cartoes(request):
     }
     
     return render(request, 'listar_cartoes.html', contexto)
+
+
+@login_required
+def deletar_cartao(request, cartao_id):
+    """View para deletar um cartão de crédito"""
+    if request.method == 'POST':
+        try:
+            cartao = CartaoCredito.objects.get(id=cartao_id, usuario=request.user)
+            cartao.delete()
+            messages.success(request, "Cartão deletado com sucesso.")
+            return redirect('listar_cartoes')
+        except CartaoCredito.DoesNotExist:
+            messages.error(request, "Cartão não encontrado.")
+            return redirect('listar_cartoes')
+    else:
+        return redirect('listar_cartoes')
