@@ -138,3 +138,5 @@ O **Mercado Cesar** é um aplicativo web desenvolvido para otimizar a experiênc
   [📄 Link para o relatório](https://docs.google.com/document/d/18t_iI6TZSML6AZr-2HrT7N1Ynz0z88Nkn99jd7EkClU/edit?tab=t.0)
 
 </details>
+
+TESTE
