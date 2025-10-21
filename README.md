@@ -123,6 +123,9 @@ O **Mercado Cesar** é um aplicativo web desenvolvido para otimizar a experiênc
 **📋 Quadro do Backlog**
 <img width="1347" height="173" alt="Backlog Atualizado" src="https://github.com/user-attachments/assets/6c3e0c62-5be3-45cd-8831-85e322e03d60" />
 
+**📋 Lista de Status**
+<img width="1616" height="383" alt="image" src="https://github.com/user-attachments/assets/b38e538f-31a8-4b66-9205-82930df21377" />
+
 ### 🐛 Controle de Issues
 - **Issue/Bug Tracker**
 
@@ -138,6 +141,3 @@ O **Mercado Cesar** é um aplicativo web desenvolvido para otimizar a experiênc
   [📄 Link para o relatório](https://docs.google.com/document/d/18t_iI6TZSML6AZr-2HrT7N1Ynz0z88Nkn99jd7EkClU/edit?tab=t.0)
 
 </details>
-
-TESTE 3
-
