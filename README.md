@@ -9,7 +9,7 @@
 <details>
 <summary><strong>📋 Membros da Equipe (clique para expandir)</strong></summary>
 
-- [Gabriel NFR](https://github.com/GabrielNFR)
+- [Gabriel Rocha](https://github.com/GabrielNFR)
 - [Renato Augusto](https://github.com/Renato-Augusto0-68)  
 - [Will504](https://github.com/Will504-prog)
 - [Nick182](https://github.com/Nick182-n)
