@@ -9,7 +9,7 @@
 <details>
 <summary><strong>📋 Membros da Equipe (clique para expandir)</strong></summary>
 
-- [Gabriel NFR](https://github.com/GabrielNFR)
+- [Gabriel Rocha](https://github.com/GabrielNFR)
 - [Renato Augusto](https://github.com/Renato-Augusto0-68)  
 - [Will504](https://github.com/Will504-prog)
 - [Nick182](https://github.com/Nick182-n)
@@ -123,6 +123,9 @@ O **Mercado Cesar** é um aplicativo web desenvolvido para otimizar a experiênc
 **📋 Quadro do Backlog**
 <img width="1347" height="173" alt="Backlog Atualizado" src="https://github.com/user-attachments/assets/6c3e0c62-5be3-45cd-8831-85e322e03d60" />
 
+**📋 Lista de Status**
+<img width="1616" height="383" alt="image" src="https://github.com/user-attachments/assets/b38e538f-31a8-4b66-9205-82930df21377" />
+
 ### 🐛 Controle de Issues
 - **Issue/Bug Tracker**
 
@@ -130,8 +133,13 @@ O **Mercado Cesar** é um aplicativo web desenvolvido para otimizar a experiênc
 
 ### 🎥 Apresentação
 - **Screencast das Funcionalidades**
-[PARA FAZER]
+
+  [▶️ Link para o screencast das novas funcionalidades(https://www.youtube.com/watch?v=mkIyQxsia5U)]
   
+  [▶️ Link para o screencast dos testes E2E(https://www.youtube.com/watch?v=Vkjx2FBuSWo)]
+  
+  [▶️ Link para o screencast do deploy automático(https://www.youtube.com/watch?v=DBLpKalTrHo)]
+
 ### 📋 Documentação
 - **Relatório de Programação em Par**
   
