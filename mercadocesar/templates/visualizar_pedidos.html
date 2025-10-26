@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% block title %}Visualizar Pedidos{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1400px; margin: 40px auto; padding: 0 20px;">
+    <h2 style="color: #333; margin-bottom: 30px;">Gerenciar Pedidos</h2>
+    
+    <!-- Filtros -->
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h3 style="color: #333; margin-top: 0; margin-bottom: 20px;">Filtros</h3>
+        <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; align-items: end;">
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Tipo de Entrega</label>
+                <select name="tipo_entrega" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                    <option value="">Todos</option>
+                    <option value="DOMICILIO" {% if tipo_entrega_filtro == 'DOMICILIO' %}selected{% endif %}>Domicílio</option>
+                    <option value="RETIRADA" {% if tipo_entrega_filtro == 'RETIRADA' %}selected{% endif %}>Retirada</option>
+                </select>
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Data Início</label>
+                <input type="date" name="data_inicio" value="{{ data_inicio }}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Data Fim</label>
+                <input type="date" name="data_fim" value="{{ data_fim }}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            </div>
+            
+            <div>
+                <button type="submit" style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; font-weight: bold;">
+                    Filtrar
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Lista de pedidos -->
+    <div>
+        <h3 style="color: #333; margin-bottom: 20px;">
+            Pedidos 
+            <span style="color: #666; font-size: 18px; font-weight: normal;">({{ pedidos.count }} encontrado{{ pedidos.count|pluralize }})</span>
+        </h3>
+        
+        {% if pedidos %}
+        {% for pedido in pedidos %}
+        <div style="background-color: white; border: 1px solid #ddd; border-radius: 8px; padding: 25px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <!-- Cabeçalho do pedido -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; padding-bottom: 20px; border-bottom: 2px solid #007bff; margin-bottom: 20px;">
+                <div>
+                    <h4 style="color: #007bff; margin: 0 0 5px 0;">Pedido #{{ pedido.id }}</h4>
+                    <p style="margin: 0; color: #666; font-size: 14px;">{{ pedido.data_criacao|date:"d/m/Y H:i" }}</p>
+                </div>
+                
+                <div>
+                    <p style="margin: 0 0 5px 0; font-weight: bold; color: #555;">Cliente</p>
+                    <p style="margin: 0; color: #333;">{{ pedido.usuario.username }}</p>
+                </div>
+                
+                <div>
+                    <p style="margin: 0 0 5px 0; font-weight: bold; color: #555;">Tipo de Entrega</p>
+                    <p style="margin: 0;">
+                        {% if pedido.tipo_entrega == 'DOMICILIO' %}
+                            <span style="padding: 5px 12px; background-color: #007bff; color: white; border-radius: 4px; font-size: 13px;">Domicílio</span>
+                        {% else %}
+                            <span style="padding: 5px 12px; background-color: #28a745; color: white; border-radius: 4px; font-size: 13px;">Retirada</span>
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <div>
+                    <p style="margin: 0 0 5px 0; font-weight: bold; color: #555;">Prazo</p>
+                    <p style="margin: 0; color: #333;">{{ pedido.prazo_dias }} dia{{ pedido.prazo_dias|pluralize }} úteis</p>
+                </div>
+                
+                <div>
+                    <p style="margin: 0 0 5px 0; font-weight: bold; color: #555;">Total</p>
+                    <p style="margin: 0; color: #28a745; font-size: 18px; font-weight: bold;">R$ {{ pedido.calcular_total|floatformat:2 }}</p>
+                </div>
+            </div>
+            
+            <!-- Detalhes -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <!-- Coluna 1: Endereço/Loja -->
+                <div>
+                    {% if pedido.tipo_entrega == 'DOMICILIO' %}
+                        <h5 style="color: #333; margin: 0 0 10px 0;">Endereço de Entrega</h5>
+                        <p style="margin: 0; line-height: 1.6; color: #555;">
+                            {{ pedido.endereco }}, {{ pedido.numero }}
+                            {% if pedido.complemento %}<br>{{ pedido.complemento }}{% endif %}<br>
+                            {{ pedido.bairro }}<br>
+                            {{ pedido.cidade }}/{{ pedido.estado }}<br>
+                            CEP: {{ pedido.cep }}
+                        </p>
+                        <p style="margin: 10px 0 0 0; color: #666;">
+                            <strong>Frete:</strong> R$ {{ pedido.custo_entrega|floatformat:2 }}
+                        </p>
+                    {% else %}
+                        <h5 style="color: #333; margin: 0 0 10px 0;">Local de Retirada</h5>
+                        <p style="margin: 0; line-height: 1.6; color: #555;">
+                            <strong>{{ pedido.loja.nome }}</strong><br>
+                            {{ pedido.loja.endereco }}, {{ pedido.loja.numero }}<br>
+                            {{ pedido.loja.bairro }}<br>
+                            {{ pedido.loja.cidade }}/{{ pedido.loja.estado }}<br>
+                            CEP: {{ pedido.loja.cep }}
+                        </p>
+                    {% endif %}
+                </div>
+                
+                <!-- Coluna 2: Itens -->
+                <div>
+                    <h5 style="color: #333; margin: 0 0 10px 0;">Itens do Pedido</h5>
+                    <table style="width: 100%; font-size: 14px;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <th style="padding: 8px; text-align: left; color: #666; font-weight: normal;">Produto</th>
+                                <th style="padding: 8px; text-align: center; color: #666; font-weight: normal;">Qtd</th>
+                                <th style="padding: 8px; text-align: right; color: #666; font-weight: normal;">Preço</th>
+                                <th style="padding: 8px; text-align: right; color: #666; font-weight: normal;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in pedido.itens.all %}
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 8px;">{{ item.produto.nome }}</td>
+                                <td style="padding: 8px; text-align: center;">{{ item.quantidade }}</td>
+                                <td style="padding: 8px; text-align: right;">R$ {{ item.preco_unitario|floatformat:2 }}</td>
+                                <td style="padding: 8px; text-align: right; font-weight: bold;">R$ {{ item.calcular_subtotal|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr style="border-top: 2px solid #ddd;">
+                                <td colspan="3" style="padding: 8px; text-align: right; font-weight: bold;">Subtotal Produtos:</td>
+                                <td style="padding: 8px; text-align: right; font-weight: bold;">R$ {{ pedido.calcular_subtotal_produtos|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="padding: 8px; text-align: right;">Frete:</td>
+                                <td style="padding: 8px; text-align: right;">
+                                    {% if pedido.custo_entrega > 0 %}
+                                        R$ {{ pedido.custo_entrega|floatformat:2 }}
+                                    {% else %}
+                                        <span style="color: #28a745;">Grátis</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr style="background-color: #f8f9fa;">
+                                <td colspan="3" style="padding: 10px; text-align: right; font-weight: bold; font-size: 16px;">TOTAL:</td>
+                                <td style="padding: 10px; text-align: right; font-weight: bold; color: #28a745; font-size: 16px;">R$ {{ pedido.calcular_total|floatformat:2 }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p style="padding: 30px; text-align: center; background-color: #f8f9fa; border-radius: 4px; color: #666;">
+            Nenhum pedido encontrado com os filtros selecionados.
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

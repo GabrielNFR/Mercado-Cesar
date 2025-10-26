@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Pedido Confirmado{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px; margin: 40px auto; padding: 0 20px;">
+    <div style="padding: 20px; margin-bottom: 30px; border-radius: 8px; background-color: #d4edda; border: 1px solid #c3e6cb;">
+        <h3 style="color: #155724; margin: 0 0 10px 0;">Pedido Confirmado!</h3>
+        <p style="margin: 0; color: #155724;">Seu pedido #{{ pedido.id }} foi criado com sucesso.</p>
+    </div>
+    
+    <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+        <div style="background-color: #007bff; color: white; padding: 20px;">
+            <h3 style="margin: 0;">Detalhes do Pedido #{{ pedido.id }}</h3>
+        </div>
+        
+        <div style="padding: 30px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+                <div>
+                    <h4 style="margin-top: 0; color: #333;">Tipo de Entrega</h4>
+                    <p style="margin: 10px 0;">
+                        {% if pedido.tipo_entrega == 'DOMICILIO' %}
+                            <span style="padding: 5px 15px; background-color: #007bff; color: white; border-radius: 4px; font-size: 14px;">Entrega em Domicílio</span>
+                        {% else %}
+                            <span style="padding: 5px 15px; background-color: #28a745; color: white; border-radius: 4px; font-size: 14px;">Retirada na Loja</span>
+                        {% endif %}
+                    </p>
+                    
+                    <h4 style="color: #333;">Prazo</h4>
+                    <p style="margin: 10px 0;"><strong>{{ pedido.prazo_dias }} dia{% if pedido.prazo_dias > 1 %}s{% endif %} úteis</strong></p>
+                </div>
+                
+                <div>
+                    {% if pedido.tipo_entrega == 'DOMICILIO' %}
+                        <h4 style="margin-top: 0; color: #333;">Endereço de Entrega</h4>
+                        <p style="margin: 10px 0; line-height: 1.6;">
+                            {{ pedido.endereco }}, {{ pedido.numero }}
+                            {% if pedido.complemento %}- {{ pedido.complemento }}{% endif %}<br>
+                            {{ pedido.bairro }}<br>
+                            {{ pedido.cidade }}/{{ pedido.estado }}<br>
+                            CEP: {{ pedido.cep }}
+                        </p>
+                    {% else %}
+                        <h4 style="margin-top: 0; color: #333;">Local de Retirada</h4>
+                        <p style="margin: 10px 0; line-height: 1.6;">
+                            <strong>{{ loja.nome }}</strong><br>
+                            {{ loja.endereco }}, {{ loja.numero }}<br>
+                            {{ loja.bairro }}<br>
+                            {{ loja.cidade }}/{{ loja.estado }}<br>
+                            CEP: {{ loja.cep }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+            
+            <div style="margin-top: 30px;">
+                <h4 style="color: #333;">Itens do Pedido</h4>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <thead>
+                        <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                            <th style="padding: 12px; text-align: left;">Produto</th>
+                            <th style="padding: 12px; text-align: center;">Quantidade</th>
+                            <th style="padding: 12px; text-align: right;">Preço Unit.</th>
+                            <th style="padding: 12px; text-align: right;">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in pedido.itens.all %}
+                        <tr style="border-bottom: 1px solid #dee2e6;">
+                            <td style="padding: 12px;">{{ item.produto.nome }}</td>
+                            <td style="padding: 12px; text-align: center;">{{ item.quantidade }}</td>
+                            <td style="padding: 12px; text-align: right;">R$ {{ item.preco_unitario|floatformat:2 }}</td>
+                            <td style="padding: 12px; text-align: right;">R$ {{ item.calcular_subtotal|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+            
+            <div style="margin-top: 30px;">
+                <h4 style="color: #333;">Resumo de Valores</h4>
+                <div style="max-width: 400px; margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <span>Subtotal (Produtos):</span>
+                        <span>R$ {{ pedido.calcular_subtotal_produtos|floatformat:2 }}</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <span>Custo de Entrega:</span>
+                        <span>
+                            {% if pedido.custo_entrega > 0 %}
+                                R$ {{ pedido.custo_entrega|floatformat:2 }}
+                            {% else %}
+                                <span style="color: #28a745;">Grátis</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 15px 0; font-size: 18px; font-weight: bold; background-color: #f8f9fa; margin-top: 10px; padding: 15px; border-radius: 4px;">
+                        <span>Total:</span>
+                        <span>R$ {{ pedido.calcular_total|floatformat:2 }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px; display: flex; gap: 15px;">
+        <a href="{% url 'busca' %}" style="padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Continuar Comprando
+        </a>
+        <a href="{% url 'home' %}" style="padding: 12px 24px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Voltar para Home
+        </a>
+    </div>
+</div>
+{% endblock %}

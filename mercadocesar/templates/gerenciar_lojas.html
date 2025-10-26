@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerenciar Lojas{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+    <h2 style="color: #333; margin-bottom: 30px;">Gerenciar Lojas</h2>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding: 15px; margin-bottom: 20px; border-radius: 4px; {% if message.tags == 'success' %}background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;{% else %}background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <!-- Formulário para adicionar nova loja -->
+    <div style="background-color: #f8f9fa; padding: 30px; border-radius: 8px; margin-bottom: 40px;">
+        <h3 style="color: #333; margin-top: 0;">Cadastrar Nova Loja</h3>
+        <form method="post" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            {% csrf_token %}
+            
+            <div style="grid-column: 1 / -1;">
+                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Nome da Loja *</label>
+                <input type="text" name="nome" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Endereço *</label>
+                <input type="text" name="endereco" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Número *</label>
+                <input type="text" name="numero" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Bairro *</label>
+                <input type="text" name="bairro" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Cidade *</label>
+                <input type="text" name="cidade" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Estado *</label>
+                <input type="text" name="estado" required maxlength="2" placeholder="PE" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; text-transform: uppercase;">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">CEP *</label>
+                <input type="text" name="cep" required placeholder="50000-000" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">Prazo de Retirada (dias) *</label>
+                <input type="number" name="prazo_retirada_dias" required min="1" value="1" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+            </div>
+            
+            <div style="grid-column: 1 / -1;">
+                <button type="submit" style="padding: 12px 30px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold;">
+                    Cadastrar Loja
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Lista de lojas existentes -->
+    <div>
+        <h3 style="color: #333; margin-bottom: 20px;">Lojas Cadastradas</h3>
+        
+        {% if lojas %}
+        <table style="width: 100%; border-collapse: collapse; background-color: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <thead>
+                <tr style="background-color: #007bff; color: white;">
+                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #0056b3;">Nome</th>
+                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #0056b3;">Endereço</th>
+                    <th style="padding: 15px; text-align: left; border-bottom: 2px solid #0056b3;">Cidade</th>
+                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #0056b3;">Prazo (dias)</th>
+                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #0056b3;">Status</th>
+                    <th style="padding: 15px; text-align: center; border-bottom: 2px solid #0056b3;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loja in lojas %}
+                <tr style="border-bottom: 1px solid #ddd; {% if not loja.ativa %}background-color: #f8f9fa; opacity: 0.7;{% endif %}">
+                    <td style="padding: 15px;">
+                        <strong>{{ loja.nome }}</strong>
+                    </td>
+                    <td style="padding: 15px;">
+                        {{ loja.endereco }}, {{ loja.numero }}<br>
+                        <small style="color: #666;">{{ loja.bairro }} - CEP: {{ loja.cep }}</small>
+                    </td>
+                    <td style="padding: 15px;">{{ loja.cidade }}/{{ loja.estado }}</td>
+                    <td style="padding: 15px; text-align: center;">{{ loja.prazo_retirada_dias }}</td>
+                    <td style="padding: 15px; text-align: center;">
+                        {% if loja.ativa %}
+                            <span style="padding: 5px 15px; background-color: #28a745; color: white; border-radius: 12px; font-size: 12px; font-weight: bold;">ATIVA</span>
+                        {% else %}
+                            <span style="padding: 5px 15px; background-color: #dc3545; color: white; border-radius: 12px; font-size: 12px; font-weight: bold;">INATIVA</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 15px; text-align: center;">
+                        <a href="{% url 'ativar_desativar_loja' loja.id %}" 
+                           style="padding: 8px 16px; {% if loja.ativa %}background-color: #dc3545;{% else %}background-color: #28a745;{% endif %} color: white; text-decoration: none; border-radius: 4px; font-size: 14px; display: inline-block;">
+                            {% if loja.ativa %}Desativar{% else %}Ativar{% endif %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="padding: 30px; text-align: center; background-color: #f8f9fa; border-radius: 4px; color: #666;">
+            Nenhuma loja cadastrada ainda.
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

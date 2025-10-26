@@ -74,4 +74,5 @@ document.addEventListener('DOMContentLoaded', () => {
             applyFilter();
         });
     });
+
 });

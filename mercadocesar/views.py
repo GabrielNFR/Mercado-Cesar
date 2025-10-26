@@ -3,8 +3,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib import messages
-from .models import Estoque, Produto, CartaoCredito
-from .validators import validar_numero_cartao, validar_cvv, validar_validade, identificar_bandeira
+from .models import Estoque, Produto, CartaoCredito, Loja, Pedido, Carrinho, ItemCarrinho
+from .validators import (validar_numero_cartao, validar_cvv, validar_validade, identificar_bandeira,
+                          validar_cep, verificar_area_entrega, calcular_frete, calcular_prazo_entrega)
 
 @login_required
 def pagina_inicial(request):
@@ -27,6 +28,26 @@ def estoque_baixo(request):
 
 @login_required
 def buscar_itens(request):
+    if request.method == 'POST':
+        # Adicionar produto ao carrinho
+        produto_id = request.POST.get('produto_id')
+        if produto_id:
+            try:
+                produto = Produto.objects.get(id=produto_id)
+                carrinho, created = Carrinho.objects.get_or_create(usuario=request.user, ativo=True)
+                item, created = ItemCarrinho.objects.get_or_create(carrinho=carrinho, produto=produto)
+                
+                if not created:
+                    item.quantidade += 1
+                    item.save()
+                    messages.success(request, f"{produto.nome} - quantidade atualizada no carrinho")
+                else:
+                    messages.success(request, f"{produto.nome} adicionado ao carrinho")
+            except Produto.DoesNotExist:
+                messages.error(request, "Produto não encontrado")
+        
+        return redirect('busca')
+    
     todos_produtos = Produto.objects.all().order_by('categoria', 'id')
 
     produtos_destaque = []
@@ -38,10 +59,15 @@ def buscar_itens(request):
             produtos_destaque.append(produto)
             categoria_vistas.add(produto.categoria)
 
+    # Pegar carrinho atual
+    carrinho = Carrinho.objects.filter(usuario=request.user, ativo=True).first()
+    total_itens = sum(item.quantidade for item in carrinho.itens.all()) if carrinho else 0
+
     contexto = {
         'todos_produtos': todos_produtos,
-        'produtos_destaque': produtos_destaque
-
+        'produtos_destaque': produtos_destaque,
+        'carrinho': carrinho,
+        'total_itens': total_itens
     }
     
     return render(request, 'buscar_itens.html', contexto)
@@ -190,3 +216,230 @@ def deletar_cartao(request, cartao_id):
             return redirect('listar_cartoes')
     else:
         return redirect('listar_cartoes')
+
+
+@login_required
+def checkout(request):
+    """View para escolher tipo de entrega"""
+    # Verificar se há carrinho ativo com itens
+    carrinho = Carrinho.objects.filter(usuario=request.user, ativo=True).first()
+    
+    if not carrinho or not carrinho.itens.exists():
+        messages.warning(request, "Seu carrinho está vazio. Adicione produtos antes de finalizar.")
+        return redirect('busca')
+    
+    lojas = Loja.objects.filter(ativa=True)
+    return render(request, 'checkout.html', {'lojas': lojas, 'carrinho': carrinho})
+
+
+@login_required
+def processar_entrega_domicilio(request):
+    """View para processar entrega em domicílio"""
+    if request.method != 'POST':
+        return redirect('checkout')
+    
+    cep = request.POST.get('cep', '').strip()
+    endereco = request.POST.get('endereco', '').strip()
+    numero = request.POST.get('numero', '').strip()
+    complemento = request.POST.get('complemento', '').strip()
+    bairro = request.POST.get('bairro', '').strip()
+    cidade = request.POST.get('cidade', '').strip()
+    estado = request.POST.get('estado', '').strip()
+    
+    erros = []
+    
+    if not cep:
+        erros.append("CEP é obrigatório")
+    if not endereco:
+        erros.append("Endereço é obrigatório")
+    if not numero:
+        erros.append("Número é obrigatório")
+    if not bairro:
+        erros.append("Bairro é obrigatório")
+    if not cidade:
+        erros.append("Cidade é obrigatória")
+    if not estado:
+        erros.append("Estado é obrigatório")
+    
+    if cep:
+        valido, mensagem = validar_cep(cep)
+        if not valido:
+            erros.append(mensagem)
+        else:
+            disponivel, mensagem_area = verificar_area_entrega(cep)
+            if not disponivel:
+                messages.error(request, mensagem_area)
+                lojas = Loja.objects.filter(ativa=True)
+                return render(request, 'checkout.html', {'lojas': lojas, 'cep': cep})
+    
+    if erros:
+        for erro in erros:
+            messages.error(request, erro)
+        lojas = Loja.objects.filter(ativa=True)
+        return render(request, 'checkout.html', {'lojas': lojas})
+    
+    custo_entrega = calcular_frete(cep)
+    prazo_dias = calcular_prazo_entrega(cep)
+    
+    # Criar o pedido
+    pedido = Pedido.objects.create(
+        usuario=request.user,
+        tipo_entrega='DOMICILIO',
+        cep=cep,
+        endereco=endereco,
+        numero=numero,
+        complemento=complemento,
+        bairro=bairro,
+        cidade=cidade,
+        estado=estado,
+        custo_entrega=custo_entrega,
+        prazo_dias=prazo_dias
+    )
+    
+    # Copiar itens do carrinho para o pedido
+    carrinho = Carrinho.objects.filter(usuario=request.user, ativo=True).first()
+    if carrinho:
+        from .models import ItemPedido
+        for item_carrinho in carrinho.itens.all():
+            ItemPedido.objects.create(
+                pedido=pedido,
+                produto=item_carrinho.produto,
+                quantidade=item_carrinho.quantidade,
+                preco_unitario=item_carrinho.produto.preco
+            )
+        # Desativar o carrinho após criar o pedido
+        carrinho.ativo = False
+        carrinho.save()
+    
+    messages.success(request, f"Pedido #{pedido.id} criado! Custo de entrega: R$ {custo_entrega:.2f}. Prazo: {prazo_dias} dias úteis.")
+    return render(request, 'confirmacao_pedido.html', {'pedido': pedido})
+
+
+@login_required
+def processar_entrega_retirada(request):
+    """View para processar retirada na loja"""
+    if request.method != 'POST':
+        return redirect('checkout')
+    
+    loja_id = request.POST.get('loja_id')
+    
+    if not loja_id:
+        messages.error(request, "Selecione uma loja para retirada")
+        return redirect('checkout')
+    
+    try:
+        loja = Loja.objects.get(id=loja_id, ativa=True)
+    except Loja.DoesNotExist:
+        messages.error(request, "Loja não encontrada")
+        return redirect('checkout')
+    
+    # Criar o pedido
+    pedido = Pedido.objects.create(
+        usuario=request.user,
+        tipo_entrega='RETIRADA',
+        loja=loja,
+        custo_entrega=0,
+        prazo_dias=loja.prazo_retirada_dias
+    )
+    
+    # Copiar itens do carrinho para o pedido
+    carrinho = Carrinho.objects.filter(usuario=request.user, ativo=True).first()
+    if carrinho:
+        from .models import ItemPedido
+        for item_carrinho in carrinho.itens.all():
+            ItemPedido.objects.create(
+                pedido=pedido,
+                produto=item_carrinho.produto,
+                quantidade=item_carrinho.quantidade,
+                preco_unitario=item_carrinho.produto.preco
+            )
+        # Desativar o carrinho após criar o pedido
+        carrinho.ativo = False
+        carrinho.save()
+    
+    messages.success(request, f"Pedido #{pedido.id} criado! Retirada em: {loja.nome}. Prazo: {loja.prazo_retirada_dias} dias úteis.")
+    return render(request, 'confirmacao_pedido.html', {'pedido': pedido, 'loja': loja})
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def gerenciar_lojas(request):
+    """View para superusuário gerenciar lojas"""
+    if request.method == 'POST':
+        # Criar nova loja
+        nome = request.POST.get('nome')
+        endereco = request.POST.get('endereco')
+        numero = request.POST.get('numero')
+        bairro = request.POST.get('bairro')
+        cidade = request.POST.get('cidade')
+        estado = request.POST.get('estado')
+        cep = request.POST.get('cep')
+        prazo_retirada_dias = request.POST.get('prazo_retirada_dias', 1)
+        
+        if nome and endereco and numero and bairro and cidade and estado and cep:
+            Loja.objects.create(
+                nome=nome,
+                endereco=endereco,
+                numero=numero,
+                bairro=bairro,
+                cidade=cidade,
+                estado=estado,
+                cep=cep,
+                prazo_retirada_dias=prazo_retirada_dias,
+                ativa=True
+            )
+            messages.success(request, f"Loja '{nome}' cadastrada com sucesso!")
+        else:
+            messages.error(request, "Preencha todos os campos obrigatórios")
+        
+        return redirect('gerenciar_lojas')
+    
+    lojas = Loja.objects.all().order_by('-ativa', 'nome')
+    return render(request, 'gerenciar_lojas.html', {'lojas': lojas})
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def ativar_desativar_loja(request, loja_id):
+    """Toggle status ativo/inativo de uma loja"""
+    try:
+        loja = Loja.objects.get(id=loja_id)
+        loja.ativa = not loja.ativa
+        loja.save()
+        status = "ativada" if loja.ativa else "desativada"
+        messages.success(request, f"Loja '{loja.nome}' {status} com sucesso!")
+    except Loja.DoesNotExist:
+        messages.error(request, "Loja não encontrada")
+    
+    return redirect('gerenciar_lojas')
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def visualizar_pedidos(request):
+    """View para superusuário visualizar todos os pedidos"""
+    from .models import ItemPedido
+    
+    # Filtros
+    tipo_entrega = request.GET.get('tipo_entrega', '')
+    data_inicio = request.GET.get('data_inicio', '')
+    data_fim = request.GET.get('data_fim', '')
+    
+    pedidos = Pedido.objects.all().select_related('usuario', 'loja').prefetch_related('itens__produto')
+    
+    if tipo_entrega:
+        pedidos = pedidos.filter(tipo_entrega=tipo_entrega)
+    
+    if data_inicio:
+        pedidos = pedidos.filter(data_criacao__date__gte=data_inicio)
+    
+    if data_fim:
+        pedidos = pedidos.filter(data_criacao__date__lte=data_fim)
+    
+    pedidos = pedidos.order_by('-data_criacao')
+    
+    context = {
+        'pedidos': pedidos,
+        'tipo_entrega_filtro': tipo_entrega,
+        'data_inicio': data_inicio,
+        'data_fim': data_fim,
+    }
+    
+    return render(request, 'visualizar_pedidos.html', context)

@@ -4,10 +4,27 @@
 {% block title %}Pesquisa de Produtos | Mercado Cesar{% endblock %}
 
 {% block content %}
+    {% csrf_token %}
+    
+    {% if messages %}
+        <div style="max-width: 1200px; margin: 20px auto; padding: 0 20px;">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" style="padding: 15px; margin: 10px 0; border-radius: 4px; background-color: {% if message.tags == 'error' %}#f8d7da{% elif message.tags == 'success' %}#d4edda{% else %}#fff3cd{% endif %}; border: 1px solid {% if message.tags == 'error' %}#f5c6cb{% elif message.tags == 'success' %}#c3e6cb{% else %}#ffeaa7{% endif %}; color: #333;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
     
     <div class="search-bar">
         <input type="text" id="barraPesquisa" placeholder="Pesquisar por produtos">
         <button>Buscar</button> 
+    </div>
+
+    <div style="text-align: center; margin: 20px 0;">
+        <a href="{% url 'checkout' %}" style="padding: 12px 30px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px; font-size: 16px; display: inline-block; font-weight: bold;">
+            Finalizar Compra {% if total_itens > 0 %}({{ total_itens }} {% if total_itens == 1 %}item{% else %}itens{% endif %}){% endif %}
+        </a>
     </div>
 
     <div class="categories">
@@ -26,7 +43,11 @@
                 <p>Descrição: {{ produto.descricao }}</p>
                 <p>R$ {{ produto.preco|default:'???' }}</p>
                 <p class="estoque">{{ produto.estoque_total }} unidades disponíveis</p>
-                <button>Adicionar</button>
+                <form method="post" action="{% url 'busca' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="produto_id" value="{{ produto.id }}">
+                    <button type="submit">Adicionar</button>
+                </form>
             </div>
         {% endfor %}
     </div>
@@ -42,7 +63,11 @@
                     <p>Descrição: {{ produto.descricao }}</p>
                     <p>R$ {{ produto.preco|default:'???' }}</p>
                     <p class="estoque">{{ produto.estoque_total }} unidades disponíveis</p>
-                    <button>Adicionar</button>
+                    <form method="post" action="{% url 'busca' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="produto_id" value="{{ produto.id }}">
+                        <button type="submit">Adicionar</button>
+                    </form>
                 </div>
             {% endfor %}
         </div>

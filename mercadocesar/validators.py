@@ -3,6 +3,7 @@ Validadores para cartão de crédito
 """
 import re
 from datetime import datetime
+from decimal import Decimal
 
 
 def validar_numero_cartao(numero):
@@ -96,3 +97,78 @@ def identificar_bandeira(numero):
         return "Diners Club"
     
     return "Outra"
+
+
+def validar_cep(cep):
+    """Valida formato de CEP brasileiro"""
+    cep = cep.strip()
+    
+    # Verifica formato XXXXX-XXX ou XXXXXXXX
+    pattern = r'^\d{5}-?\d{3}$'
+    
+    if not re.match(pattern, cep):
+        return False, "CEP inválido. Por favor, insira um CEP válido no formato 12345-678"
+    
+    # Remove o hífen
+    cep_numeros = re.sub(r'[^0-9]', '', cep)
+    
+    # Verifica se não é um CEP obviamente inválido
+    if cep_numeros == '00000000':
+        return False, "CEP inválido"
+    
+    return True, cep_numeros
+
+
+def verificar_area_entrega(cep):
+    """
+    Verifica se o CEP está na área de entrega
+    Recife (CEPs começando com 5) está na área de entrega
+    """
+    cep_numeros = re.sub(r'[^0-9]', '', cep)
+    
+    # CEPs de Recife começam com 5 (50000-000 a 54999-999)
+    # Vamos aceitar também CEPs próximos (50-54)
+    primeiro_digito = cep_numeros[0]
+    dois_primeiros = cep_numeros[:2]
+    
+    # Recife e região metropolitana
+    if primeiro_digito == '5' and dois_primeiros in ['50', '51', '52', '53', '54']:
+        return True, "Área de entrega disponível"
+    else:
+        return False, "Entrega não disponível para este endereço. Escolha retirada na loja."
+
+
+def calcular_frete(cep):
+    """
+    Calcula o custo de frete baseado no CEP
+    Recife tem frete fixo de R$ 15,00
+    """
+    cep_numeros = re.sub(r'[^0-9]', '', cep)
+    dois_primeiros = cep_numeros[:2]
+    
+    # Recife e região metropolitana - frete fixo
+    if dois_primeiros in ['50', '51', '52', '53', '54']:
+        return Decimal('15.00')
+    
+    # Outros CEPs (caso sejam aceitos no futuro)
+    return Decimal('25.00')
+
+
+def calcular_prazo_entrega(cep):
+    """
+    Calcula prazo de entrega em dias úteis baseado no CEP
+    Recife: 2-3 dias úteis
+    """
+    cep_numeros = re.sub(r'[^0-9]', '', cep)
+    dois_primeiros = cep_numeros[:2]
+    
+    # Recife centro (50, 51) - 2 dias
+    if dois_primeiros in ['50', '51']:
+        return 2
+    
+    # Recife outras áreas e região metropolitana (52, 53, 54) - 3 dias
+    if dois_primeiros in ['52', '53', '54']:
+        return 3
+    
+    # Outros (caso sejam aceitos no futuro)
+    return 5

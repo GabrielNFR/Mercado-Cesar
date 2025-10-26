@@ -30,6 +30,11 @@
                 <a href="{% url 'cadastrar_cartao' %}">Cadastrar Cartão</a>
                 <a href="{% url 'listar_cartoes' %}">Meus Cartões</a>
                 
+                {% if user.is_superuser %}
+                    <a href="{% url 'gerenciar_lojas' %}">Gerenciar Lojas</a>
+                    <a href="{% url 'visualizar_pedidos' %}">Ver Pedidos</a>
+                {% endif %}
+                
                 {% if user.is_staff %}
                     <a href="{% url 'estoque_baixo' %}">Estoque Baixo</a>
                     <a href="{% url 'admin:index' %}" target="_blank">Admin</a>

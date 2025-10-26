@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - Escolha a Entrega{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+    <h2>Escolha o tipo de entrega</h2>
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" style="padding: 15px; margin: 20px 0; border-radius: 4px; background-color: {% if message.tags == 'error' %}#f8d7da{% elif message.tags == 'success' %}#d4edda{% else %}#fff3cd{% endif %}; border: 1px solid {% if message.tags == 'error' %}#f5c6cb{% elif message.tags == 'success' %}#c3e6cb{% else %}#ffeaa7{% endif %};">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Resumo do Carrinho -->
+    {% if carrinho %}
+    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h3 style="margin-top: 0;">Itens no Carrinho</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 2px solid #ddd;">
+                    <th style="text-align: left; padding: 10px;">Produto</th>
+                    <th style="text-align: center; padding: 10px;">Quantidade</th>
+                    <th style="text-align: right; padding: 10px;">Preço Unit.</th>
+                    <th style="text-align: right; padding: 10px;">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in carrinho.itens.all %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px;">{{ item.produto.nome }}</td>
+                    <td style="text-align: center; padding: 10px;">{{ item.quantidade }}</td>
+                    <td style="text-align: right; padding: 10px;">R$ {{ item.produto.preco }}</td>
+                    <td style="text-align: right; padding: 10px;">R$ {{ item.calcular_subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr style="border-top: 2px solid #ddd; font-weight: bold;">
+                    <td colspan="3" style="text-align: right; padding: 10px;">Total dos Produtos:</td>
+                    <td style="text-align: right; padding: 10px;">R$ {{ carrinho.calcular_total }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    {% endif %}
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
+        <!-- Entrega em Domicílio -->
+        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+            <h3 style="color: #007bff; margin-bottom: 20px;">Entrega em Domicílio</h3>
+            <p>Receba suas compras no conforto da sua casa.</p>
+            
+            <form method="post" action="{% url 'processar_entrega_domicilio' %}">
+                {% csrf_token %}
+                
+                <div style="margin-bottom: 15px;">
+                    <label for="cep" style="display: block; margin-bottom: 5px; font-weight: 500;">CEP *</label>
+                    <input type="text" id="cep" name="cep" placeholder="12345-678" maxlength="9" required
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                           value="{{ cep }}">
+                    <small style="color: #666;">Formato: 12345-678</small>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label for="endereco" style="display: block; margin-bottom: 5px; font-weight: 500;">Endereço *</label>
+                    <input type="text" id="endereco" name="endereco" placeholder="Rua, Avenida..." required
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                           value="{{ endereco }}">
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 15px;">
+                    <div>
+                        <label for="numero" style="display: block; margin-bottom: 5px; font-weight: 500;">Número *</label>
+                        <input type="text" id="numero" name="numero" placeholder="123" required
+                               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                               value="{{ numero }}">
+                    </div>
+                    <div>
+                        <label for="complemento" style="display: block; margin-bottom: 5px; font-weight: 500;">Complemento</label>
+                        <input type="text" id="complemento" name="complemento" placeholder="Apt 45, Bloco B..."
+                               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                               value="{{ complemento }}">
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label for="bairro" style="display: block; margin-bottom: 5px; font-weight: 500;">Bairro *</label>
+                    <input type="text" id="bairro" name="bairro" placeholder="Boa Viagem" required
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                           value="{{ bairro }}">
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 15px;">
+                    <div>
+                        <label for="cidade" style="display: block; margin-bottom: 5px; font-weight: 500;">Cidade *</label>
+                        <input type="text" id="cidade" name="cidade" placeholder="Recife" required
+                               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                               value="{{ cidade }}">
+                    </div>
+                    <div>
+                        <label for="estado" style="display: block; margin-bottom: 5px; font-weight: 500;">Estado *</label>
+                        <input type="text" id="estado" name="estado" placeholder="PE" maxlength="2" required
+                               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                               value="{{ estado }}">
+                    </div>
+                </div>
+                
+                <button type="submit" style="width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer;">
+                    Calcular Frete e Continuar
+                </button>
+            </form>
+        </div>
+        
+        <!-- Retirada na Loja -->
+        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+            <h3 style="color: #28a745; margin-bottom: 20px;">Retirar na Loja</h3>
+            <p>Retire suas compras em uma de nossas lojas. <strong>Frete grátis!</strong></p>
+            
+            {% if lojas %}
+                <form method="post" action="{% url 'processar_entrega_retirada' %}">
+                    {% csrf_token %}
+                    
+                    {% for loja in lojas %}
+                        <div style="margin-bottom: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 4px;">
+                            <label style="display: flex; align-items: start; cursor: pointer;">
+                                <input type="radio" name="loja_id" value="{{ loja.id }}" required
+                                       style="margin-right: 10px; margin-top: 3px;">
+                                <div>
+                                    <strong>{{ loja.nome }}</strong><br>
+                                    {{ loja.endereco }}, {{ loja.numero }}<br>
+                                    {{ loja.bairro }} - {{ loja.cidade }}/{{ loja.estado }}<br>
+                                    CEP: {{ loja.cep }}<br>
+                                    <span style="color: #28a745;">Prazo: {{ loja.prazo_retirada_dias }} dia{% if loja.prazo_retirada_dias > 1 %}s{% endif %} úteis</span>
+                                </div>
+                            </label>
+                        </div>
+                    {% endfor %}
+                    
+                    <button type="submit" style="width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer;">
+                        Retirar na Loja Selecionada
+                    </button>
+                </form>
+            {% else %}
+                <p style="color: #666;">Nenhuma loja disponível no momento.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <a href="{% url 'busca' %}" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Voltar
+        </a>
+    </div>
+</div>
+{% endblock %}
