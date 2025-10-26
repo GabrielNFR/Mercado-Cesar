@@ -3,9 +3,47 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from django.contrib import messages
+from decimal import Decimal
 from .models import Estoque, Produto, CartaoCredito, Loja, Pedido, Carrinho, ItemCarrinho
 from .validators import (validar_numero_cartao, validar_cvv, validar_validade, identificar_bandeira,
                           validar_cep, verificar_area_entrega, calcular_frete, calcular_prazo_entrega)
+
+
+def obter_carrinho_ativo(usuario):
+    """Retorna o carrinho ativo do usuário"""
+    return Carrinho.objects.filter(usuario=usuario, ativo=True).first()
+
+
+class PedidoTemporario:
+    """Classe para representar um pedido antes de ser salvo no banco"""
+    def __init__(self, dados, carrinho, loja=None):
+        self.tipo_entrega = dados['tipo_entrega']
+        self.custo_entrega = Decimal(dados['custo_entrega'])
+        self.prazo_dias = dados['prazo_dias']
+        self._carrinho = carrinho
+        self.loja = loja
+        
+        # Campos específicos de domicílio
+        if dados['tipo_entrega'] == 'DOMICILIO':
+            self.cep = dados['cep']
+            self.endereco = dados['endereco']
+            self.numero = dados['numero']
+            self.complemento = dados.get('complemento', '')
+            self.bairro = dados['bairro']
+            self.cidade = dados['cidade']
+            self.estado = dados['estado']
+    
+    @property
+    def itens(self):
+        return self._carrinho.itens if self._carrinho else []
+    
+    def calcular_subtotal_produtos(self):
+        return self._carrinho.calcular_total() if self._carrinho else Decimal('0')
+    
+    def calcular_total(self):
+        subtotal = self.calcular_subtotal_produtos()
+        return Decimal(str(subtotal)) + self.custo_entrega
+
 
 @login_required
 def pagina_inicial(request):
@@ -60,7 +98,7 @@ def buscar_itens(request):
             categoria_vistas.add(produto.categoria)
 
     # Pegar carrinho atual
-    carrinho = Carrinho.objects.filter(usuario=request.user, ativo=True).first()
+    carrinho = obter_carrinho_ativo(request.user)
     total_itens = sum(item.quantidade for item in carrinho.itens.all()) if carrinho else 0
 
     contexto = {
@@ -222,7 +260,7 @@ def deletar_cartao(request, cartao_id):
 def checkout(request):
     """View para escolher tipo de entrega"""
     # Verificar se há carrinho ativo com itens
-    carrinho = Carrinho.objects.filter(usuario=request.user, ativo=True).first()
+    carrinho = obter_carrinho_ativo(request.user)
     
     if not carrinho or not carrinho.itens.exists():
         messages.warning(request, "Seu carrinho está vazio. Adicione produtos antes de finalizar.")
@@ -281,38 +319,33 @@ def processar_entrega_domicilio(request):
     custo_entrega = calcular_frete(cep)
     prazo_dias = calcular_prazo_entrega(cep)
     
-    # Criar o pedido
-    pedido = Pedido.objects.create(
-        usuario=request.user,
-        tipo_entrega='DOMICILIO',
-        cep=cep,
-        endereco=endereco,
-        numero=numero,
-        complemento=complemento,
-        bairro=bairro,
-        cidade=cidade,
-        estado=estado,
-        custo_entrega=custo_entrega,
-        prazo_dias=prazo_dias
-    )
+    # Armazenar dados na sessão
+    request.session['pedido_temp'] = {
+        'tipo_entrega': 'DOMICILIO',
+        'cep': cep,
+        'endereco': endereco,
+        'numero': numero,
+        'complemento': complemento,
+        'bairro': bairro,
+        'cidade': cidade,
+        'estado': estado,
+        'custo_entrega': str(custo_entrega),
+        'prazo_dias': prazo_dias,
+    }
     
-    # Copiar itens do carrinho para o pedido
-    carrinho = Carrinho.objects.filter(usuario=request.user, ativo=True).first()
-    if carrinho:
-        from .models import ItemPedido
-        for item_carrinho in carrinho.itens.all():
-            ItemPedido.objects.create(
-                pedido=pedido,
-                produto=item_carrinho.produto,
-                quantidade=item_carrinho.quantidade,
-                preco_unitario=item_carrinho.produto.preco
-            )
-        # Desativar o carrinho após criar o pedido
-        carrinho.ativo = False
-        carrinho.save()
+    # Buscar carrinho para mostrar na revisão
+    carrinho = obter_carrinho_ativo(request.user)
     
-    messages.success(request, f"Pedido #{pedido.id} criado! Custo de entrega: R$ {custo_entrega:.2f}. Prazo: {prazo_dias} dias úteis.")
-    return render(request, 'confirmacao_pedido.html', {'pedido': pedido})
+    # Buscar cartões do usuário
+    cartoes = CartaoCredito.objects.filter(usuario=request.user)
+    
+    # Criar objeto temporário para passar para o template
+    pedido_temp = PedidoTemporario(request.session['pedido_temp'], carrinho)
+    return render(request, 'confirmacao_pedido.html', {
+        'pedido': pedido_temp, 
+        'em_revisao': True,
+        'cartoes': cartoes
+    })
 
 
 @login_required
@@ -333,32 +366,114 @@ def processar_entrega_retirada(request):
         messages.error(request, "Loja não encontrada")
         return redirect('checkout')
     
-    # Criar o pedido
-    pedido = Pedido.objects.create(
-        usuario=request.user,
-        tipo_entrega='RETIRADA',
-        loja=loja,
-        custo_entrega=0,
-        prazo_dias=loja.prazo_retirada_dias
-    )
+    # Armazenar dados na sessão
+    request.session['pedido_temp'] = {
+        'tipo_entrega': 'RETIRADA',
+        'loja_id': loja.id,
+        'custo_entrega': '0',
+        'prazo_dias': loja.prazo_retirada_dias,
+    }
+    
+    # Buscar carrinho para mostrar na revisão
+    carrinho = obter_carrinho_ativo(request.user)
+    
+    # Buscar cartões do usuário
+    cartoes = CartaoCredito.objects.filter(usuario=request.user)
+    
+    # Criar objeto temporário para passar para o template
+    pedido_temp = PedidoTemporario(request.session['pedido_temp'], carrinho, loja)
+    return render(request, 'confirmacao_pedido.html', {
+        'pedido': pedido_temp, 
+        'loja': loja, 
+        'em_revisao': True,
+        'cartoes': cartoes
+    })
+
+
+@login_required
+def finalizar_pedido(request):
+    """Finaliza o pedido após revisão"""
+    if request.method != 'POST':
+        return redirect('checkout')
+    
+    pedido_dados = request.session.get('pedido_temp')
+    
+    if not pedido_dados:
+        messages.error(request, "Nenhum pedido para finalizar")
+        return redirect('checkout')
+    
+    # Validar cartão selecionado
+    cartao_id = request.POST.get('cartao_id')
+    
+    if not cartao_id:
+        messages.error(request, "Selecione um cartão de crédito para pagamento")
+        return redirect('checkout')
+    
+    try:
+        cartao = CartaoCredito.objects.get(id=cartao_id, usuario=request.user)
+    except CartaoCredito.DoesNotExist:
+        messages.error(request, "Cartão inválido ou não pertence a você")
+        return redirect('checkout')
+    
+    # Buscar carrinho ativo
+    carrinho = obter_carrinho_ativo(request.user)
+    
+    if not carrinho or not carrinho.itens.exists():
+        messages.error(request, "Seu carrinho está vazio")
+        return redirect('busca')
+    
+    from .models import ItemPedido
+    
+    # Criar o pedido real
+    if pedido_dados['tipo_entrega'] == 'DOMICILIO':
+        pedido = Pedido.objects.create(
+            usuario=request.user,
+            tipo_entrega='DOMICILIO',
+            cep=pedido_dados['cep'],
+            endereco=pedido_dados['endereco'],
+            numero=pedido_dados['numero'],
+            complemento=pedido_dados.get('complemento', ''),
+            bairro=pedido_dados['bairro'],
+            cidade=pedido_dados['cidade'],
+            estado=pedido_dados['estado'],
+            custo_entrega=Decimal(pedido_dados['custo_entrega']),
+            prazo_dias=pedido_dados['prazo_dias'],
+            cartao=cartao
+        )
+        loja = None
+    else:  
+        loja = Loja.objects.get(id=pedido_dados['loja_id'])
+        pedido = Pedido.objects.create(
+            usuario=request.user,
+            tipo_entrega='RETIRADA',
+            loja=loja,
+            custo_entrega=Decimal(pedido_dados['custo_entrega']),
+            prazo_dias=pedido_dados['prazo_dias'],
+            cartao=cartao
+        )
     
     # Copiar itens do carrinho para o pedido
-    carrinho = Carrinho.objects.filter(usuario=request.user, ativo=True).first()
-    if carrinho:
-        from .models import ItemPedido
-        for item_carrinho in carrinho.itens.all():
-            ItemPedido.objects.create(
-                pedido=pedido,
-                produto=item_carrinho.produto,
-                quantidade=item_carrinho.quantidade,
-                preco_unitario=item_carrinho.produto.preco
-            )
-        # Desativar o carrinho após criar o pedido
-        carrinho.ativo = False
-        carrinho.save()
+    for item_carrinho in carrinho.itens.all():
+        ItemPedido.objects.create(
+            pedido=pedido,
+            produto=item_carrinho.produto,
+            quantidade=item_carrinho.quantidade,
+            preco_unitario=item_carrinho.produto.preco
+        )
     
-    messages.success(request, f"Pedido #{pedido.id} criado! Retirada em: {loja.nome}. Prazo: {loja.prazo_retirada_dias} dias úteis.")
-    return render(request, 'confirmacao_pedido.html', {'pedido': pedido, 'loja': loja})
+    # Desativar o carrinho
+    carrinho.ativo = False
+    carrinho.save()
+    
+    # Limpar sessão
+    del request.session['pedido_temp']
+    
+    messages.success(request, f"Pedido #{pedido.id} confirmado com sucesso!")
+    
+    if loja:
+        return render(request, 'confirmacao_pedido.html', {'pedido': pedido, 'loja': loja})
+    else:
+        return render(request, 'confirmacao_pedido.html', {'pedido': pedido})
 
 
 @user_passes_test(lambda u: u.is_superuser)

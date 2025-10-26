@@ -1,17 +1,24 @@
 {% extends 'base.html' %}
 
-{% block title %}Pedido Confirmado{% endblock %}
+{% block title %}{% if em_revisao %}Revisar Pedido{% else %}Pedido Confirmado{% endif %}{% endblock %}
 
 {% block content %}
 <div class="container" style="max-width: 900px; margin: 40px auto; padding: 0 20px;">
+    {% if not em_revisao %}
     <div style="padding: 20px; margin-bottom: 30px; border-radius: 8px; background-color: #d4edda; border: 1px solid #c3e6cb;">
         <h3 style="color: #155724; margin: 0 0 10px 0;">Pedido Confirmado!</h3>
         <p style="margin: 0; color: #155724;">Seu pedido #{{ pedido.id }} foi criado com sucesso.</p>
     </div>
+    {% else %}
+    <div style="padding: 20px; margin-bottom: 30px; border-radius: 8px; background-color: #fff3cd; border: 1px solid #ffc107;">
+        <h3 style="color: #856404; margin: 0 0 10px 0;">Revise seu Pedido</h3>
+        <p style="margin: 0; color: #856404;">Confira os detalhes antes de finalizar sua compra.</p>
+    </div>
+    {% endif %}
     
     <div style="border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
         <div style="background-color: #007bff; color: white; padding: 20px;">
-            <h3 style="margin: 0;">Detalhes do Pedido #{{ pedido.id }}</h3>
+            <h3 style="margin: 0;">Detalhes do Pedido{% if not em_revisao %} #{{ pedido.id }}{% endif %}</h3>
         </div>
         
         <div style="padding: 30px;">
@@ -28,6 +35,15 @@
                     
                     <h4 style="color: #333;">Prazo</h4>
                     <p style="margin: 10px 0;"><strong>{{ pedido.prazo_dias }} dia{% if pedido.prazo_dias > 1 %}s{% endif %} úteis</strong></p>
+                    
+                    {% if not em_revisao and pedido.cartao %}
+                    <h4 style="color: #333; margin-top: 20px;">Pagamento</h4>
+                    <p style="margin: 10px 0;">
+                        <span style="padding: 5px 15px; background-color: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                            💳 {{ pedido.cartao.bandeira }} ****{{ pedido.cartao.ultimos_4_digitos }}
+                        </span>
+                    </p>
+                    {% endif %}
                 </div>
                 
                 <div>
@@ -67,19 +83,60 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for item in pedido.itens.all %}
-                        <tr style="border-bottom: 1px solid #dee2e6;">
-                            <td style="padding: 12px;">{{ item.produto.nome }}</td>
-                            <td style="padding: 12px; text-align: center;">{{ item.quantidade }}</td>
-                            <td style="padding: 12px; text-align: right;">R$ {{ item.preco_unitario|floatformat:2 }}</td>
-                            <td style="padding: 12px; text-align: right;">R$ {{ item.calcular_subtotal|floatformat:2 }}</td>
-                        </tr>
-                        {% endfor %}
+                        {% if em_revisao %}
+                            {% for item in pedido.itens.all %}
+                            <tr style="border-bottom: 1px solid #dee2e6;">
+                                <td style="padding: 12px;">{{ item.produto.nome }}</td>
+                                <td style="padding: 12px; text-align: center;">{{ item.quantidade }}</td>
+                                <td style="padding: 12px; text-align: right;">R$ {{ item.produto.preco|floatformat:2 }}</td>
+                                <td style="padding: 12px; text-align: right;">R$ {{ item.calcular_subtotal|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            {% for item in pedido.itens.all %}
+                            <tr style="border-bottom: 1px solid #dee2e6;">
+                                <td style="padding: 12px;">{{ item.produto.nome }}</td>
+                                <td style="padding: 12px; text-align: center;">{{ item.quantidade }}</td>
+                                <td style="padding: 12px; text-align: right;">R$ {{ item.preco_unitario|floatformat:2 }}</td>
+                                <td style="padding: 12px; text-align: right;">R$ {{ item.calcular_subtotal|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
                     </tbody>
                 </table>
             </div>
             
             <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+            
+            {% if em_revisao %}
+            <div style="margin-top: 30px;">
+                <h4 style="color: #333;">Método de Pagamento</h4>
+                <p style="color: #666; margin: 10px 0 20px 0;">Selecione o cartão de crédito para pagamento:</p>
+                
+                {% if cartoes %}
+                <div id="cartoes-container">
+                    {% for cartao in cartoes %}
+                    <label style="display: block; padding: 15px; margin-bottom: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+                        <input type="radio" name="cartao_selecionado" value="{{ cartao.id }}" required style="margin-right: 10px;">
+                        <span style="font-weight: bold; color: #333;">{{ cartao.bandeira }}</span>
+                        <span style="color: #666;">terminado em {{ cartao.ultimos_4_digitos }}</span>
+                        <span style="color: #999; font-size: 14px; margin-left: 10px;">Validade: {{ cartao.mes_validade|stringformat:"02d" }}/{{ cartao.ano_validade }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div style="padding: 20px; background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; margin-bottom: 20px;">
+                    <p style="margin: 0; color: #856404;">
+                        Você não possui cartões cadastrados. 
+                        <a href="{% url 'cadastrar_cartao' %}" style="color: #007bff; font-weight: bold;">Cadastre um cartão</a> 
+                        antes de finalizar a compra.
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+            {% endif %}
             
             <div style="margin-top: 30px;">
                 <h4 style="color: #333;">Resumo de Valores</h4>
@@ -107,6 +164,51 @@
         </div>
     </div>
     
+    {% if em_revisao %}
+    <div style="margin-top: 30px; display: flex; gap: 15px;">
+        <form method="post" action="{% url 'finalizar_pedido' %}" style="flex: 1;" id="form-finalizar">
+            {% csrf_token %}
+            <input type="hidden" name="cartao_id" id="cartao_id_input">
+            <button type="submit" style="width: 100%; padding: 15px 24px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 18px; font-weight: bold; cursor: pointer;">
+                ✓ Finalizar Pedido
+            </button>
+        </form>
+        <a href="{% url 'checkout' %}" style="padding: 15px 24px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; display: inline-block; text-align: center;">
+            Voltar ao Checkout
+        </a>
+    </div>
+    
+    <script>
+        // Adicionar estilo ao cartão selecionado
+        document.querySelectorAll('input[name="cartao_selecionado"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Remover seleção visual de todos
+                document.querySelectorAll('label').forEach(label => {
+                    if (label.querySelector('input[name="cartao_selecionado"]')) {
+                        label.style.borderColor = '#ddd';
+                        label.style.backgroundColor = 'white';
+                    }
+                });
+                
+                // Adicionar ao selecionado
+                this.parentElement.style.borderColor = '#28a745';
+                this.parentElement.style.backgroundColor = '#f0fff4';
+                
+                // Atualizar input hidden
+                document.getElementById('cartao_id_input').value = this.value;
+            });
+        });
+        
+        // Validar se cartão foi selecionado ao submeter
+        document.getElementById('form-finalizar').addEventListener('submit', function(e) {
+            const cartaoSelecionado = document.querySelector('input[name="cartao_selecionado"]:checked');
+            if (!cartaoSelecionado) {
+                e.preventDefault();
+                alert('Por favor, selecione um cartão de crédito para pagamento.');
+            }
+        });
+    </script>
+    {% else %}
     <div style="margin-top: 30px; display: flex; gap: 15px;">
         <a href="{% url 'busca' %}" style="padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
             Continuar Comprando
@@ -115,5 +217,6 @@
             Voltar para Home
         </a>
     </div>
+    {% endif %}
 </div>
 {% endblock %}

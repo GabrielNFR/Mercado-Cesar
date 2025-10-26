@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (pagina_inicial, register, estoque_baixo, buscar_itens, cadastrar_cartao, 
                     listar_cartoes, deletar_cartao, checkout, processar_entrega_domicilio, 
-                    processar_entrega_retirada, gerenciar_lojas, ativar_desativar_loja, 
+                    processar_entrega_retirada, finalizar_pedido, gerenciar_lojas, ativar_desativar_loja, 
                     visualizar_pedidos)
 
 urlpatterns = [
@@ -15,6 +15,7 @@ urlpatterns = [
     path('checkout/', checkout, name='checkout'),
     path('checkout/domicilio/', processar_entrega_domicilio, name='processar_entrega_domicilio'),
     path('checkout/retirada/', processar_entrega_retirada, name='processar_entrega_retirada'),
+    path('checkout/finalizar/', finalizar_pedido, name='finalizar_pedido'),
     path('gerenciar-lojas/', gerenciar_lojas, name='gerenciar_lojas'),
     path('lojas/ativar-desativar/<int:loja_id>/', ativar_desativar_loja, name='ativar_desativar_loja'),
     path('pedidos/', visualizar_pedidos, name='visualizar_pedidos'),

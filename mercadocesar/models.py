@@ -145,6 +145,9 @@ class Pedido(models.Model):
     # Campo para retirada na loja
     loja = models.ForeignKey(Loja, on_delete=models.SET_NULL, null=True, blank=True)
     
+    # Pagamento
+    cartao = models.ForeignKey(CartaoCredito, on_delete=models.SET_NULL, null=True, blank=True)
+    
     # Informações de entrega
     custo_entrega = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     prazo_dias = models.IntegerField()
