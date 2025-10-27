@@ -20,7 +20,7 @@ import requests
 def criar_driver():
     """Criar novo WebDriver"""
     options = Options()
-    options.add_argument('--headless')
+    options.add_argument('--headless')  
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--disable-blink-features=AutomationControlled')
