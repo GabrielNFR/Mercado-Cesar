@@ -135,7 +135,7 @@ def cenario_1_entrega_domicilio_com_sucesso(base_url):
         pagina_confirmacao = "revise" in page_text.lower() or "pedido" in page_text.lower()
         
         if custo_encontrado and prazo_encontrado and pagina_confirmacao:
-            print("[Cenário 1] U - Sistema exibiu custo de entrega (R$ 15,00) e prazo (2 dias úteis)")
+            print("[Cenário 1] PASSOU Sistema exibiu custo de entrega (R$ 15,00) e prazo (2 dias úteis)")
             return True
         else:
             print(f"[Cenário 1] FALHOU - Não exibiu custo e prazo corretamente")
@@ -186,10 +186,10 @@ def cenario_2_retirada_loja_com_prazo(base_url):
             frete_gratis = "grátis" in page_text.lower() or "gratuito" in page_text.lower()
             
             if prazo_encontrado and frete_gratis:
-                print("[Cenário 2] U - Sistema exibiu prazo de retirada e informou frete grátis")
+                print("[Cenário 2] PASSOU - Sistema exibiu prazo de retirada e informou frete grátis")
                 return True
             elif prazo_encontrado:
-                print("[Cenário 2] U PARCIAL - Sistema exibiu prazo de retirada (frete grátis implícito)")
+                print("[Cenário 2] PASSOU PARCIALMENTE - Sistema exibiu prazo de retirada (frete grátis implícito)")
                 return True
             else:
                 print(f"[Cenário 2] FALHOU - Não exibiu prazo de retirada corretamente")
@@ -255,10 +255,10 @@ def cenario_3_entrega_indisponivel(base_url):
         sugere_retirada = "retirada" in page_text and "loja" in page_text
         
         if mensagem_erro and sugere_retirada:
-            print("[Cenário 3] U - Sistema exibiu mensagem de entrega indisponível e sugeriu retirada na loja")
+            print("[Cenário 3] PASSOU - Sistema exibiu mensagem de entrega indisponível e sugeriu retirada na loja")
             return True
         elif mensagem_erro:
-            print("[Cenário 3] U PARCIAL - Sistema exibiu mensagem de entrega indisponível")
+            print("[Cenário 3] PASSOU PARCIALMENTE - Sistema exibiu mensagem de entrega indisponível")
             return True
         else:
             print(f"[Cenário 3] FALHOU - Não exibiu mensagem de erro adequada")
@@ -323,10 +323,10 @@ def cenario_4_cep_invalido(base_url):
         permaneceu_checkout = "checkout" in driver.current_url or "escolha" in page_text
         
         if mensagem_erro and permaneceu_checkout:
-            print("[Cenário 4] U - Sistema exibiu mensagem de CEP inválido e impediu continuação")
+            print("[Cenário 4] PASSOU - Sistema exibiu mensagem de CEP inválido e impediu continuação")
             return True
         elif mensagem_erro:
-            print("[Cenário 4] U PARCIAL - Sistema exibiu mensagem de CEP inválido")
+            print("[Cenário 4] PASSOU PARCIALMENTE - Sistema exibiu mensagem de CEP inválido")
             return True
         else:
             print(f"[Cenário 4] FALHOU - Não exibiu mensagem de erro adequada")
