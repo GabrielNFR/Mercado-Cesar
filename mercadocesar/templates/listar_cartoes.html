@@ -5,7 +5,7 @@
 <main class="cartao">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h2>Meus Cartões</h2>
-        <a href="{% url 'cadastrar_cartao' %}" class="btn">+ Adicionar Cartão</a>
+        <a href="{% url 'cadastrar_cartao' %}" class="btn-cartao">+ Adicionar Cartão</a>
     </div>
 
     {% if messages %}
@@ -42,7 +42,7 @@
         </div>
     {% else %}
         <p class="muted">Nenhum cartão cadastrado ainda.</p>
-        <a href="{% url 'cadastrar_cartao' %}" class="btn">Cadastrar Primeiro Cartão</a>
+        <a href="{% url 'cadastrar_cartao' %}" class="btn-cartao">Cadastrar Primeiro Cartão</a>
     {% endif %}
 
     <br>

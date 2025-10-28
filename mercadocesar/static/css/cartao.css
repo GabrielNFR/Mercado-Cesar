@@ -34,7 +34,7 @@
     gap: 15px;
 }
 
-.btn {
+.btn-cartao {
     display: inline-block;
     padding: 10px 20px;
     background-color: #28a745;
@@ -47,11 +47,11 @@
     margin-right: 10px;
 }
 
-.btn:hover {
+.btn-cartao:hover {
     background-color: #218838;
 }
 
-.btn-secondary {
+.btn-cartao-secondary {
     display: inline-block;
     padding: 10px 20px;
     background-color: #6c757d;
@@ -62,7 +62,7 @@
     font-size: 14px;
 }
 
-.btn-secondary:hover {
+.btn-cartao-secondary:hover {
     background-color: #5a6268;
 }
 
