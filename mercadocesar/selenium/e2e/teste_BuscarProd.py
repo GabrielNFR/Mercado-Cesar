@@ -149,51 +149,69 @@ def cenario_3_pesquisa_com_detalhes_preco_estoque():
         barra.send_keys("a")  
         time.sleep(2)
         
-        produtos_encontrados = driver.find_elements(By.CSS_SELECTOR, ".product-card")
+        # Buscar apenas produtos VISÍVEIS
+        produtos_encontrados = [card for card in driver.find_elements(By.CSS_SELECTOR, ".product-card") if card.is_displayed()]
         
         if len(produtos_encontrados) == 0:
-            print("[Cenário 3] FALHOU - Nenhum produto encontrado")
+            print("[Cenário 3] FALHOU - Nenhum produto visível encontrado")
             return False
         
         primeiro_produto = produtos_encontrados[0]
+        print(f"[Cenário 3] Testando produto: {primeiro_produto.find_element(By.CLASS_NAME, 'nomeProduto').text}")
         
         try:
+            # Buscar elemento de preço diretamente
             paragrafos = primeiro_produto.find_elements(By.TAG_NAME, "p")
             preco_texto = None
             for p in paragrafos:
-                texto = p.text.strip()
-                if "R$" in texto:
-                    preco_texto = texto
-                    break
+                if p.is_displayed():  # Verificar se está visível
+                    texto = p.text.strip()
+                    if "R$" in texto:
+                        preco_texto = texto
+                        break
             
             if preco_texto:
                 tem_preco = True
-                print(f"[Cenário 3] Preço encontrado: {preco_texto}")
+                print(f"[Cenário 3] ✓ Preço encontrado: {preco_texto}")
             else:
                 tem_preco = False
-                print("[Cenário 3] Preço não encontrado")
+                print("[Cenário 3] ✗ Preço não encontrado")
+                print(f"[Cenário 3] Debug - Total de <p>: {len(paragrafos)}")
         except Exception as e:
             tem_preco = False
-            print(f"[Cenário 3] Erro ao buscar preço: {e}")
+            print(f"[Cenário 3] ✗ Erro ao buscar preço: {e}")
         
         try:
-            paragrafos = primeiro_produto.find_elements(By.TAG_NAME, "p")
-            estoque_texto = None
-            for p in paragrafos:
-                texto = p.text.strip().lower()
-                if "unidade" in texto or "disponível" in texto or "estoque" in texto:
-                    estoque_texto = p.text.strip()
-                    break
-            
-            if estoque_texto:
-                tem_estoque = True
-                print(f"[Cenário 3] Estoque encontrado: {estoque_texto}")
-            else:
-                tem_estoque = False
-                print("[Cenário 3] Estoque não encontrado")
+            # Buscar elemento de estoque pela classe específica
+            try:
+                estoque_element = primeiro_produto.find_element(By.CLASS_NAME, "estoque")
+                if estoque_element.is_displayed():
+                    estoque_texto = estoque_element.text.strip()
+                    tem_estoque = True
+                    print(f"[Cenário 3] ✓ Estoque encontrado: {estoque_texto}")
+                else:
+                    tem_estoque = False
+                    print("[Cenário 3] ✗ Elemento de estoque existe mas não está visível")
+            except:
+                # Fallback: buscar em todos os parágrafos
+                paragrafos = primeiro_produto.find_elements(By.TAG_NAME, "p")
+                estoque_texto = None
+                for p in paragrafos:
+                    if p.is_displayed():
+                        texto = p.text.strip().lower()
+                        if "unidade" in texto or "disponível" in texto or "disponíve" in texto:
+                            estoque_texto = p.text.strip()
+                            break
+                
+                if estoque_texto:
+                    tem_estoque = True
+                    print(f"[Cenário 3] ✓ Estoque encontrado (fallback): {estoque_texto}")
+                else:
+                    tem_estoque = False
+                    print("[Cenário 3] ✗ Estoque não encontrado")
         except Exception as e:
             tem_estoque = False
-            print(f"[Cenário 3] Erro ao buscar estoque: {e}")
+            print(f"[Cenário 3] ✗ Erro ao buscar estoque: {e}")
         
         if tem_preco and tem_estoque:
             print("[Cenário 3] PASSOU - Produto exibe preço e estoque corretamente")

@@ -3,18 +3,26 @@
 
 {% block content %}
 <main class="regis">
-    <div class="caixa" style="max-width: 900px; margin: 20px auto;">
-        <h2 style="text-align: center; color: #e74c3c; margin-bottom: 20px;">
-            Produtos com Estoque Baixo
+    <div class="caixa" style="max-width: 1000px; margin: 40px auto; padding: 0 20px;">
+        <h2 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 10px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            Estoque Baixo
         </h2>
-        <p style="text-align: center; color: #7f8c8d; margin-bottom: 30px;">
-            Produtos com menos de 30 unidades em estoque
+        <p style="text-align: center; color: #6b7280; margin-bottom: 30px; font-size: 1rem;">
+            Produtos com menos de 30 unidades em estoque necessitam reposição
         </p>
         
         {% if estoques %}
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                    <thead style="background-color: #e8ae8a; color: white;">
+            <div style="background-color: #fff5f0; padding: 20px; border-radius: 8px; border-left: 4px solid #f4a361; border-right: 4px solid #f4a361; margin-bottom: 30px;">
+                <h3 style="color: #374151; margin-top: 0; margin-bottom: 20px; font-size: 1.125rem; font-weight: 600;">
+                    <span style="color: #ef4444; font-size: 1.25rem; margin-right: 8px;">⚠</span>
+                    Produtos Críticos
+                </h3>
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                <table style="width: 100%; min-width: 700px; border-collapse: collapse; margin-bottom: 20px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <thead style="background-color: #f4a361; color: white;">
                         <tr>
                             <th style="padding: 15px; text-align: left; font-weight: 600;">Código</th>
                             <th style="padding: 15px; text-align: left; font-weight: 600;">Descrição</th>
@@ -47,23 +55,25 @@
                 </table>
             </div>
             
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; margin-top: 20px; border-left: 4px solid #e74c3c;">
-                <p style="margin: 0; font-weight: 600; color: #2c3e50;">
-                    <strong>Total:</strong> {{ estoques|length }} produto(s) precisam de reposição urgente
+            <div style="background: #fef2f2; padding: 15px; border-radius: 8px; text-align: center; border: 2px solid #ef4444;">
+                <p style="margin: 0; font-weight: 600; color: #991b1b;">
+                    <strong>⚠ Total:</strong> {{ estoques|length }} produto(s) precisam de reposição urgente
                 </p>
             </div>
+            </div>
         {% else %}
-            <div style="text-align: center; padding: 40px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; color: #155724;">
-                <h3 style="margin: 0 0 10px 0; color: #155724;">Estoque Adequado!</h3>
-                <p style="margin: 0; font-size: 16px;">Todos os produtos estão com estoque adequado.</p>
+            <div style="background: #f0fdf4; border: 2px dashed #10b981; border-radius: 8px; padding: 40px; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 15px;">✅</div>
+                <p style="color: #065f46; font-size: 1.125rem; font-weight: 600; margin-bottom: 10px;">Estoque Saudável</p>
+                <p style="color: #047857; margin: 0;">Todos os produtos estão com estoque adequado no momento.</p>
             </div>
         {% endif %}
 
         <div style="text-align: center; margin-top: 30px;">
             <a href="{% url 'home' %}" 
-               style="display: inline-block; background: #e8ae8a; color: white; padding: 12px 25px; text-decoration: none; border-radius: 25px; font-weight: 600; transition: all 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"
-               onmouseover="this.style.backgroundColor='#d4956f'; this.style.transform='translateY(-2px)'"
-               onmouseout="this.style.backgroundColor='#e8ae8a'; this.style.transform='translateY(0)'">
+               style="display: inline-flex; align-items: center; gap: 8px; background: #6b7280; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 500; transition: background-color 0.2s;"
+               onmouseover="this.style.backgroundColor='#4b5563'"
+               onmouseout="this.style.backgroundColor='#6b7280'">
                 ← Voltar ao Início
             </a>
         </div>

@@ -4,11 +4,16 @@
 
 {% block content %}
 <div class="container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
-    <h2>Escolha o tipo de entrega</h2>
+    <h2 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        Finalizar Pedido
+    </h2>
     
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}" style="padding: 15px; margin: 20px 0; border-radius: 4px; background-color: {% if message.tags == 'error' %}#f8d7da{% elif message.tags == 'success' %}#d4edda{% else %}#fff3cd{% endif %}; border: 1px solid {% if message.tags == 'error' %}#f5c6cb{% elif message.tags == 'success' %}#c3e6cb{% else %}#ffeaa7{% endif %};">
+            <div style="padding: 15px 20px; margin-bottom: 20px; border-radius: 8px; background-color: {% if message.tags == 'error' %}#fee2e2{% elif message.tags == 'success' %}#d1fae5{% else %}#fef3c7{% endif %}; border-left: 4px solid {% if message.tags == 'error' %}#ef4444{% elif message.tags == 'success' %}#10b981{% else %}#f59e0b{% endif %}; color: #1f2937; font-weight: 500;">
                 {{ message }}
             </div>
         {% endfor %}
@@ -16,142 +21,184 @@
 
     <!-- Resumo do Carrinho -->
     {% if carrinho %}
-    <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-        <h3 style="margin-top: 0;">Itens no Carrinho</h3>
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr style="border-bottom: 2px solid #ddd;">
-                    <th style="text-align: left; padding: 10px;">Produto</th>
-                    <th style="text-align: center; padding: 10px;">Quantidade</th>
-                    <th style="text-align: right; padding: 10px;">Preço Unit.</th>
-                    <th style="text-align: right; padding: 10px;">Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in carrinho.itens.all %}
-                <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 10px;">{{ item.produto.nome }}</td>
-                    <td style="text-align: center; padding: 10px;">{{ item.quantidade }}</td>
-                    <td style="text-align: right; padding: 10px;">R$ {{ item.produto.preco }}</td>
-                    <td style="text-align: right; padding: 10px;">R$ {{ item.calcular_subtotal }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr style="border-top: 2px solid #ddd; font-weight: bold;">
-                    <td colspan="3" style="text-align: right; padding: 10px;">Total dos Produtos:</td>
-                    <td style="text-align: right; padding: 10px;">R$ {{ carrinho.calcular_total }}</td>
-                </tr>
-            </tfoot>
-        </table>
+    <div style="background-color: #fff5f0; padding: 25px; border-radius: 12px; margin-bottom: 40px; border-left: 4px solid #f4a361; border-right: 4px solid #f4a361;">
+        <h3 style="color: #374151; font-size: 1.25rem; font-weight: 600; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+            <span style="color: #f4a361; font-size: 1.5rem;">🛒</span>
+            Itens no Carrinho
+        </h3>
+        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table style="width: 100%; min-width: 500px; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden;">
+                <thead>
+                    <tr style="background-color: #f4a361; color: white;">
+                        <th style="text-align: left; padding: 12px 15px; font-weight: 600;">Produto</th>
+                        <th style="text-align: center; padding: 12px 15px; font-weight: 600;">Quantidade</th>
+                        <th style="text-align: right; padding: 12px 15px; font-weight: 600;">Preço Unit.</th>
+                        <th style="text-align: right; padding: 12px 15px; font-weight: 600;">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in carrinho.itens.all %}
+                    <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <td style="padding: 12px 15px; font-weight: 500; color: #1f2937;">{{ item.produto.nome }}</td>
+                        <td style="text-align: center; padding: 12px 15px; color: #6b7280;">{{ item.quantidade }}</td>
+                        <td style="text-align: right; padding: 12px 15px; color: #6b7280;">R$ {{ item.produto.preco }}</td>
+                        <td style="text-align: right; padding: 12px 15px; font-weight: 600; color: #f4a361;">R$ {{ item.calcular_subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr style="background-color: #f9fafb; border-top: 2px solid #f4a361;">
+                        <td colspan="3" style="text-align: right; padding: 15px; font-weight: 600; color: #1f2937; font-size: 1.125rem;">Total dos Produtos:</td>
+                        <td style="text-align: right; padding: 15px; font-weight: 700; color: #f4a361; font-size: 1.25rem;">R$ {{ carrinho.calcular_total }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
     {% endif %}
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
+    <h3 style="color: #374151; font-size: 1rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+        <div style="width: 4px; height: 20px; background-color: #f4a361; border-radius: 2px;"></div>
+        Escolha o Tipo de Entrega
+    </h3>
+    
+    <div class="checkout-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 40px;">
         <!-- Entrega em Domicílio -->
-        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
-            <h3 style="color: #007bff; margin-bottom: 20px;">Entrega em Domicílio</h3>
-            <p>Receba suas compras no conforto da sua casa.</p>
+        <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 25px; transition: all 0.3s;"
+             onmouseover="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.15)'"
+             onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+            <h3 style="color: #3b82f6; margin-bottom: 15px; font-size: 1.25rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Entrega em Domicílio
+            </h3>
+            <p style="color: #6b7280; margin-bottom: 25px; font-size: 0.9rem;">Receba suas compras no conforto da sua casa.</p>
             
             <form method="post" action="{% url 'processar_entrega_domicilio' %}">
                 {% csrf_token %}
                 
                 <div style="margin-bottom: 15px;">
-                    <label for="cep" style="display: block; margin-bottom: 5px; font-weight: 500;">CEP *</label>
+                    <label for="cep" style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151;">CEP *</label>
                     <input type="text" id="cep" name="cep" placeholder="12345-678" maxlength="9" required
-                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                           style="width: 100%; padding: 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 0.95rem;"
                            value="{{ cep }}">
-                    <small style="color: #666;">Formato: 12345-678</small>
+                    <small style="color: #9ca3af; font-size: 0.8rem;">Formato: 12345-678</small>
                 </div>
                 
                 <div style="margin-bottom: 15px;">
-                    <label for="endereco" style="display: block; margin-bottom: 5px; font-weight: 500;">Endereço *</label>
+                    <label for="endereco" style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151;">Endereço *</label>
                     <input type="text" id="endereco" name="endereco" placeholder="Rua, Avenida..." required
-                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                           style="width: 100%; padding: 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 0.95rem;"
                            value="{{ endereco }}">
                 </div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 10px; margin-bottom: 15px;">
                     <div>
-                        <label for="numero" style="display: block; margin-bottom: 5px; font-weight: 500;">Número *</label>
+                        <label for="numero" style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151;">Número *</label>
                         <input type="text" id="numero" name="numero" placeholder="123" required
-                               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                               style="width: 100%; padding: 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 0.95rem;"
                                value="{{ numero }}">
                     </div>
                     <div>
-                        <label for="complemento" style="display: block; margin-bottom: 5px; font-weight: 500;">Complemento</label>
+                        <label for="complemento" style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151;">Complemento</label>
                         <input type="text" id="complemento" name="complemento" placeholder="Apt 45, Bloco B..."
-                               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                               style="width: 100%; padding: 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 0.95rem;"
                                value="{{ complemento }}">
                     </div>
                 </div>
                 
                 <div style="margin-bottom: 15px;">
-                    <label for="bairro" style="display: block; margin-bottom: 5px; font-weight: 500;">Bairro *</label>
+                    <label for="bairro" style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151;">Bairro *</label>
                     <input type="text" id="bairro" name="bairro" placeholder="Boa Viagem" required
-                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                           style="width: 100%; padding: 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 0.95rem;"
                            value="{{ bairro }}">
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 15px;">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 20px;">
                     <div>
-                        <label for="cidade" style="display: block; margin-bottom: 5px; font-weight: 500;">Cidade *</label>
+                        <label for="cidade" style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151;">Cidade *</label>
                         <input type="text" id="cidade" name="cidade" placeholder="Recife" required
-                               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                               style="width: 100%; padding: 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 0.95rem;"
                                value="{{ cidade }}">
                     </div>
                     <div>
-                        <label for="estado" style="display: block; margin-bottom: 5px; font-weight: 500;">Estado *</label>
+                        <label for="estado" style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151;">Estado *</label>
                         <input type="text" id="estado" name="estado" placeholder="PE" maxlength="2" required
-                               style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px;"
+                               style="width: 100%; padding: 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; text-transform: uppercase;"
                                value="{{ estado }}">
                     </div>
                 </div>
                 
-                <button type="submit" style="width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer;">
-                    Calcular Frete e Continuar
+                <button type="submit" style="width: 100%; padding: 14px; background-color: #3b82f6; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s;"
+                        onmouseover="this.style.backgroundColor='#2563eb'"
+                        onmouseout="this.style.backgroundColor='#3b82f6'">
+                    📦 Calcular Frete e Continuar
                 </button>
             </form>
         </div>
         
         <!-- Retirada na Loja -->
-        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
-            <h3 style="color: #28a745; margin-bottom: 20px;">Retirar na Loja</h3>
-            <p>Retire suas compras em uma de nossas lojas. <strong>Frete grátis!</strong></p>
+        <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 25px; transition: all 0.3s;"
+             onmouseover="this.style.borderColor='#10b981'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.15)'"
+             onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'">
+            <h3 style="color: #10b981; margin-bottom: 15px; font-size: 1.25rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                Retirar na Loja
+            </h3>
+            <p style="color: #6b7280; margin-bottom: 25px; font-size: 0.9rem;">
+                Retire suas compras em uma de nossas lojas. 
+                <strong style="color: #10b981; font-weight: 700;">Frete grátis! ✓</strong>
+            </p>
             
             {% if lojas %}
                 <form method="post" action="{% url 'processar_entrega_retirada' %}">
                     {% csrf_token %}
                     
                     {% for loja in lojas %}
-                        <div style="margin-bottom: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 4px;">
+                        <div style="margin-bottom: 12px; padding: 18px; border: 2px solid #e5e7eb; border-radius: 8px; transition: all 0.2s; background: #fafafa;"
+                             onmouseover="this.style.borderColor='#10b981'; this.style.backgroundColor='#f0fdf4'"
+                             onmouseout="this.style.borderColor='#e5e7eb'; this.style.backgroundColor='#fafafa'">
                             <label style="display: flex; align-items: start; cursor: pointer;">
                                 <input type="radio" name="loja_id" value="{{ loja.id }}" required
-                                       style="margin-right: 10px; margin-top: 3px;">
-                                <div>
-                                    <strong>{{ loja.nome }}</strong><br>
-                                    {{ loja.endereco }}, {{ loja.numero }}<br>
-                                    {{ loja.bairro }} - {{ loja.cidade }}/{{ loja.estado }}<br>
-                                    CEP: {{ loja.cep }}<br>
-                                    <span style="color: #28a745;">Prazo: {{ loja.prazo_retirada_dias }} dia{% if loja.prazo_retirada_dias > 1 %}s{% endif %} úteis</span>
+                                       style="margin-right: 12px; margin-top: 4px; width: 18px; height: 18px; cursor: pointer;">
+                                <div style="flex: 1;">
+                                    <strong style="color: #1f2937; font-size: 1.05rem;">{{ loja.nome }}</strong><br>
+                                    <span style="color: #6b7280; font-size: 0.9rem;">
+                                        {{ loja.endereco }}, {{ loja.numero }}<br>
+                                        {{ loja.bairro }} - {{ loja.cidade }}/{{ loja.estado }}<br>
+                                        CEP: {{ loja.cep }}
+                                    </span><br>
+                                    <span style="display: inline-block; margin-top: 8px; padding: 4px 10px; background-color: #d1fae5; color: #065f46; border-radius: 6px; font-size: 0.85rem; font-weight: 600;">
+                                        ⏱ Prazo: {{ loja.prazo_retirada_dias }} dia{% if loja.prazo_retirada_dias > 1 %}s{% endif %} úteis
+                                    </span>
                                 </div>
                             </label>
                         </div>
                     {% endfor %}
                     
-                    <button type="submit" style="width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer;">
-                        Retirar na Loja Selecionada
+                    <button type="submit" style="width: 100%; padding: 14px; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; margin-top: 10px;"
+                            onmouseover="this.style.backgroundColor='#059669'"
+                            onmouseout="this.style.backgroundColor='#10b981'">
+                        🏪 Retirar na Loja Selecionada
                     </button>
                 </form>
             {% else %}
-                <p style="color: #666;">Nenhuma loja disponível no momento.</p>
+                <div style="background: #f3f4f6; border: 2px dashed #9ca3af; border-radius: 8px; padding: 30px; text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 10px;">🏪</div>
+                    <p style="color: #6b7280; font-weight: 500; margin: 0;">Nenhuma loja disponível no momento.</p>
+                </div>
             {% endif %}
         </div>
     </div>
     
-    <div style="margin-top: 30px;">
-        <a href="{% url 'busca' %}" style="padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
-            Voltar
+    <div style="margin-top: 40px; text-align: center;">
+        <a href="{% url 'busca' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background-color: #6b7280; color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: background-color 0.2s;"
+           onmouseover="this.style.backgroundColor='#4b5563'"
+           onmouseout="this.style.backgroundColor='#6b7280'">
+            ← Voltar às Compras
         </a>
     </div>
 </div>

@@ -363,7 +363,7 @@ def main():
     print("\n" + "=" * 70)
     print("RESUMO DOS TESTES")
     print("=" * 70)
-    print(f"Total: {total} | u: {u} | Falhou: {total - u}")
+    print(f"Total: {total} | Passou: {u} | Falhou: {total - u}")
     print("=" * 70)
     
     return 0 if u == total else 1

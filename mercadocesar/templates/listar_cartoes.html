@@ -3,9 +3,20 @@
 
 {% block content %}
 <main class="cartao">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2>Meus Cartões</h2>
-        <a href="{% url 'cadastrar_cartao' %}" class="btn-cartao">+ Adicionar Cartão</a>
+    <h2 style="display: flex; align-items: center; gap: 10px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+        </svg>
+        Meus Cartões
+    </h2>
+
+    <div style="text-align: center; margin-bottom: 30px;">
+        <a href="{% url 'cadastrar_cartao' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background-color: #f4a361; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: background-color 0.3s ease;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Adicionar Novo Cartão
+        </a>
     </div>
 
     {% if messages %}
@@ -17,6 +28,10 @@
     {% endif %}
 
     {% if cartoes %}
+        <h3 style="color: #374151; margin-bottom: 20px; font-size: 1.125rem; font-weight: 600; display: flex; align-items: center; gap: 10px;">
+            <span style="width: 4px; height: 20px; background-color: #f4a361; display: inline-block;"></span>
+            Cartões Salvos
+        </h3>
         <div class="cartoes-lista">
             {% for cartao in cartoes %}
                 <div class="cartao-item">
@@ -41,11 +56,22 @@
             {% endfor %}
         </div>
     {% else %}
-        <p class="muted">Nenhum cartão cadastrado ainda.</p>
-        <a href="{% url 'cadastrar_cartao' %}" class="btn-cartao">Cadastrar Primeiro Cartão</a>
+        <div style="text-align: center; padding: 60px 20px; background-color: #f9fafb; border-radius: 8px; border: 2px dashed #d1d5db;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="width: 64px; height: 64px; color: #9ca3af; margin: 0 auto 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+            <p style="color: #6b7280; font-size: 1.125rem; margin-bottom: 20px;">Nenhum cartão cadastrado ainda</p>
+            <a href="{% url 'cadastrar_cartao' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background-color: #f4a361; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Cadastrar Primeiro Cartão
+            </a>
+        </div>
     {% endif %}
 
-    <br>
-    <a href="{% url 'home' %}">← Voltar</a>
+    <div style="margin-top: 30px;">
+        <a href="{% url 'home' %}" style="color: #6b7280; text-decoration: none; font-weight: 500;">← Voltar ao Início</a>
+    </div>
 </main>
 {% endblock %}

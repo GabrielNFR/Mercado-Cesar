@@ -4,77 +4,101 @@
 {% block title %}Pesquisa de Produtos | Mercado Cesar{% endblock %}
 
 {% block content %}
+    <style>
+        .category-button.active {
+            background-color: #f4a361 !important;
+            color: white !important;
+            border-color: #f4a361 !important;
+        }
+        
+        .category-button:hover {
+            background-color: #f4a361 !important;
+            color: white !important;
+            border-color: #f4a361 !important;
+        }
+    </style>
     {% csrf_token %}
     
-    {% if messages %}
-        <div style="max-width: 1200px; margin: 20px auto; padding: 0 20px;">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}" style="padding: 15px; margin: 10px 0; border-radius: 4px; background-color: {% if message.tags == 'error' %}#f8d7da{% elif message.tags == 'success' %}#d4edda{% else %}#fff3cd{% endif %}; border: 1px solid {% if message.tags == 'error' %}#f5c6cb{% elif message.tags == 'success' %}#c3e6cb{% else %}#ffeaa7{% endif %}; color: #333;">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-    
-    <div class="search-bar">
-        <input type="text" id="barraPesquisa" placeholder="Pesquisar por produtos">
-        <button>Buscar</button> 
-    </div>
-
-    <div style="text-align: center; margin: 20px 0;">
-        <a href="{% url 'checkout' %}" style="padding: 12px 30px; background-color: #28a745; color: white; text-decoration: none; border-radius: 4px; font-size: 16px; display: inline-block; font-weight: bold;">
-            Finalizar Compra {% if total_itens > 0 %}({{ total_itens }} {% if total_itens == 1 %}item{% else %}itens{% endif %}){% endif %}
-        </a>
-    </div>
-
-    <div class="categories">
-        <button class="category-button active" data-filter="all">Todos os corredores</button>
-        <button class="category-button" data-filter="Alimentos">Alimentos</button>
-        <button class="category-button" data-filter="bebidas">bebidas</button>
-        <button class="category-button" data-filter="Limpeza">Limpeza</button>
-        <button class="category-button" data-filter="Comida">Comida</button>
-    </div>
-
-    <h2 style="margin-top: 30px; text-align: center;">Destaques por Categoria</h2>
-    <div id="destaqueGrid" class="highlight-grid product-grid">
-        {% for produto in produtos_destaque %}
-            <div class="product-card highlight" data-categoria="{{ produto.categoria }}"> 
-                <h3 class="nomeProduto">{{ produto.nome|default:'Nome Ausente' }}</h3> 
-                <p>Descrição: {{ produto.descricao }}</p>
-                <p>R$ {{ produto.preco|default:'???' }}</p>
-                <p class="estoque">{{ produto.estoque_total }} unidades disponíveis</p>
-                <form method="post" action="{% url 'busca' %}" style="display: inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="produto_id" value="{{ produto.id }}">
-                    <button type="submit">Adicionar</button>
-                </form>
+    <div style="max-width: 1200px; margin: 0 auto; padding: 30px 20px;">
+        {% if messages %}
+            <div style="margin-bottom: 20px;">
+                {% for message in messages %}
+                    <div style="padding: 15px 20px; margin: 10px 0; border-radius: 8px; background-color: {% if message.tags == 'error' %}#fee2e2{% elif message.tags == 'success' %}#d1fae5{% else %}#fef3c7{% endif %}; border-left: 4px solid {% if message.tags == 'error' %}#ef4444{% elif message.tags == 'success' %}#10b981{% else %}#f59e0b{% endif %}; color: #1f2937; font-weight: 500;">
+                        {{ message }}
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
+        {% endif %}
+        
+        <h2 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            Buscar Produtos
+        </h2>
+        
+        <div style="display: flex; gap: 15px; margin-bottom: 30px; align-items: stretch; flex-wrap: wrap;">
+            <div class="search-bar" style="flex: 1; min-width: 300px; display: flex;">
+                <input type="text" id="barraPesquisa" placeholder="Pesquisar por produtos" style="width: 100%; padding: 14px 20px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; box-sizing: border-box;">
+                <button style="display: none;">Buscar</button> 
+            </div>
+            
+            <a href="{% url 'checkout' %}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; background-color: #10b981; color: white; text-decoration: none; border-radius: 8px; font-size: 1rem; font-weight: 600; transition: background-color 0.2s; white-space: nowrap; box-sizing: border-box;"
+               onmouseover="this.style.backgroundColor='#059669'"
+               onmouseout="this.style.backgroundColor='#10b981'">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                Finalizar Compra {% if total_itens > 0 %}({{ total_itens }}){% endif %}
+            </a>
+        </div>
 
-    <hr style="margin: 40px 0;">
+        <div style="margin-bottom: 40px;">
+            <h3 style="color: #374151; font-size: 1rem; font-weight: 600; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                <div style="width: 4px; height: 20px; background-color: #f4a361; border-radius: 2px;"></div>
+                Filtrar por Categoria
+            </h3>
+            <div class="categories" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="category-button active" data-filter="all" style="padding: 10px 20px; border: 2px solid #f4a361; background-color: #f4a361; color: white; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">Todos</button>
+                <button class="category-button" data-filter="Alimentos" style="padding: 10px 20px; border: 2px solid #d1d5db; background-color: white; color: #374151; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s;">Alimentos</button>
+                <button class="category-button" data-filter="bebidas" style="padding: 10px 20px; border: 2px solid #d1d5db; background-color: white; color: #374151; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s;">Bebidas</button>
+                <button class="category-button" data-filter="Limpeza" style="padding: 10px 20px; border: 2px solid #d1d5db; background-color: white; color: #374151; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s;">Limpeza</button>
+                <button class="category-button" data-filter="Comida" style="padding: 10px 20px; border: 2px solid #d1d5db; background-color: white; color: #374151; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s;">Comida</button>
+            </div>
+        </div>
 
-    <h2 id="todosProdutosTitulo" style="text-align: center; display: none;">Todos os Produtos Da Categoria</h2>
-    <div id="allProductsGridContainer" style="display: none;">
-        <div class="all-products-grid product-grid"> 
-            {% for produto in todos_produtos %}
-                <div class="product-card" data-categoria="{{ produto.categoria }}">
-                    <h3 class="nomeProduto">{{ produto.nome|default:'Nome Ausente' }}</h3> 
-                    <p>Descrição: {{ produto.descricao }}</p>
-                    <p>R$ {{ produto.preco|default:'???' }}</p>
-                    <p class="estoque">{{ produto.estoque_total }} unidades disponíveis</p>
-                    <form method="post" action="{% url 'busca' %}" style="display: inline;">
-                        {% csrf_token %}
-                        <input type="hidden" name="produto_id" value="{{ produto.id }}">
-                        <button type="submit">Adicionar</button>
-                    </form>
-                </div>
-            {% endfor %}
+        <h3 id="todosProdutosTitulo" style="color: #374151; font-size: 1.25rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+            <span style="color: #6b7280;">📦</span>
+            Produtos
+        </h3>
+        <div id="allProductsGridContainer" style="display: block;">
+            <div class="all-products-grid product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;"> 
+                {% for produto in todos_produtos %}
+                    <div class="product-card" data-categoria="{{ produto.categoria }}" style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);"
+                         onmouseover="this.style.borderColor='#f4a361'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.2)'"
+                         onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)'">
+                        <h3 class="nomeProduto" style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px;">{{ produto.nome|default:'Nome Ausente' }}</h3> 
+                        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 10px; line-height: 1.4;">{{ produto.descricao }}</p>
+                        <p style="color: #f4a361; font-size: 1.5rem; font-weight: 700; margin: 15px 0;">R$ {{ produto.preco|default:'???' }}</p>
+                        <p class="estoque" style="color: #059669; font-size: 0.875rem; font-weight: 500; margin-bottom: 15px;">✓ {{ produto.estoque_total }} unidades disponíveis</p>
+                        <form method="post" action="{% url 'busca' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="produto_id" value="{{ produto.id }}">
+                            <button type="submit" style="width: 100%; padding: 12px; background-color: #f4a361; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background-color 0.2s;"
+                                    onmouseover="this.style.backgroundColor='#e28e46'"
+                                    onmouseout="this.style.backgroundColor='#f4a361'">+ Adicionar ao Carrinho</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div id="semResultados" style="display: none; background: #f3f4f6; border: 2px dashed #9ca3af; border-radius: 12px; padding: 50px; text-align: center; margin-top: 30px;">
+            <div style="font-size: 3rem; margin-bottom: 15px;">🔍</div>
+            <p style="color: #374151; font-size: 1.25rem; font-weight: 600; margin-bottom: 10px;">Nenhum produto encontrado</p>
+            <p style="color: #6b7280; margin: 0;">Tente buscar com outros termos ou categoria.</p>
         </div>
     </div>
     
-    <p id="semResultados" style="display: none; text-align: center; font-size: 1.2rem; margin-top: 20px;">
-        Nenhum produto encontrado.
-    </p>
-    
+    <script src="{% static 'js/buscar_itens.js' %}"></script>
 {% endblock content %}

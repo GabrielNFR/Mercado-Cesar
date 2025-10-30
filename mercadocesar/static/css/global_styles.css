@@ -1,0 +1,288 @@
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="date"],
+input[type="search"],
+textarea,
+select {
+    background-color: white !important;
+    color: #1f2937 !important; 
+    border: 1px solid #d1d5db !important; 
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #9ca3af !important; 
+    opacity: 1 !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none !important;
+    border-color: #f4a361 !important;
+    box-shadow: 0 0 0 3px rgba(244, 163, 97, 0.1) !important;
+}
+
+label {
+    color: #374151 !important; 
+    font-weight: 500 !important;
+}
+
+.form-control {
+    background-color: white !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db !important;
+}
+
+.form-control:focus {
+    border-color: #f4a361 !important;
+    box-shadow: 0 0 0 0.2rem rgba(244, 163, 97, 0.25) !important;
+}
+
+h1, h2 {
+    color: #f4a361 !important;
+    font-weight: 600 !important;
+}
+
+main h2 {
+    font-size: 1.75rem !important;
+    padding-bottom: 15px !important;
+    border-bottom: 2px solid #f4a361 !important;
+    margin-bottom: 30px !important;
+}
+
+/* ============================================
+   RESPONSIVIDADE MOBILE [ Continua Ruim :( ]
+   ============================================ */
+
+@media (max-width: 768px) {
+    body, html {
+        overflow-x: hidden !important;
+        width: 100% !important;
+    }
+    
+    main, .container {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    div[style*="overflow-x: auto"]::after {
+        content: "← Arraste para ver mais →";
+        display: block;
+        text-align: center;
+        padding: 8px;
+        background: #fff5f0;
+        color: #f4a361;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 0 0 8px 8px;
+        margin-top: -20px;
+    }
+    
+    div[style*="overflow-x: auto"] {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    main h2 {
+        font-size: 1.5rem !important;
+        padding-bottom: 10px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .container,
+    main > div[style*="max-width"] {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    div[style*="background-color: white"][style*="border: 2px"] {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    div[style*="grid-template-columns: 1fr 1fr"],
+    div[style*="grid-template-columns: 2fr 1fr"],
+    div[style*="display: grid; grid-template-columns: 1fr 1fr"] {
+        display: block !important;
+    }
+    
+    div[style*="grid-template-columns: 1fr 1fr"] > div,
+    div[style*="grid-template-columns: 2fr 1fr"] > div {
+        margin-bottom: 15px !important;
+    }
+    
+    table {
+        display: block !important;
+        overflow-x: auto !important;
+        white-space: nowrap !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    table th,
+    table td {
+        padding: 6px 8px !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .pedido-detalhes-grid table {
+        min-width: 350px !important;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="search"],
+    textarea,
+    select,
+    button,
+    .btn,
+    a[style*="padding"] {
+        font-size: 0.95rem !important;
+    }
+    
+    div[style*="display: flex"][style*="gap"] {
+        flex-wrap: wrap !important;
+    }
+    
+    .checkout-grid,
+    .pedido-detalhes-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .pedido-detalhes-grid {
+        gap: 20px !important;
+    }
+    
+    .pedido-detalhes-grid > div {
+        min-width: 0 !important;
+        overflow: hidden !important;
+    }
+    
+    div[style*="padding: 25px"],
+    div[style*="padding: 30px"],
+    div[style*="padding: 35px"] {
+        padding: 20px !important;
+    }
+    
+    svg[style*="width: 32px"] {
+        width: 24px !important;
+        height: 24px !important;
+    }
+    
+    form[style*="grid-template-columns"] {
+        display: block !important;
+    }
+    
+    form[style*="grid-template-columns"] > div {
+        margin-bottom: 15px !important;
+    }
+    
+    div[style*="display: flex"][style*="gap"] button,
+    div[style*="display: flex"][style*="gap"] a[style*="padding"] {
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+    
+    div[style*="font-size: 1.25rem"] {
+        font-size: 1.1rem !important;
+    }
+    
+    div[style*="font-size: 1.35rem"] {
+        font-size: 1.15rem !important;
+    }
+    
+    div[style*="linear-gradient"][style*="border-radius: 16px"] {
+        padding: 20px !important;
+        min-height: 150px !important;
+    }
+    
+    div[style*="linear-gradient"] div[style*="font-size: 1.35rem"] {
+        font-size: 1.1rem !important;
+        letter-spacing: 2px !important;
+    }
+    
+    .product-grid[style*="minmax(280px"] {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+        gap: 15px !important;
+    }
+    
+    .pedido-header-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+        gap: 15px !important;
+    }
+    
+    .navbar-start span.hidden {
+        display: none !important;
+    }
+    
+    .navbar-start .max-w-\[120px\] {
+        display: none !important;
+    }
+    
+    .dropdown-content {
+        width: 200px !important;
+    }
+    
+    div[style*="padding: 15px 20px"][style*="border-left: 4px"] {
+        padding: 12px 15px !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.25rem !important;
+    }
+    
+    main h2 {
+        font-size: 1.25rem !important;
+    }
+    
+    div[style*="padding: 20px"] {
+        padding: 15px !important;
+    }
+    
+    table th,
+    table td {
+        padding: 6px 8px !important;
+        font-size: 0.75rem !important;
+    }
+    
+    input,
+    textarea,
+    select,
+    button {
+        padding: 10px 12px !important;
+    }
+    
+    span[style*="padding:"][style*="border-radius"] {
+        padding: 4px 8px !important;
+        font-size: 0.7rem !important;
+    }
+    
+    .product-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    svg[style*="width: 24px"] {
+        width: 20px !important;
+        height: 20px !important;
+    }
+}

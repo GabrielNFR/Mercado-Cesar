@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const barraPesquisa = document.getElementById('barraPesquisa');
     
     
-    if (!barraPesquisa) return; 
+    if (!barraPesquisa) return;
 
     
     const allProductsGridContainer = document.getElementById('allProductsGridContainer');
@@ -15,9 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     
     const showAllProductsGrid = () => {
-        
-        allProductsGridContainer.style.display = 'flex'; 
-        todosProdutosTitulo.style.display = 'block'; 
+        // Mostrar o container principal como block para que o grid interno funcione
+        allProductsGridContainer.style.display = 'block'; 
+        todosProdutosTitulo.style.display = 'flex'; 
     };
 
     const applyFilter = () => {
@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
            
             if (matchesCategory && matchesSearch) {
-                card.style.display = 'block';
+                // Não sobrescrever o display - deixar o grid funcionar
+                card.style.display = '';
                 foundCount++;
             } else {
                 card.style.display = 'none';
@@ -66,11 +67,21 @@ document.addEventListener('DOMContentLoaded', () => {
    
     categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
+            // Remover active de todos os botões
+            categoryButtons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.backgroundColor = 'white';
+                btn.style.color = '#374151';
+                btn.style.borderColor = '#d1d5db';
+            });
             
-            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            // Adicionar active ao botão clicado
             button.classList.add('active');
+            button.style.backgroundColor = '#f4a361';
+            button.style.color = 'white';
+            button.style.borderColor = '#f4a361';
 
-            
+            // Aplicar filtro
             applyFilter();
         });
     });

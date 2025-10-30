@@ -96,12 +96,11 @@ def cenario_1_cadastro_com_sucesso(base_url):
             except:
                 pass
         
-        # PASSO 2: Acessar cadastro
-        wait = WebDriverWait(driver, 10)
-        link_cadastrar = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Cadastrar Cartão")))
-        link_cadastrar.click()
+        # PASSO 2: Acessar cadastro diretamente pela URL
+        driver.get(f"{base_url}/cadastrar/")
         time.sleep(2)
         
+        wait = WebDriverWait(driver, 10)
         wait.until(EC.presence_of_element_located((By.NAME, "numero_cartao")))
         
         # Restaurar cookies de sessão antes de preencher o formulário
@@ -198,12 +197,11 @@ def cenario_2_dados_invalidos(base_url):
     try:
         session_cookies = fazer_login(driver, base_url)
         
-        # Acessar cadastro clicando no link de navegação
-        wait = WebDriverWait(driver, 10)
-        link_cadastrar = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Cadastrar Cartão")))
-        link_cadastrar.click()
+        # Acessar cadastro diretamente pela URL
+        driver.get(f"{base_url}/cadastrar/")
         time.sleep(2)
         
+        wait = WebDriverWait(driver, 10)
         wait.until(EC.presence_of_element_located((By.NAME, "numero_cartao")))
         
         # Preencher com número de cartão inválido (não passa no algoritmo de Luhn)
@@ -290,11 +288,10 @@ def cenario_3_cartao_duplicado(base_url):
                 pass
         
         # PASSO 2: Primeiro cadastro - cadastrar um cartão
-        wait = WebDriverWait(driver, 10)
-        link_cadastrar = wait.until(EC.element_to_be_clickable((By.LINK_TEXT, "Cadastrar Cartão")))
-        link_cadastrar.click()
+        driver.get(f"{base_url}/cadastrar/")
         time.sleep(2)
         
+        wait = WebDriverWait(driver, 10)
         wait.until(EC.presence_of_element_located((By.NAME, "numero_cartao")))
         
         # Número de cartão Mastercard válido
