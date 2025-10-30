@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerenciar Armazéns{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    {% if action == 'list' %}
+        <!-- LISTAGEM DE ARMAZÉNS -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h1 style="display: flex; align-items: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                Gerenciar Armazéns
+            </h1>
+            <a href="{% url 'gerenciar_armazens' %}?action=add" 
+               style="padding: 12px 20px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Adicionar Armazém
+            </a>
+        </div>
+
+        <!-- Lista de Armazéns -->
+        <div style="background-color: white; padding: 30px; border: 2px solid #e5e7eb; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+                            <th style="padding: 14px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb;">🏢 Nome</th>
+                            <th style="padding: 14px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb;">📍 Endereço</th>
+                            <th style="padding: 14px; text-align: center; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb;">⚙️ Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for armazem in armazens %}
+                        <tr style="border-bottom: 1px solid #f3f4f6; transition: background-color 0.15s;" 
+                            onmouseover="this.style.backgroundColor='#fef3e2'"
+                            onmouseout="this.style.backgroundColor='transparent'">
+                            <td style="padding: 14px; font-weight: 600; color: #111827;">{{ armazem.nome }}</td>
+                            <td style="padding: 14px; color: #6b7280;">{{ armazem.endereco|default:"Não informado" }}</td>
+                            <td style="padding: 14px; text-align: center;">
+                                <div style="display: inline-flex; gap: 6px;">
+                                    <a href="{% url 'gerenciar_armazens' %}?action=edit&id={{ armazem.id }}" 
+                                       style="padding: 8px; background-color: #dbeafe; color: #1e40af; border-radius: 6px; transition: all 0.15s; display: inline-flex; text-decoration: none;"
+                                       title="Editar"
+                                       onmouseover="this.style.backgroundColor='#bfdbfe'"
+                                       onmouseout="this.style.backgroundColor='#dbeafe'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+                                    <a href="{% url 'gerenciar_armazens' %}?action=delete&id={{ armazem.id }}" 
+                                       style="padding: 8px; background-color: #fee2e2; color: #991b1b; border-radius: 6px; transition: all 0.15s; display: inline-flex; text-decoration: none;"
+                                       title="Deletar"
+                                       onmouseover="this.style.backgroundColor='#fecaca'"
+                                       onmouseout="this.style.backgroundColor='#fee2e2'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" style="padding: 60px 20px; text-align: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px; margin: 0 auto 12px; color: #d1d5db;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                                <p style="color: #9ca3af; font-size: 1rem; margin: 0;">Nenhum armazém cadastrado</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <a href="{% url 'home' %}" class="btn btn-ghost">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Voltar
+            </a>
+        </div>
+
+    {% elif action == 'add' or action == 'edit' %}
+        <!-- FORMULÁRIO ADICIONAR/EDITAR -->
+        <h1 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            {% if action == 'add' %}Adicionar Novo Armazém{% else %}Editar Armazém{% endif %}
+        </h1>
+
+        <div style="background-color: white; padding: 40px; border: 2px solid #e5e7eb; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); max-width: 700px; margin: 0 auto;">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px;">
+                        🏢 Nome *
+                    </label>
+                    <input type="text" name="nome" value="{{ armazem.nome|default:'' }}" required maxlength="100" 
+                           style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none;" 
+                           placeholder="Ex: Armazém Central"
+                           onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                           onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
+                </div>
+
+                <div style="margin-bottom: 32px;">
+                    <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px;">
+                        📍 Endereço
+                    </label>
+                    <textarea name="endereco" maxlength="200" rows="3" 
+                              style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none; resize: vertical; font-family: inherit;" 
+                              placeholder="Ex: Rua das Flores, 123 - Centro"
+                              onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                              onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">{{ armazem.endereco|default:'' }}</textarea>
+                    <p style="font-size: 0.875rem; color: #9ca3af; margin-top: 6px;">Opcional</p>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <a href="{% url 'gerenciar_armazens' %}" 
+                       style="padding: 14px 24px; background-color: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+                       onmouseover="this.style.backgroundColor='#e5e7eb'"
+                       onmouseout="this.style.backgroundColor='#f3f4f6'">
+                        ❌ Cancelar
+                    </a>
+                    <button type="submit" 
+                            style="padding: 14px 24px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3); display: inline-flex; align-items: center; gap: 8px;"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        {% if action == 'add' %}Salvar Armazém{% else %}Salvar Alterações{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    {% elif action == 'delete' %}
+        <!-- CONFIRMAÇÃO DE EXCLUSÃO -->
+        <div style="max-width: 500px; margin: 0 auto;">
+            <div style="background-color: white; padding: 40px; border: 2px solid #fecaca; border-radius: 16px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);">
+                <h2 style="display: flex; align-items: center; gap: 12px; color: #dc2626; font-size: 1.5rem; font-weight: 600; margin-bottom: 24px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 28px; height: 28px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    Confirmar Exclusão
+                </h2>
+                
+                <div style="background-color: #fef3c7; border: 2px solid #fbbf24; border-radius: 10px; padding: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px; color: #92400e; flex-shrink: 0;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span style="color: #92400e; font-weight: 500;">⚠️ Esta ação não pode ser desfeita! Todos os estoques associados também serão removidos.</span>
+                </div>
+
+                <div style="margin-bottom: 32px;">
+                    <p style="font-size: 1rem; color: #374151; margin-bottom: 16px; font-weight: 500;">Tem certeza que deseja excluir o armazém:</p>
+                    <div style="background-color: #f9fafb; border: 2px solid #e5e7eb; border-radius: 10px; padding: 20px;">
+                        <p style="font-weight: 600; font-size: 1.125rem; color: #111827; margin-bottom: 8px;">🏢 {{ armazem.nome }}</p>
+                        {% if armazem.endereco %}
+                        <p style="font-size: 0.875rem; color: #6b7280;">
+                            <strong>📍 Endereço:</strong> {{ armazem.endereco }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                        <a href="{% url 'gerenciar_armazens' %}" 
+                           style="padding: 14px 24px; background-color: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+                           onmouseover="this.style.backgroundColor='#e5e7eb'"
+                           onmouseout="this.style.backgroundColor='#f3f4f6'">
+                            ↩️ Cancelar
+                        </a>
+                        <button type="submit" 
+                                style="padding: 14px 24px; background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3); display: inline-flex; align-items: center; gap: 8px;"
+                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(220, 38, 38, 0.4)'"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(220, 38, 38, 0.3)'">
+                            <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Confirmar Exclusão
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

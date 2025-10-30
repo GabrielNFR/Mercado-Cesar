@@ -115,18 +115,33 @@
                                 Admin
                                 <svg class="fill-current inline-block w-4 h-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/></svg>
                             </label>
-                            <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-white rounded-box w-52 border border-gray-200">
+                            <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-white rounded-box w-64 border border-gray-200">
+                                <li class="menu-title"><span class="text-gray-500 text-xs uppercase">Loja</span></li>
                                 <li><a href="{% url 'gerenciar_lojas' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Gerenciar Lojas</a></li>
                                 <li><a href="{% url 'visualizar_pedidos' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Ver Pedidos</a></li>
                                 {% if user.is_staff %}
+                                    <div class="divider my-0"></div>
+                                    <li class="menu-title"><span class="text-gray-500 text-xs uppercase">Inventário</span></li>
+                                    <li><a href="{% url 'gerenciar_produtos' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Gerenciar Produtos</a></li>
+                                    <li><a href="{% url 'gerenciar_armazens' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Gerenciar Armazéns</a></li>
+                                    <li><a href="{% url 'gerenciar_estoque' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Gerenciar Estoque</a></li>
                                     <li><a href="{% url 'estoque_baixo' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Estoque Baixo</a></li>
-                                    <li><a href="{% url 'admin:index' %}" target="_blank" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Painel Admin</a></li>
                                 {% endif %}
                             </ul>
                         </li>
                     {% elif user.is_staff %}
-                        <li><a href="{% url 'estoque_baixo' %}" class="text-white hover:bg-[#e28e46] rounded-lg">Estoque Baixo</a></li>
-                        <li><a href="{% url 'admin:index' %}" target="_blank" class="text-white hover:bg-[#e28e46] rounded-lg">Admin</a></li>
+                        <li class="dropdown dropdown-hover dropdown-end">
+                            <label tabindex="0" class="text-white hover:bg-[#e28e46] cursor-pointer px-4 py-2 rounded-lg">
+                                Admin
+                                <svg class="fill-current inline-block w-4 h-4 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/></svg>
+                            </label>
+                            <ul tabindex="0" class="dropdown-content menu p-2 shadow-lg bg-white rounded-box w-64 border border-gray-200">
+                                <li><a href="{% url 'gerenciar_produtos' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Gerenciar Produtos</a></li>
+                                <li><a href="{% url 'gerenciar_armazens' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Gerenciar Armazéns</a></li>
+                                <li><a href="{% url 'gerenciar_estoque' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Gerenciar Estoque</a></li>
+                                <li><a href="{% url 'estoque_baixo' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Estoque Baixo</a></li>
+                            </ul>
+                        </li>
                     {% endif %}
                 {% else %}
                     <li><a href="{% url 'busca' %}" class="text-white hover:bg-[#e28e46] rounded-lg">Produtos</a></li>
@@ -170,8 +185,10 @@
                                 <li><a href="{% url 'visualizar_pedidos' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Ver Pedidos</a></li>
                             {% endif %}
                             {% if user.is_staff %}
+                                <li><a href="{% url 'gerenciar_produtos' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Gerenciar Produtos</a></li>
+                                <li><a href="{% url 'gerenciar_armazens' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Gerenciar Armazéns</a></li>
+                                <li><a href="{% url 'gerenciar_estoque' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Gerenciar Estoque</a></li>
                                 <li><a href="{% url 'estoque_baixo' %}" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Estoque Baixo</a></li>
-                                <li><a href="{% url 'admin:index' %}" target="_blank" class="text-gray-700 hover:bg-[#f4a361] hover:text-white">Painel Admin</a></li>
                             {% endif %}
                         {% endif %}
                         

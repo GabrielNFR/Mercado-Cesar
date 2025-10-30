@@ -2,7 +2,10 @@ from django.urls import path
 from .views import (pagina_inicial, register, estoque_baixo, buscar_itens, cadastrar_cartao, 
                     listar_cartoes, deletar_cartao, checkout, processar_entrega_domicilio, 
                     processar_entrega_retirada, finalizar_pedido, gerenciar_lojas, ativar_desativar_loja, 
-                    visualizar_pedidos)
+                    visualizar_pedidos, gerenciar_produtos, adicionar_produto, editar_produto, 
+                    deletar_produto, gerenciar_armazens, adicionar_armazem, editar_armazem, 
+                    deletar_armazem, gerenciar_estoque, adicionar_estoque, editar_estoque, 
+                    deletar_estoque)
 
 urlpatterns = [
     path('', pagina_inicial, name='home'),
@@ -19,4 +22,16 @@ urlpatterns = [
     path('gerenciar-lojas/', gerenciar_lojas, name='gerenciar_lojas'),
     path('lojas/ativar-desativar/<int:loja_id>/', ativar_desativar_loja, name='ativar_desativar_loja'),
     path('pedidos/', visualizar_pedidos, name='visualizar_pedidos'),
+    path('produtos/', gerenciar_produtos, name='gerenciar_produtos'),
+    path('produtos/adicionar/', adicionar_produto, name='adicionar_produto'),
+    path('produtos/editar/<int:produto_id>/', editar_produto, name='editar_produto'),
+    path('produtos/deletar/<int:produto_id>/', deletar_produto, name='deletar_produto'),
+    path('armazens/', gerenciar_armazens, name='gerenciar_armazens'),
+    path('armazens/adicionar/', adicionar_armazem, name='adicionar_armazem'),
+    path('armazens/editar/<int:armazem_id>/', editar_armazem, name='editar_armazem'),
+    path('armazens/deletar/<int:armazem_id>/', deletar_armazem, name='deletar_armazem'),
+    path('estoque/', gerenciar_estoque, name='gerenciar_estoque'),
+    path('estoque/adicionar/', adicionar_estoque, name='adicionar_estoque'),
+    path('estoque/editar/<int:estoque_id>/', editar_estoque, name='editar_estoque'),
+    path('estoque/deletar/<int:estoque_id>/', deletar_estoque, name='deletar_estoque'),
 ]

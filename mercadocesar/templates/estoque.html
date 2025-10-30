@@ -1,0 +1,348 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerenciar Estoque{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    {% if action == 'list' %}
+        <!-- LISTAGEM DE ESTOQUE -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h1 style="display: flex; align-items: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                Gerenciar Estoque
+            </h1>
+            <a href="{% url 'gerenciar_estoque' %}?action=add" 
+               style="padding: 12px 20px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Adicionar Estoque
+            </a>
+        </div>
+
+        <!-- Filtros -->
+        <div style="background-color: white; padding: 30px; border: 2px solid #e5e7eb; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 30px;">
+            <h2 style="color: #374151; font-size: 1.125rem; font-weight: 600; margin-bottom: 20px;">🔍 Filtros</h2>
+            <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: end;">
+                <input type="hidden" name="action" value="list">
+                <div>
+                    <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px;">
+                        🔍 Buscar Produto
+                    </label>
+                    <input type="text" name="busca_produto" value="{{ busca_produto }}" placeholder="Código ou nome..." 
+                           style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none;"
+                           onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                           onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
+                </div>
+                
+                <div>
+                    <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px;">
+                        🏢 Armazém
+                    </label>
+                    <select name="armazem" 
+                            style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none; background-color: white;"
+                            onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                            onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
+                        <option value="">Todos os armazéns</option>
+                        {% for arm in armazens %}
+                            <option value="{{ arm.id }}" {% if arm.id|stringformat:"s" == armazem_selecionado %}selected{% endif %}>{{ arm.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div>
+                    <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px;">
+                        ⚙️ Filtro
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 14px;">
+                        <input type="checkbox" name="apenas_baixo" value="1" {% if apenas_baixo %}checked{% endif %} 
+                               style="width: 18px; height: 18px; cursor: pointer; accent-color: #f4a361;">
+                        <span style="color: #374151; font-size: 0.95rem;">Apenas estoque baixo (&lt;30)</span>
+                    </label>
+                </div>
+                
+                <div>
+                    <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px; visibility: hidden;">
+                        Ação
+                    </label>
+                    <button type="submit" 
+                            style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3);"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+                        🔍 Filtrar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de Estoque -->
+        <div style="background-color: white; padding: 30px; border: 2px solid #e5e7eb; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background-color: #f9fafb; border-bottom: 2px solid #e5e7eb;">
+                            <th style="padding: 14px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb;">📦 Código</th>
+                            <th style="padding: 14px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb;">🏷️ Produto</th>
+                            <th style="padding: 14px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb;">🏢 Armazém</th>
+                            <th style="padding: 14px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb;">📊 Quantidade</th>
+                            <th style="padding: 14px; text-align: left; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb;">⚡ Status</th>
+                            <th style="padding: 14px; text-align: center; font-weight: 600; color: #374151; border-bottom: 2px solid #e5e7eb;">⚙️ Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for estoque in estoques %}
+                        <tr style="border-bottom: 1px solid #f3f4f6; transition: background-color 0.15s;" 
+                            onmouseover="this.style.backgroundColor='#fef3e2'"
+                            onmouseout="this.style.backgroundColor='transparent'">
+                            <td style="padding: 14px; font-family: 'Courier New', monospace; color: #6b7280;">{{ estoque.produto.codigo }}</td>
+                            <td style="padding: 14px; font-weight: 500; color: #111827;">{{ estoque.produto.nome }}</td>
+                            <td style="padding: 14px; color: #6b7280;">{{ estoque.armazem.nome }}</td>
+                            <td style="padding: 14px; font-weight: 600; color: #374151;">{{ estoque.quantidade }} unidades</td>
+                            <td style="padding: 14px;">
+                                {% if estoque.quantidade < 30 %}
+                                    <span style="display: inline-block; padding: 4px 12px; background-color: #fee2e2; color: #991b1b; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">🔴 Baixo</span>
+                                {% elif estoque.quantidade < 50 %}
+                                    <span style="display: inline-block; padding: 4px 12px; background-color: #fef3c7; color: #92400e; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">🟡 Médio</span>
+                                {% else %}
+                                    <span style="display: inline-block; padding: 4px 12px; background-color: #d1fae5; color: #065f46; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">🟢 Normal</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 14px; text-align: center;">
+                                <div style="display: inline-flex; gap: 6px;">
+                                    <a href="{% url 'gerenciar_estoque' %}?action=edit&id={{ estoque.id }}" 
+                                       style="padding: 8px; background-color: #dbeafe; color: #1e40af; border-radius: 6px; transition: all 0.15s; display: inline-flex; text-decoration: none;"
+                                       title="Editar"
+                                       onmouseover="this.style.backgroundColor='#bfdbfe'"
+                                       onmouseout="this.style.backgroundColor='#dbeafe'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+                                    <a href="{% url 'gerenciar_estoque' %}?action=delete&id={{ estoque.id }}" 
+                                       style="padding: 8px; background-color: #fee2e2; color: #991b1b; border-radius: 6px; transition: all 0.15s; display: inline-flex; text-decoration: none;"
+                                       title="Deletar"
+                                       onmouseover="this.style.backgroundColor='#fecaca'"
+                                       onmouseout="this.style.backgroundColor='#fee2e2'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 16px; height: 16px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" style="padding: 60px 20px; text-align: center;">
+                                <svg xmlns="http://www.w3.org/2000/svg" style="width: 48px; height: 48px; margin: 0 auto 12px; color: #d1d5db;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                </svg>
+                                <p style="color: #9ca3af; font-size: 1rem; margin: 0;">Nenhum estoque encontrado</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <a href="{% url 'home' %}" class="btn btn-ghost">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Voltar
+            </a>
+        </div>
+
+    {% elif action == 'add' %}
+        <!-- FORMULÁRIO ADICIONAR -->
+        <h1 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Adicionar/Atualizar Estoque
+        </h1>
+
+        <div style="background-color: white; padding: 40px; border: 2px solid #e5e7eb; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); max-width: 700px; margin: 0 auto;">
+            <div style="background-color: #dbeafe; border: 2px solid #3b82f6; border-radius: 10px; padding: 16px; margin-bottom: 32px; display: flex; align-items: center; gap: 12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px; color: #1e40af; flex-shrink: 0;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span style="color: #1e40af; font-weight: 500;">ℹ️ Se o estoque já existir para o produto/armazém selecionado, a quantidade será atualizada.</span>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px;">
+                        📦 Produto *
+                    </label>
+                    <select name="produto" required 
+                            style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none; background-color: white;"
+                            onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                            onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
+                        <option value="">Selecione um produto</option>
+                        {% for produto in produtos %}
+                            <option value="{{ produto.id }}">{{ produto.codigo }} - {{ produto.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px;">
+                        🏢 Armazém *
+                    </label>
+                    <select name="armazem" required 
+                            style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none; background-color: white;"
+                            onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                            onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
+                        <option value="">Selecione um armazém</option>
+                        {% for armazem in armazens %}
+                            <option value="{{ armazem.id }}">{{ armazem.nome }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 32px;">
+                    <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px;">
+                        📊 Quantidade *
+                    </label>
+                    <input type="number" name="quantidade" required min="0" placeholder="0"
+                           style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none;"
+                           onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                           onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <a href="{% url 'gerenciar_estoque' %}" 
+                       style="padding: 14px 24px; background-color: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+                       onmouseover="this.style.backgroundColor='#e5e7eb'"
+                       onmouseout="this.style.backgroundColor='#f3f4f6'">
+                        ❌ Cancelar
+                    </a>
+                    <button type="submit" 
+                            style="padding: 14px 24px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3); display: inline-flex; align-items: center; gap: 8px;"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Salvar Estoque
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    {% elif action == 'edit' %}
+        <!-- FORMULÁRIO EDITAR -->
+        <h1 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Editar Estoque
+        </h1>
+
+        <div style="background-color: white; padding: 40px; border: 2px solid #e5e7eb; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); max-width: 700px; margin: 0 auto;">
+            <!-- Informações do Estoque -->
+            <div style="background-color: #dbeafe; border: 2px solid #3b82f6; border-radius: 10px; padding: 20px; margin-bottom: 32px; display: flex; align-items: start; gap: 12px;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px; color: #1e40af; flex-shrink: 0; margin-top: 2px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div style="color: #1e40af;">
+                    <p style="margin: 0 0 8px 0; font-weight: 500;"><strong>📦 Produto:</strong> {{ estoque.produto.nome }} ({{ estoque.produto.codigo }})</p>
+                    <p style="margin: 0; font-weight: 500;"><strong>🏢 Armazém:</strong> {{ estoque.armazem.nome }}</p>
+                </div>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div style="margin-bottom: 32px;">
+                    <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px;">
+                        📊 Quantidade *
+                    </label>
+                    <input type="number" name="quantidade" value="{{ estoque.quantidade }}" required min="0" 
+                           style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none;"
+                           onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                           onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
+                    <p style="font-size: 0.875rem; color: #9ca3af; margin-top: 6px;">Unidade: {{ estoque.produto.unidade_medida }}</p>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <a href="{% url 'gerenciar_estoque' %}" 
+                       style="padding: 14px 24px; background-color: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+                       onmouseover="this.style.backgroundColor='#e5e7eb'"
+                       onmouseout="this.style.backgroundColor='#f3f4f6'">
+                        ❌ Cancelar
+                    </a>
+                    <button type="submit" 
+                            style="padding: 14px 24px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3); display: inline-flex; align-items: center; gap: 8px;"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Salvar Alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    {% elif action == 'delete' %}
+        <!-- CONFIRMAÇÃO DE EXCLUSÃO -->
+        <div style="max-width: 500px; margin: 0 auto;">
+            <div style="background-color: white; padding: 40px; border: 2px solid #fecaca; border-radius: 16px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);">
+                <h2 style="display: flex; align-items: center; gap: 12px; color: #dc2626; font-size: 1.5rem; font-weight: 600; margin-bottom: 24px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 28px; height: 28px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    Confirmar Exclusão
+                </h2>
+                
+                <div style="background-color: #fef3c7; border: 2px solid #fbbf24; border-radius: 10px; padding: 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px; color: #92400e; flex-shrink: 0;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span style="color: #92400e; font-weight: 500;">⚠️ Esta ação não pode ser desfeita!</span>
+                </div>
+
+                <div style="margin-bottom: 32px;">
+                    <p style="font-size: 1rem; color: #374151; margin-bottom: 16px; font-weight: 500;">Tem certeza que deseja excluir este estoque:</p>
+                    <div style="background-color: #f9fafb; border: 2px solid #e5e7eb; border-radius: 10px; padding: 20px;">
+                        <p style="margin: 0 0 8px 0; color: #111827; font-size: 0.95rem;"><strong>📦 Produto:</strong> {{ estoque.produto.nome }}</p>
+                        <p style="margin: 0 0 8px 0; color: #6b7280; font-size: 0.95rem;"><strong>Código:</strong> {{ estoque.produto.codigo }}</p>
+                        <p style="margin: 0 0 8px 0; color: #6b7280; font-size: 0.95rem;"><strong>🏢 Armazém:</strong> {{ estoque.armazem.nome }}</p>
+                        <p style="margin: 0; color: #6b7280; font-size: 0.95rem;"><strong>📊 Quantidade:</strong> {{ estoque.quantidade }} unidades</p>
+                    </div>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                        <a href="{% url 'gerenciar_estoque' %}" 
+                           style="padding: 14px 24px; background-color: #f3f4f6; color: #374151; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+                           onmouseover="this.style.backgroundColor='#e5e7eb'"
+                           onmouseout="this.style.backgroundColor='#f3f4f6'">
+                            ↩️ Cancelar
+                        </a>
+                        <button type="submit" 
+                                style="padding: 14px 24px; background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3); display: inline-flex; align-items: center; gap: 8px;"
+                                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(220, 38, 38, 0.4)'"
+                                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(220, 38, 38, 0.3)'">
+                            <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Confirmar Exclusão
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

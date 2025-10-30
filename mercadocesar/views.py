@@ -558,3 +558,294 @@ def visualizar_pedidos(request):
     }
     
     return render(request, 'visualizar_pedidos.html', context)
+
+@user_passes_test(lambda u: u.is_staff)
+def gerenciar_produtos(request):
+    """Gerencia produtos com todas as operações CRUD em uma única view"""
+    from django.shortcuts import get_object_or_404
+    
+    action = request.GET.get('action', 'list')
+    produto_id = request.GET.get('id')
+    
+    if action == 'delete' and produto_id:
+        produto = get_object_or_404(Produto, id=produto_id)
+        if request.method == 'POST':
+            nome = produto.nome
+            produto.delete()
+            messages.success(request, f'Produto "{nome}" removido com sucesso!')
+            return redirect('gerenciar_produtos')
+        return render(request, 'produtos.html', {'action': 'delete', 'produto': produto})
+    
+    if action == 'edit' and produto_id:
+        produto = get_object_or_404(Produto, id=produto_id)
+        if request.method == 'POST':
+            try:
+                preco_custo = Decimal(request.POST.get('preco_custo'))
+                preco = Decimal(request.POST.get('preco'))
+                
+                if preco_custo < 0 or preco < 0:
+                    messages.error(request, 'Preços não podem ser negativos.')
+                    return render(request, 'produtos.html', {'action': 'edit', 'produto': produto})
+                
+                produto.codigo = request.POST.get('codigo')
+                produto.nome = request.POST.get('nome')
+                produto.descricao = request.POST.get('descricao')
+                produto.categoria = request.POST.get('categoria')
+                produto.preco_custo = preco_custo
+                produto.preco = preco
+                produto.unidade_medida = request.POST.get('unidade_medida')
+                produto.save()
+                messages.success(request, f'Produto "{produto.nome}" atualizado com sucesso!')
+                return redirect('gerenciar_produtos')
+            except Exception as e:
+                messages.error(request, f'Erro ao atualizar produto: {str(e)}')
+        return render(request, 'produtos.html', {'action': 'edit', 'produto': produto})
+    
+    if action == 'add':
+        if request.method == 'POST':
+            try:
+                preco_custo = Decimal(request.POST.get('preco_custo'))
+                preco = Decimal(request.POST.get('preco'))
+                
+                if preco_custo < 0 or preco < 0:
+                    messages.error(request, 'Preços não podem ser negativos.')
+                    return render(request, 'produtos.html', {'action': 'add'})
+                
+                produto = Produto.objects.create(
+                    codigo=request.POST.get('codigo'),
+                    nome=request.POST.get('nome'),
+                    descricao=request.POST.get('descricao'),
+                    categoria=request.POST.get('categoria'),
+                    preco_custo=preco_custo,
+                    preco=preco,
+                    unidade_medida=request.POST.get('unidade_medida'),
+                )
+                messages.success(request, f'Produto "{produto.nome}" cadastrado com sucesso!')
+                return redirect('gerenciar_produtos')
+            except Exception as e:
+                messages.error(request, f'Erro ao cadastrar produto: {str(e)}')
+        return render(request, 'produtos.html', {'action': 'add'})
+    
+    produtos = Produto.objects.all().order_by('codigo')
+    busca = request.GET.get('busca', '')
+    categoria = request.GET.get('categoria', '')
+    
+    if busca:
+        produtos = produtos.filter(
+            Q(codigo__icontains=busca) | 
+            Q(nome__icontains=busca) | 
+            Q(descricao__icontains=busca)
+        )
+    
+    if categoria:
+        produtos = produtos.filter(categoria__icontains=categoria)
+    
+    categorias_disponiveis = Produto.objects.values_list('categoria', flat=True).distinct()
+    
+    context = {
+        'action': 'list',
+        'produtos': produtos,
+        'busca': busca,
+        'categoria': categoria,
+        'categorias': categorias_disponiveis,
+    }
+    
+    return render(request, 'produtos.html', context)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def adicionar_produto(request):
+    """Redireciona para a view unificada"""
+    return redirect('gerenciar_produtos' + '?action=add')
+
+
+@user_passes_test(lambda u: u.is_staff)
+def editar_produto(request, produto_id):
+    """Redireciona para a view unificada"""
+    return redirect(f'gerenciar_produtos?action=edit&id={produto_id}')
+
+
+@user_passes_test(lambda u: u.is_staff)
+def deletar_produto(request, produto_id):
+    """Redireciona para a view unificada"""
+    return redirect(f'gerenciar_produtos?action=delete&id={produto_id}')
+
+
+@user_passes_test(lambda u: u.is_staff)
+def gerenciar_armazens(request):
+    """Gerencia armazéns com todas as operações CRUD em uma única view"""
+    from django.shortcuts import get_object_or_404
+    from .models import Armazem
+    
+    action = request.GET.get('action', 'list')
+    armazem_id = request.GET.get('id')
+    
+    if action == 'delete' and armazem_id:
+        armazem = get_object_or_404(Armazem, id=armazem_id)
+        if request.method == 'POST':
+            nome = armazem.nome
+            armazem.delete()
+            messages.success(request, f'Armazém "{nome}" removido com sucesso!')
+            return redirect('gerenciar_armazens')
+        return render(request, 'armazens.html', {'action': 'delete', 'armazem': armazem})
+    
+    if action == 'edit' and armazem_id:
+        armazem = get_object_or_404(Armazem, id=armazem_id)
+        if request.method == 'POST':
+            try:
+                armazem.nome = request.POST.get('nome')
+                armazem.endereco = request.POST.get('endereco', '')
+                armazem.save()
+                messages.success(request, f'Armazém "{armazem.nome}" atualizado com sucesso!')
+                return redirect('gerenciar_armazens')
+            except Exception as e:
+                messages.error(request, f'Erro ao atualizar armazém: {str(e)}')
+        return render(request, 'armazens.html', {'action': 'edit', 'armazem': armazem})
+    
+    if action == 'add':
+        if request.method == 'POST':
+            try:
+                armazem = Armazem.objects.create(
+                    nome=request.POST.get('nome'),
+                    endereco=request.POST.get('endereco', ''),
+                )
+                messages.success(request, f'Armazém "{armazem.nome}" cadastrado com sucesso!')
+                return redirect('gerenciar_armazens')
+            except Exception as e:
+                messages.error(request, f'Erro ao cadastrar armazém: {str(e)}')
+        return render(request, 'armazens.html', {'action': 'add'})
+    
+    armazens = Armazem.objects.all().order_by('nome')
+    context = {'action': 'list', 'armazens': armazens}
+    return render(request, 'armazens.html', context)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def adicionar_armazem(request):
+    """Redireciona para a view unificada"""
+    return redirect('gerenciar_armazens' + '?action=add')
+
+
+@user_passes_test(lambda u: u.is_staff)
+def editar_armazem(request, armazem_id):
+    """Redireciona para a view unificada"""
+    return redirect(f'gerenciar_armazens?action=edit&id={armazem_id}')
+
+
+@user_passes_test(lambda u: u.is_staff)
+def deletar_armazem(request, armazem_id):
+    """Redireciona para a view unificada"""
+    return redirect(f'gerenciar_armazens?action=delete&id={armazem_id}')
+
+
+@user_passes_test(lambda u: u.is_staff)
+def gerenciar_estoque(request):
+    """Gerencia estoque com todas as operações CRUD em uma única view"""
+    from django.shortcuts import get_object_or_404
+    from .models import Armazem
+    
+    action = request.GET.get('action', 'list')
+    estoque_id = request.GET.get('id')
+    
+    if action == 'delete' and estoque_id:
+        estoque = get_object_or_404(Estoque, id=estoque_id)
+        if request.method == 'POST':
+            produto_nome = estoque.produto.nome
+            armazem_nome = estoque.armazem.nome
+            estoque.delete()
+            messages.success(request, f'Estoque de "{produto_nome}" em "{armazem_nome}" removido com sucesso!')
+            return redirect('gerenciar_estoque')
+        return render(request, 'estoque.html', {'action': 'delete', 'estoque': estoque})
+    
+    if action == 'edit' and estoque_id:
+        estoque = get_object_or_404(Estoque, id=estoque_id)
+        if request.method == 'POST':
+            try:
+                estoque.quantidade = int(request.POST.get('quantidade'))
+                estoque.save()
+                messages.success(request, f'Estoque de "{estoque.produto.nome}" em "{estoque.armazem.nome}" atualizado para {estoque.quantidade} unidades!')
+                return redirect('gerenciar_estoque')
+            except Exception as e:
+                messages.error(request, f'Erro ao atualizar estoque: {str(e)}')
+        return render(request, 'estoque.html', {'action': 'edit', 'estoque': estoque})
+    
+    if action == 'add':
+        if request.method == 'POST':
+            try:
+                produto_id = request.POST.get('produto')
+                armazem_id = request.POST.get('armazem')
+                quantidade = int(request.POST.get('quantidade'))
+                
+                produto = Produto.objects.get(id=produto_id)
+                armazem = Armazem.objects.get(id=armazem_id)
+                
+                # Verifica se já existe estoque para esse produto nesse armazém
+                estoque, created = Estoque.objects.get_or_create(
+                    produto=produto,
+                    armazem=armazem,
+                    defaults={'quantidade': quantidade}
+                )
+                
+                if not created:
+                    # Se já existe, atualiza a quantidade
+                    estoque.quantidade = quantidade
+                    estoque.save()
+                    messages.success(request, f'Estoque de "{produto.nome}" em "{armazem.nome}" atualizado para {quantidade} unidades!')
+                else:
+                    messages.success(request, f'Estoque de "{produto.nome}" em "{armazem.nome}" cadastrado com {quantidade} unidades!')
+                
+                return redirect('gerenciar_estoque')
+            except Exception as e:
+                messages.error(request, f'Erro ao cadastrar estoque: {str(e)}')
+        
+        produtos = Produto.objects.all().order_by('nome')
+        armazens = Armazem.objects.all().order_by('nome')
+        return render(request, 'estoque.html', {'action': 'add', 'produtos': produtos, 'armazens': armazens})
+    
+    estoques = Estoque.objects.all().select_related('produto', 'armazem').order_by('produto__codigo', 'armazem__nome')
+    busca_produto = request.GET.get('busca_produto', '')
+    armazem_id = request.GET.get('armazem', '')
+    apenas_baixo = request.GET.get('apenas_baixo', '')
+    
+    if busca_produto:
+        estoques = estoques.filter(
+            Q(produto__codigo__icontains=busca_produto) |
+            Q(produto__nome__icontains=busca_produto)
+        )
+    
+    if armazem_id:
+        estoques = estoques.filter(armazem_id=armazem_id)
+    
+    if apenas_baixo:
+        estoques = estoques.filter(quantidade__lt=30)
+    
+    armazens = Armazem.objects.all()
+    
+    context = {
+        'action': 'list',
+        'estoques': estoques,
+        'armazens': armazens,
+        'busca_produto': busca_produto,
+        'armazem_selecionado': armazem_id,
+        'apenas_baixo': apenas_baixo,
+    }
+    
+    return render(request, 'estoque.html', context)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def adicionar_estoque(request):
+    """Redireciona para a view unificada"""
+    return redirect('gerenciar_estoque' + '?action=add')
+
+
+@user_passes_test(lambda u: u.is_staff)
+def editar_estoque(request, estoque_id):
+    """Redireciona para a view unificada"""
+    return redirect(f'gerenciar_estoque?action=edit&id={estoque_id}')
+
+
+@user_passes_test(lambda u: u.is_staff)
+def deletar_estoque(request, estoque_id):
+    """Redireciona para a view unificada"""
+    return redirect(f'gerenciar_estoque?action=delete&id={estoque_id}')

@@ -14,6 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import time
+import requests
 
 
 def criar_driver():
@@ -31,55 +32,86 @@ def criar_driver():
 
 def fazer_login(driver, base_url):
     """Fazer login no sistema"""
-    driver.get(f"{base_url}/admin/login/")
+    driver.get(f"{base_url}/accounts/login/")
     wait = WebDriverWait(driver, 10)
     
-    username_field = wait.until(EC.presence_of_element_located((By.NAME, "username")))
-    username_field.send_keys("admin")
+    username = wait.until(EC.presence_of_element_located((By.NAME, "username")))
+    username.send_keys("admin")
     
-    password_field = driver.find_element(By.NAME, "password")
-    password_field.send_keys("admin123")
+    password = driver.find_element(By.NAME, "password")
+    password.send_keys("admin123")
     
-    # Usar JavaScript para clicar (evita interceptação)
-    submit_btn = driver.find_element(By.XPATH, "//input[@type='submit']")
+    submit_btn = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "button.btn[type='submit']")))
     driver.execute_script("arguments[0].click();", submit_btn)
     
-    # Aguardar redirect
-    wait.until(EC.url_contains("/admin/"))
+    wait.until(EC.url_changes(f"{base_url}/accounts/login/"))
     time.sleep(1)
+    
+    # Salvar cookies de sessão após login 
+    cookies = driver.get_cookies()
+    return cookies
 
 
 def cenario_1_cadastro_completo():
     """Cenário 1: Cadastrar produto com todos os campos obrigatórios"""
     print("\n[Cenário 1] Cadastro com todos os campos obrigatórios")
     driver = criar_driver()
+    base_url = "http://localhost:8000"
     
     try:
-        fazer_login(driver, "http://localhost:8000")
-        driver.get("http://localhost:8000/admin/mercadocesar/produto/add/")
+        session_cookies = fazer_login(driver, base_url)
+        
+        # Acessar formulário de cadastro
+        driver.get(f"{base_url}/produtos/?action=add")
         
         # Aguardar página de formulário carregar
         wait = WebDriverWait(driver, 10)
         wait.until(EC.presence_of_element_located((By.NAME, "codigo")))
         time.sleep(1)
         
+        # Obter CSRF token
+        csrf_token = driver.find_element(By.NAME, "csrfmiddlewaretoken").get_attribute("value")
+        
+        # Coletar cookies
+        cookies_dict = {cookie['name']: cookie['value'] for cookie in driver.get_cookies()}
+        
+        # Dados do formulário
         timestamp = str(int(time.time() * 1000))
-        driver.find_element(By.NAME, "codigo").send_keys(f"PROD123{timestamp}")
-        driver.find_element(By.NAME, "nome").send_keys(f"Arroz {timestamp}")
-        driver.find_element(By.NAME, "descricao").send_keys(f"Arroz Integral 5kg {timestamp}")
-        driver.find_element(By.NAME, "categoria").send_keys("Comida")
-        driver.find_element(By.NAME, "unidade_medida").send_keys("kg")
-        driver.find_element(By.NAME, "preco_custo").send_keys("10.50")
-        driver.find_element(By.NAME, "preco").send_keys("18.70")
-        driver.find_element(By.NAME, "_save").click()
+        form_data = {
+            'csrfmiddlewaretoken': csrf_token,
+            'codigo': f'PROD123{timestamp}',
+            'nome': f'Arroz {timestamp}',
+            'descricao': f'Arroz Integral 5kg {timestamp}',
+            'categoria': 'Comida',
+            'unidade_medida': 'kg',
+            'preco_custo': '10.50',
+            'preco': '18.70'
+        }
         
-        time.sleep(2)
+        # Fazer POST request via requests library
+        response = requests.post(
+            f"{base_url}/produtos/?action=add",
+            data=form_data,
+            cookies=cookies_dict,
+            headers={'Referer': f"{base_url}/produtos/?action=add"},
+            allow_redirects=False
+        )
         
-        if "add" not in driver.current_url and "produto" in driver.current_url:
+        # Navegar para a URL de redirecionamento
+        if response.status_code in (301, 302, 303):
+            redirect_url = response.headers.get('Location')
+            if redirect_url:
+                if not redirect_url.startswith('http'):
+                    redirect_url = base_url + redirect_url
+                driver.get(redirect_url)
+                time.sleep(1)
+        
+        # Verificar se voltou para listagem 
+        if "action=add" not in driver.current_url and "produtos" in driver.current_url:
             print("[Cenário 1] PASSOU - Produto cadastrado com sucesso")
             return True
         else:
-            print(f"[Cenário 1] FALHOU - URL: {driver.current_url}")
+            print(f"[Cenário 1] FALHOU - URL: {driver.current_url}, Status: {response.status_code}")
             return False
             
     except Exception as e:
@@ -93,32 +125,51 @@ def cenario_2_campos_ausentes():
     """Cenário 2: Tentativa de cadastro com campos obrigatórios ausentes"""
     print("\n[Cenário 2] Cadastro com campos ausentes")
     driver = criar_driver()
+    base_url = "http://localhost:8000"
     
     try:
-        fazer_login(driver, "http://localhost:8000")
-        driver.get("http://localhost:8000/admin/mercadocesar/produto/add/")
+        session_cookies = fazer_login(driver, base_url)
+        
+        # Acessar formulário de cadastro
+        driver.get(f"{base_url}/produtos/?action=add")
         
         # Aguardar página de formulário carregar
         wait = WebDriverWait(driver, 10)
         wait.until(EC.presence_of_element_located((By.NAME, "codigo")))
         time.sleep(1)
         
+        # Obter CSRF token
+        csrf_token = driver.find_element(By.NAME, "csrfmiddlewaretoken").get_attribute("value")
+        cookies_dict = {cookie['name']: cookie['value'] for cookie in driver.get_cookies()}
+        
+        # Dados do formulário SEM o campo obrigatório preco
         timestamp = str(int(time.time() * 1000))
-        driver.find_element(By.NAME, "codigo").send_keys(f"PROD{timestamp}")
-        driver.find_element(By.NAME, "nome").send_keys(f"Feijão {timestamp}")
-        driver.find_element(By.NAME, "descricao").send_keys(f"Feijão Preto {timestamp}")
-        driver.find_element(By.NAME, "categoria").send_keys("Alimentos")
-        driver.find_element(By.NAME, "unidade_medida").send_keys("kg")
-        driver.find_element(By.NAME, "preco_custo").send_keys("8.50")
+        form_data = {
+            'csrfmiddlewaretoken': csrf_token,
+            'codigo': f'PROD{timestamp}',
+            'nome': f'Feijão {timestamp}',
+            'descricao': f'Feijão Preto {timestamp}',
+            'categoria': 'Alimentos',
+            'unidade_medida': 'kg',
+            'preco_custo': '8.50'
+            # preco NÃO enviado (campo obrigatório)
+        }
         
-        driver.find_element(By.NAME, "_save").click()
-        time.sleep(2)
+        # Fazer POST via requests
+        response = requests.post(
+            f"{base_url}/produtos/?action=add",
+            data=form_data,
+            cookies=cookies_dict,
+            headers={'Referer': f"{base_url}/produtos/?action=add"},
+            allow_redirects=False
+        )
         
-        if "add" in driver.current_url:
+        # Status 200 indica que permaneceu na página (validação falhou corretamente)
+        if response.status_code == 200:
             print("[Cenário 2] PASSOU - Validação bloqueou cadastro")
             return True
         else:
-            print(f"[Cenário 2] FALHOU - URL: {driver.current_url}")
+            print(f"[Cenário 2] FALHOU - Status: {response.status_code}")
             return False
             
     except Exception as e:
@@ -132,33 +183,51 @@ def cenario_3_valores_invalidos():
     """Cenário 3: Tentativa de cadastro com valores inválidos"""
     print("\n[Cenário 3] Cadastro com valores inválidos")
     driver = criar_driver()
+    base_url = "http://localhost:8000"
     
     try:
-        fazer_login(driver, "http://localhost:8000")
-        driver.get("http://localhost:8000/admin/mercadocesar/produto/add/")
+        session_cookies = fazer_login(driver, base_url)
+        
+        # Acessar formulário de cadastro
+        driver.get(f"{base_url}/produtos/?action=add")
         
         # Aguardar página de formulário carregar
         wait = WebDriverWait(driver, 10)
         wait.until(EC.presence_of_element_located((By.NAME, "codigo")))
         time.sleep(1)
         
+        # Obter CSRF token
+        csrf_token = driver.find_element(By.NAME, "csrfmiddlewaretoken").get_attribute("value")
+        cookies_dict = {cookie['name']: cookie['value'] for cookie in driver.get_cookies()}
+        
+        # Dados do formulário com valores NEGATIVOS (inválidos)
         timestamp = str(int(time.time() * 1000))
-        driver.find_element(By.NAME, "codigo").send_keys(f"PROD{timestamp}")
-        driver.find_element(By.NAME, "nome").send_keys(f"Macarrão {timestamp}")
-        driver.find_element(By.NAME, "descricao").send_keys(f"Macarrão {timestamp}")
-        driver.find_element(By.NAME, "categoria").send_keys("Alimentos")
-        driver.find_element(By.NAME, "unidade_medida").send_keys("kg")
-        driver.find_element(By.NAME, "preco_custo").send_keys("-10.50")
-        driver.find_element(By.NAME, "preco").send_keys("-5.90")
-        driver.find_element(By.NAME, "_save").click()
+        form_data = {
+            'csrfmiddlewaretoken': csrf_token,
+            'codigo': f'PROD{timestamp}',
+            'nome': f'Macarrão {timestamp}',
+            'descricao': f'Macarrão {timestamp}',
+            'categoria': 'Alimentos',
+            'unidade_medida': 'kg',
+            'preco_custo': '-10.50',  # Valor negativo (inválido)
+            'preco': '-5.90'  # Valor negativo (inválido)
+        }
         
-        time.sleep(2)
+        # Fazer POST via requests
+        response = requests.post(
+            f"{base_url}/produtos/?action=add",
+            data=form_data,
+            cookies=cookies_dict,
+            headers={'Referer': f"{base_url}/produtos/?action=add"},
+            allow_redirects=False
+        )
         
-        if "add" in driver.current_url:
+        # Status 200 indica que permaneceu na página (validação falhou corretamente)
+        if response.status_code == 200:
             print("[Cenário 3] PASSOU - Validação bloqueou cadastro")
             return True
         else:
-            print(f"[Cenário 3] FALHOU - URL: {driver.current_url}")
+            print(f"[Cenário 3] FALHOU - Status: {response.status_code}")
             return False
             
     except Exception as e:
