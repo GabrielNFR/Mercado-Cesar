@@ -69,9 +69,9 @@
                         </a></li>
                         <div class="divider my-0"></div>
                         <li>
-                            <form method="post" action="{% url 'logout' %}" class="m-0 p-0">
+                            <form method="post" action="{% url 'logout' %}" style="display: contents;">
                                 {% csrf_token %}
-                                <button type="submit" class="w-full text-left text-red-600 hover:bg-red-50 flex items-center gap-2">
+                                <button type="submit" class="text-red-600 hover:bg-red-50 flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                     </svg>
@@ -195,9 +195,14 @@
                         <li class="menu-title"><span class="text-gray-500">Conta</span></li>
                         <li><span class="font-semibold text-gray-800 px-4 py-2">{{ user.username }}</span></li>
                         <li>
-                            <form method="post" action="{% url 'logout' %}">
+                            <form method="post" action="{% url 'logout' %}" style="display: contents;">
                                 {% csrf_token %}
-                                <button type="submit" class="w-full text-left text-red-600 hover:bg-red-50">Sair</button>
+                                <button type="submit" class="text-red-600 hover:bg-red-50 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                    </svg>
+                                    Sair
+                                </button>
                             </form>
                         </li>
                     {% else %}
