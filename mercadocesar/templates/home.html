@@ -1,41 +1,315 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-    <div class="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-        <div class="max-w-2xl space-y-6">
-            <h1 class="text-5xl font-bold text-gray-800 mb-4">
-                Bem-vindo ao Mercado Cesar!
-            </h1>
-            
-            <div class="card bg-white shadow-xl p-8 border-t-4 border-[#f4a361]">
-                <p class="text-xl text-gray-700">
-                    Você está autenticado como <strong class="text-[#f4a361]">{{ user.username }}</strong>
-                </p>
-                
-                {% if user.is_staff %}
-                    <div class="divider"></div>
-                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-lg">
-                        <div class="flex items-start gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <div class="text-left">
-                                <h3 class="font-bold text-green-800">Acesso de Gerente Ativado</h3>
-                                <p class="text-sm text-green-700">Use os links na barra de navegação acima para gerenciar o sistema.</p>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-                
-                <div class="mt-6">
-                    <a href="{% url 'busca' %}" class="inline-flex items-center gap-2 bg-[#f4a361] hover:bg-[#e28e46] text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        Começar a Comprar
-                    </a>
+<!-- Hero Section -->
+<section style="position: relative; width: 100vw; margin-left: calc(-50vw + 50%); margin-top: -40px; height: 600px; display: flex; align-items: center; justify-content: center; text-align: center; background: url('{% static "img/fresh-supermarket-produce-vegetables-fruits.jpg" %}') center/cover; background-position: center;">
+    <!-- Overlay de transparência -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.3);"></div>
+    
+    <div style="max-width: 900px; position: relative; z-index: 1; padding: 0 20px;">
+        <h1 style="font-size: 3.5rem; font-weight: 700; color: #ffffff; margin-bottom: 20px; line-height: 1.2; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">
+            Seu Mercado Online,<br>Fresco e Rápido
+        </h1>
+        <p style="font-size: 1.25rem; color: #ffffff; margin-bottom: 40px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);">
+            Entrega em domicílio ou retire na loja. Qualidade garantida!
+        </p>
+        <a href="{% url 'busca' %}" style="display: inline-flex; align-items: center; gap: 10px; background-color: #f0834e; color: white; padding: 16px 40px; border-radius: 8px; font-size: 1.125rem; font-weight: 600; text-decoration: none; transition: all 0.3s; box-shadow: 0 4px 12px rgba(240, 131, 78, 0.3);"
+           onmouseover="this.style.backgroundColor='#d97440'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(240, 131, 78, 0.4)'"
+           onmouseout="this.style.backgroundColor='#f0834e'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(240, 131, 78, 0.3)'">
+            Começar a Comprar
+            <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+        </a>
+    </div>
+</section>
+
+<!-- Benefícios Section -->
+<section style="padding: 80px 20px; background-color: #ffffff; width: 100vw; margin-left: calc(-50vw + 50%);">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+            <!-- Card 1 -->
+            <div style="background: white; border-radius: 12px; padding: 40px 30px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s;"
+                 onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 8px 20px rgba(240, 131, 78, 0.2)'"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'">
+                <div style="width: 64px; height: 64px; background-color: #fff5f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px; color: #f0834e;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                    </svg>
                 </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 12px;">Entrega Rápida</h3>
+                <p style="color: #6b7280; font-size: 0.95rem;">Receba em casa ou retire na loja</p>
+            </div>
+
+            <!-- Card 2 -->
+            <div style="background: white; border-radius: 12px; padding: 40px 30px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s;"
+                 onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 8px 20px rgba(240, 131, 78, 0.2)'"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'">
+                <div style="width: 64px; height: 64px; background-color: #fff5f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px; color: #f0834e;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                    </svg>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 12px;">Produtos Frescos</h3>
+                <p style="color: #6b7280; font-size: 0.95rem;">Qualidade garantida</p>
+            </div>
+
+            <!-- Card 3 -->
+            <div style="background: white; border-radius: 12px; padding: 40px 30px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s;"
+                 onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 8px 20px rgba(240, 131, 78, 0.2)'"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'">
+                <div style="width: 64px; height: 64px; background-color: #fff5f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px; color: #f0834e;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 12px;">Preços Competitivos</h3>
+                <p style="color: #6b7280; font-size: 0.95rem;">Economia que cabe no seu bolso</p>
+            </div>
+
+            <!-- Card 4 -->
+            <div style="background: white; border-radius: 12px; padding: 40px 30px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: all 0.3s;"
+                 onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 8px 20px rgba(240, 131, 78, 0.2)'"
+                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)'">
+                <div style="width: 64px; height: 64px; background-color: #fff5f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px; color: #f0834e;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 12px;">Pagamento Seguro</h3>
+                <p style="color: #6b7280; font-size: 0.95rem;">Cartão de crédito com segurança</p>
             </div>
         </div>
     </div>
+</section>
+
+<!-- Produtos em Destaque Section -->
+<section style="padding: 80px 20px; background-color: white;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 2.5rem; font-weight: 700; color: #1f2937; margin-bottom: 12px;">Produtos em Destaque</h2>
+            <p style="font-size: 1.125rem; color: #6b7280;">Confira nossas ofertas especiais</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 40px;">
+            {% for produto in produtos_destaque %}
+            <div style="background: white; border: 2px solid #e5e7eb; border-radius: 16px; overflow: hidden; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);"
+                 onmouseover="this.style.borderColor='#f0834e'; this.style.transform='translateY(-8px)'; this.style.boxShadow='0 8px 20px rgba(240, 131, 78, 0.15)'"
+                 onmouseout="this.style.borderColor='#e5e7eb'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)'">
+                <div style="height: 240px; background: linear-gradient(135deg, #f0834e 0%, #fbbf24 100%); display: flex; align-items: center; justify-content: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 80px; height: 80px; color: white; opacity: 0.7;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                </div>
+                <div style="padding: 24px;">
+                    <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 8px;">{{ produto.nome }}</h3>
+                    <p style="font-size: 1.75rem; font-weight: 700; color: #f0834e; margin-bottom: 20px;">R$ {{ produto.preco|floatformat:2 }}</p>
+                    <a href="{% url 'busca' %}" style="display: block; text-align: center; padding: 12px; background-color: #f3f4f6; color: #374151; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s;"
+                       onmouseover="this.style.backgroundColor='#f0834e'; this.style.color='white'"
+                       onmouseout="this.style.backgroundColor='#f3f4f6'; this.style.color='#374151'">
+                        Ver Produto
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <p style="text-align: center; color: #6b7280; grid-column: 1 / -1;">Nenhum produto disponível no momento.</p>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center;">
+            <a href="{% url 'busca' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 14px 32px; background-color: white; color: #f0834e; border: 2px solid #f0834e; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s;"
+               onmouseover="this.style.backgroundColor='#f0834e'; this.style.color='white'"
+               onmouseout="this.style.backgroundColor='white'; this.style.color='#f0834e'">
+                Ver Todos os Produtos
+                <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Como Funciona Section -->
+<section style="padding: 80px 20px; background-color: #f9fafb;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 2.5rem; font-weight: 700; color: #1f2937; margin-bottom: 12px;">Como Funciona</h2>
+            <p style="font-size: 1.125rem; color: #6b7280;">Simples, rápido e seguro</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; position: relative;">
+            <!-- Passo 1 -->
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; background-color: #f0834e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 4px 12px rgba(240, 131, 78, 0.3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 40px; height: 40px; color: white;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <p style="font-size: 0.875rem; color: #f0834e; font-weight: 600; margin-bottom: 8px;">Passo 1</p>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 12px;">Escolha seus produtos</h3>
+                <p style="color: #6b7280; font-size: 0.95rem;">Navegue por nosso catálogo e adicione ao carrinho</p>
+            </div>
+
+            <!-- Passo 2 -->
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; background-color: #f0834e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 4px 12px rgba(240, 131, 78, 0.3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 40px; height: 40px; color: white;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                </div>
+                <p style="font-size: 0.875rem; color: #f0834e; font-weight: 600; margin-bottom: 8px;">Passo 2</p>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 12px;">Selecione entrega ou retirada</h3>
+                <p style="color: #6b7280; font-size: 0.95rem;">Escolha receber em casa ou retirar na loja</p>
+            </div>
+
+            <!-- Passo 3 -->
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; background-color: #f0834e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 4px 12px rgba(240, 131, 78, 0.3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 40px; height: 40px; color: white;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                </div>
+                <p style="font-size: 0.875rem; color: #f0834e; font-weight: 600; margin-bottom: 8px;">Passo 3</p>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 12px;">Pague com segurança</h3>
+                <p style="color: #6b7280; font-size: 0.95rem;">Finalize com cartão de crédito</p>
+            </div>
+
+            <!-- Passo 4 -->
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; background-color: #f0834e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: 0 4px 12px rgba(240, 131, 78, 0.3);">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 40px; height: 40px; color: white;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <p style="font-size: 0.875rem; color: #f0834e; font-weight: 600; margin-bottom: 8px;">Passo 4</p>
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 12px;">Receba rapidamente</h3>
+                <p style="color: #6b7280; font-size: 0.95rem;">Produtos frescos na sua porta</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Lojas Section -->
+<section style="padding: 80px 20px; background-color: white;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <h2 style="font-size: 2.5rem; font-weight: 700; color: #1f2937; margin-bottom: 12px;">Retire na Loja Mais Próxima</h2>
+            <p style="font-size: 1.125rem; color: #6b7280;">Encontre uma de nossas lojas</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px;">
+            {% for loja in lojas %}
+            <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 30px; transition: all 0.3s;"
+                 onmouseover="this.style.borderColor='#f0834e'; this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 16px rgba(240, 131, 78, 0.15)'"
+                 onmouseout="this.style.borderColor='#e5e7eb'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                <div style="display: flex; align-items: start; gap: 16px; margin-bottom: 16px;">
+                    <div style="width: 48px; height: 48px; background-color: #fff5f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px; color: #f0834e;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 8px;">{{ loja.nome }}</h3>
+                        <p style="color: #6b7280; font-size: 0.95rem; line-height: 1.6;">
+                            {{ loja.endereco }}, {{ loja.numero }}<br>
+                            {{ loja.bairro }} - {{ loja.cidade}}/{{ loja.estado }}<br>
+                            CEP: {{ loja.cep }}
+                        </p>
+                    </div>
+                </div>
+                <div style="background-color: #f9fafb; border-radius: 8px; padding: 12px; margin-top: 16px;">
+                    <p style="color: #374151; font-size: 0.875rem;">
+                        <strong>Prazo de retirada:</strong> {{ loja.prazo_retirada_dias }} dia{{ loja.prazo_retirada_dias|pluralize }}
+                    </p>
+                </div>
+            </div>
+            {% empty %}
+            <p style="text-align: center; color: #6b7280; grid-column: 1 / -1;">Nenhuma loja disponível no momento.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- CTA Final Section -->
+<section style="padding: 80px 20px; background: linear-gradient(135deg, #f0834e 0%, #d97440 100%); text-align: center; width: 100vw; margin-left: calc(-50vw + 50%);">
+    <div style="max-width: 800px; margin: 0 auto; padding: 0 20px;">
+        <h2 style="font-size: 2.5rem; font-weight: 700; color: #ffffff; margin-bottom: 20px;">Pronto para começar?</h2>
+        <p style="font-size: 1.25rem; color: #ffffff; margin-bottom: 40px;">
+            Faça seu primeiro pedido agora e<br>receba produtos frescos na sua casa
+        </p>
+        <a href="{% url 'busca' %}" style="display: inline-flex; align-items: center; gap: 10px; background-color: #10b981; color: white; padding: 16px 40px; border-radius: 8px; font-size: 1.125rem; font-weight: 600; text-decoration: none; transition: all 0.3s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);"
+           onmouseover="this.style.backgroundColor='#059669'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(16, 185, 129, 0.4)'"
+           onmouseout="this.style.backgroundColor='#10b981'; this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.3)'">
+            Fazer Pedido Agora
+            <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+        </a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer style="background-color: #1f2937; color: white; padding: 60px 20px 30px; width: 100vw; margin-left: calc(-50vw + 50%); margin-bottom: 0;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px;">
+            <!-- Coluna 1 -->
+            <div>
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 28px; height: 28px; color: #f0834e;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <h3 style="font-size: 1.25rem; font-weight: 600;">Mercado Cesar</h3>
+                </div>
+                <p style="color: #9ca3af; font-size: 0.95rem; line-height: 1.6;">
+                    Seu mercado online com produtos frescos e entrega rápida.
+                </p>
+            </div>
+
+            <!-- Coluna 2 -->
+            <div>
+                <h4 style="font-size: 1rem; font-weight: 600; margin-bottom: 16px;">Navegação</h4>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 12px;"><a href="{% url 'home' %}" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#f0834e'" onmouseout="this.style.color='#9ca3af'">Home</a></li>
+                    <li style="margin-bottom: 12px;"><a href="{% url 'busca' %}" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#f0834e'" onmouseout="this.style.color='#9ca3af'">Produtos</a></li>
+                    {% if user.is_superuser %}
+                    <li style="margin-bottom: 12px;"><a href="{% url 'gerenciar_lojas' %}" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#f0834e'" onmouseout="this.style.color='#9ca3af'">Lojas</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Coluna 3 -->
+            <div>
+                <h4 style="font-size: 1rem; font-weight: 600; margin-bottom: 16px;">Suporte</h4>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li style="margin-bottom: 12px;"><a href="{% url 'politica_privacidade' %}" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#f0834e'" onmouseout="this.style.color='#9ca3af'">Política de Privacidade</a></li>
+                    <li style="margin-bottom: 12px;"><a href="{% url 'termos_uso' %}" style="color: #9ca3af; text-decoration: none; transition: color 0.2s;" onmouseover="this.style.color='#f0834e'" onmouseout="this.style.color='#9ca3af'">Termos de Uso</a></li>
+                </ul>
+            </div>
+
+            <!-- Coluna 4 -->
+            <div>
+                <h4 style="font-size: 1rem; font-weight: 600; margin-bottom: 16px;">GitHub</h4>
+                <div style="display: flex; gap: 12px;">
+                    <a href="https://github.com/aceamanda/Mercado-Cesar" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; background-color: #374151; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.backgroundColor='#f0834e'" onmouseout="this.style.backgroundColor='#374151'">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                </div>
+                <p style="color: #9ca3af; font-size: 0.875rem; margin-top: 12px; line-height: 1.4;">
+                    Confira o código-fonte
+                </p>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid #374151; padding-top: 30px; text-align: center;">
+            <p style="color: #9ca3af; font-size: 0.875rem;">
+                © 2025 Mercado Cesar. Todos os direitos reservados.
+            </p>
+        </div>
+    </div>
+</footer>
 {% endblock %}

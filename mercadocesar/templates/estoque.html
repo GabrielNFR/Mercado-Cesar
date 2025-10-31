@@ -7,16 +7,16 @@
     {% if action == 'list' %}
         <!-- LISTAGEM DE ESTOQUE -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <h1 style="display: flex; align-items: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600;">
+            <h1 style="display: flex; align-items: center; gap: 12px; color: #f0834e; font-size: 2rem; font-weight: 600;">
                 <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
                 Gerenciar Estoque
             </h1>
             <a href="{% url 'gerenciar_estoque' %}?action=add" 
-               style="padding: 12px 20px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
-               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+               style="padding: 12px 20px; background: linear-gradient(135deg, #f0834e 0%, #d97440 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(240, 131, 78, 0.3); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(240, 131, 78, 0.4)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(240, 131, 78, 0.3)'">
                 <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
@@ -35,7 +35,7 @@
                     </label>
                     <input type="text" name="busca_produto" value="{{ busca_produto }}" placeholder="Código ou nome..." 
                            style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none;"
-                           onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                           onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                            onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                 </div>
                 
@@ -45,7 +45,7 @@
                     </label>
                     <select name="armazem" 
                             style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none; background-color: white;"
-                            onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                            onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                             onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                         <option value="">Todos os armazéns</option>
                         {% for arm in armazens %}
@@ -60,7 +60,7 @@
                     </label>
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 14px;">
                         <input type="checkbox" name="apenas_baixo" value="1" {% if apenas_baixo %}checked{% endif %} 
-                               style="width: 18px; height: 18px; cursor: pointer; accent-color: #f4a361;">
+                               style="width: 18px; height: 18px; cursor: pointer; accent-color: #f0834e;">
                         <span style="color: #374151; font-size: 0.95rem;">Apenas estoque baixo (&lt;30)</span>
                     </label>
                 </div>
@@ -70,9 +70,9 @@
                         Ação
                     </label>
                     <button type="submit" 
-                            style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3);"
-                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
-                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+                            style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, #f0834e 0%, #d97440 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(240, 131, 78, 0.3);"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(240, 131, 78, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(240, 131, 78, 0.3)'">
                         🔍 Filtrar
                     </button>
                 </div>
@@ -160,7 +160,7 @@
 
     {% elif action == 'add' %}
         <!-- FORMULÁRIO ADICIONAR -->
-        <h1 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+        <h1 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f0834e; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f0834e;">
             <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
@@ -184,7 +184,7 @@
                     </label>
                     <select name="produto" required 
                             style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none; background-color: white;"
-                            onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                            onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                             onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                         <option value="">Selecione um produto</option>
                         {% for produto in produtos %}
@@ -199,7 +199,7 @@
                     </label>
                     <select name="armazem" required 
                             style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none; background-color: white;"
-                            onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                            onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                             onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                         <option value="">Selecione um armazém</option>
                         {% for armazem in armazens %}
@@ -214,7 +214,7 @@
                     </label>
                     <input type="number" name="quantidade" required min="0" placeholder="0"
                            style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none;"
-                           onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                           onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                            onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                 </div>
 
@@ -226,9 +226,9 @@
                         ❌ Cancelar
                     </a>
                     <button type="submit" 
-                            style="padding: 14px 24px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3); display: inline-flex; align-items: center; gap: 8px;"
-                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
-                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+                            style="padding: 14px 24px; background: linear-gradient(135deg, #f0834e 0%, #d97440 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(240, 131, 78, 0.3); display: inline-flex; align-items: center; gap: 8px;"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(240, 131, 78, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(240, 131, 78, 0.3)'">
                         <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
@@ -240,7 +240,7 @@
 
     {% elif action == 'edit' %}
         <!-- FORMULÁRIO EDITAR -->
-        <h1 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+        <h1 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f0834e; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f0834e;">
             <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
@@ -268,7 +268,7 @@
                     </label>
                     <input type="number" name="quantidade" value="{{ estoque.quantidade }}" required min="0" 
                            style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none;"
-                           onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                           onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                            onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                     <p style="font-size: 0.875rem; color: #9ca3af; margin-top: 6px;">Unidade: {{ estoque.produto.unidade_medida }}</p>
                 </div>
@@ -281,9 +281,9 @@
                         ❌ Cancelar
                     </a>
                     <button type="submit" 
-                            style="padding: 14px 24px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3); display: inline-flex; align-items: center; gap: 8px;"
-                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
-                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+                            style="padding: 14px 24px; background: linear-gradient(135deg, #f0834e 0%, #d97440 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(240, 131, 78, 0.3); display: inline-flex; align-items: center; gap: 8px;"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(240, 131, 78, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(240, 131, 78, 0.3)'">
                         <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>

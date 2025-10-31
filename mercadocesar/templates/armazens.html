@@ -7,16 +7,16 @@
     {% if action == 'list' %}
         <!-- LISTAGEM DE ARMAZÉNS -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <h1 style="display: flex; align-items: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600;">
+            <h1 style="display: flex; align-items: center; gap: 12px; color: #f0834e; font-size: 2rem; font-weight: 600;">
                 <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
                 Gerenciar Armazéns
             </h1>
             <a href="{% url 'gerenciar_armazens' %}?action=add" 
-               style="padding: 12px 20px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
-               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
-               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+               style="padding: 12px 20px; background: linear-gradient(135deg, #f0834e 0%, #d97440 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(240, 131, 78, 0.3); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(240, 131, 78, 0.4)'"
+               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(240, 131, 78, 0.3)'">
                 <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
@@ -91,7 +91,7 @@
 
     {% elif action == 'add' or action == 'edit' %}
         <!-- FORMULÁRIO ADICIONAR/EDITAR -->
-        <h1 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+        <h1 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f0834e; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f0834e;">
             <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
@@ -109,7 +109,7 @@
                     <input type="text" name="nome" value="{{ armazem.nome|default:'' }}" required maxlength="100" 
                            style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none;" 
                            placeholder="Ex: Armazém Central"
-                           onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                           onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                            onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                 </div>
 
@@ -120,7 +120,7 @@
                     <textarea name="endereco" maxlength="200" rows="3" 
                               style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none; resize: vertical; font-family: inherit;" 
                               placeholder="Ex: Rua das Flores, 123 - Centro"
-                              onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                              onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                               onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">{{ armazem.endereco|default:'' }}</textarea>
                     <p style="font-size: 0.875rem; color: #9ca3af; margin-top: 6px;">Opcional</p>
                 </div>
@@ -133,9 +133,9 @@
                         ❌ Cancelar
                     </a>
                     <button type="submit" 
-                            style="padding: 14px 24px; background: linear-gradient(135deg, #f4a361 0%, #e28e46 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(244, 163, 97, 0.3); display: inline-flex; align-items: center; gap: 8px;"
-                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.4)'"
-                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(244, 163, 97, 0.3)'">
+                            style="padding: 14px 24px; background: linear-gradient(135deg, #f0834e 0%, #d97440 100%); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(240, 131, 78, 0.3); display: inline-flex; align-items: center; gap: 8px;"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(240, 131, 78, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(240, 131, 78, 0.3)'">
                         <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>

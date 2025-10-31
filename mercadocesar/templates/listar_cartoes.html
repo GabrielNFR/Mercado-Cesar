@@ -3,7 +3,7 @@
 
 {% block content %}
 <main class="cartao">
-    <h2 style="display: flex; align-items: center; gap: 10px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+    <h2 style="display: flex; align-items: center; gap: 10px; color: #f0834e; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f0834e;">
         <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
         </svg>
@@ -11,7 +11,7 @@
     </h2>
 
     <div style="text-align: center; margin-bottom: 30px;">
-        <a href="{% url 'cadastrar_cartao' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background-color: #f4a361; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: background-color 0.3s ease;">
+        <a href="{% url 'cadastrar_cartao' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background-color: #f0834e; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: background-color 0.3s ease;">
             <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
             </svg>
@@ -29,7 +29,7 @@
 
     {% if cartoes %}
         <h3 style="color: #374151; margin-bottom: 20px; font-size: 1.125rem; font-weight: 600; display: flex; align-items: center; gap: 10px;">
-            <span style="width: 4px; height: 20px; background-color: #f4a361; display: inline-block;"></span>
+            <span style="width: 4px; height: 20px; background-color: #f0834e; display: inline-block;"></span>
             Cartões Salvos
         </h3>
         <div class="cartoes-lista">
@@ -61,7 +61,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
             </svg>
             <p style="color: #6b7280; font-size: 1.125rem; margin-bottom: 20px;">Nenhum cartão cadastrado ainda</p>
-            <a href="{% url 'cadastrar_cartao' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background-color: #f4a361; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+            <a href="{% url 'cadastrar_cartao' %}" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background-color: #f0834e; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
                 <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>

@@ -3,7 +3,7 @@
 
 {% block content %}
 <main class="cartao" style="max-width: 700px; margin: 40px auto; padding: 0 20px;">
-    <h2 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+    <h2 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f0834e; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f0834e;">
         <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
         </svg>
@@ -45,7 +45,7 @@
 
     <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 35px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
         <h3 style="color: #374151; font-size: 1.125rem; font-weight: 600; margin-bottom: 25px; display: flex; align-items: center; gap: 8px;">
-            <div style="width: 4px; height: 20px; background-color: #f4a361; border-radius: 2px;"></div>
+            <div style="width: 4px; height: 20px; background-color: #f0834e; border-radius: 2px;"></div>
             Informações do Cartão
         </h3>
         
@@ -59,7 +59,7 @@
                 <input type="text" name="numero_cartao" maxlength="19" 
                        placeholder="0000 0000 0000 0000" required
                        style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; font-family: 'Courier New', monospace; letter-spacing: 2px; transition: all 0.2s;"
-                       onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                       onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                        onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                 <small style="color: #9ca3af; font-size: 0.8rem; display: block; margin-top: 6px;">Digite os 16 dígitos do cartão</small>
             </div>
@@ -72,7 +72,7 @@
                     <input type="text" name="validade" maxlength="5" 
                            placeholder="12/25" required
                            style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s;"
-                           onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                           onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                            onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                 </div>
                 
@@ -83,7 +83,7 @@
                     <input type="text" name="cvv" maxlength="4" 
                            placeholder="123" required
                            style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s;"
-                           onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                           onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                            onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                     <small style="color: #9ca3af; font-size: 0.8rem; display: block; margin-top: 6px;">Código de segurança</small>
                 </div>
@@ -96,7 +96,7 @@
                 <input type="text" name="nome_titular" 
                        placeholder="Nome como impresso no cartão" required
                        style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; text-transform: uppercase; transition: all 0.2s;"
-                       onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                       onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                        onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
             </div>
 
@@ -107,16 +107,16 @@
                 <input type="text" name="apelido" 
                        placeholder="Ex: Cartão Principal, Cartão de Compras"
                        style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s;"
-                       onfocus="this.style.borderColor='#f4a361'; this.style.boxShadow='0 0 0 3px rgba(244, 163, 97, 0.1)'"
+                       onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
                        onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'">
                 <small style="color: #9ca3af; font-size: 0.8rem; display: block; margin-top: 6px;">Para facilitar a identificação do cartão</small>
             </div>
 
             <div style="display: flex; gap: 12px; margin-top: 30px;">
                 <button type="submit" 
-                        style="flex: 1; padding: 14px 24px; background-color: #f4a361; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;"
-                        onmouseover="this.style.backgroundColor='#e28e46'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(244, 163, 97, 0.3)'"
-                        onmouseout="this.style.backgroundColor='#f4a361'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        style="flex: 1; padding: 14px 24px; background-color: #f0834e; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;"
+                        onmouseover="this.style.backgroundColor='#d97440'; this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(240, 131, 78, 0.3)'"
+                        onmouseout="this.style.backgroundColor='#f0834e'; this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                     <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>

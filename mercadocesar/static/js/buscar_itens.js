@@ -77,9 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Adicionar active ao botão clicado
             button.classList.add('active');
-            button.style.backgroundColor = '#f4a361';
+            button.style.backgroundColor = '#f0834e';
             button.style.color = 'white';
-            button.style.borderColor = '#f4a361';
+            button.style.borderColor = '#f0834e';
 
             // Aplicar filtro
             applyFilter();

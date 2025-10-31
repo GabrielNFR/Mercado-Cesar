@@ -8,10 +8,10 @@
 .cartao h2 {
     font-size: 1.75rem;
     font-weight: 600;
-    color: #f4a361;
+    color: #f0834e;
     margin-bottom: 30px;
     padding-bottom: 15px;
-    border-bottom: 2px solid #f4a361;
+    border-bottom: 2px solid #f0834e;
 }
 
 .form-group {
@@ -39,7 +39,7 @@
 
 .form-group input:focus {
     outline: none;
-    border-color: #f4a361;
+    border-color: #f0834e;
     box-shadow: 0 0 0 3px rgba(244, 163, 97, 0.1);
 }
 

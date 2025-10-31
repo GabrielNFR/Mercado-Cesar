@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
-    <h2 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
+    <h2 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f0834e; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f0834e;">
         <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
@@ -21,15 +21,15 @@
 
     <!-- Resumo do Carrinho -->
     {% if carrinho %}
-    <div style="background-color: #fff5f0; padding: 25px; border-radius: 12px; margin-bottom: 40px; border-left: 4px solid #f4a361; border-right: 4px solid #f4a361;">
+    <div style="background-color: #fff5f0; padding: 25px; border-radius: 12px; margin-bottom: 40px; border-left: 4px solid #f0834e; border-right: 4px solid #f0834e;">
         <h3 style="color: #374151; font-size: 1.25rem; font-weight: 600; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-            <span style="color: #f4a361; font-size: 1.5rem;">🛒</span>
+            <span style="color: #f0834e; font-size: 1.5rem;">🛒</span>
             Itens no Carrinho
         </h3>
         <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
             <table style="width: 100%; min-width: 500px; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden;">
                 <thead>
-                    <tr style="background-color: #f4a361; color: white;">
+                    <tr style="background-color: #f0834e; color: white;">
                         <th style="text-align: left; padding: 12px 15px; font-weight: 600;">Produto</th>
                         <th style="text-align: center; padding: 12px 15px; font-weight: 600;">Quantidade</th>
                         <th style="text-align: right; padding: 12px 15px; font-weight: 600;">Preço Unit.</th>
@@ -78,7 +78,7 @@
                             </small>
                         </td>
                         <td style="text-align: right; padding: 12px 15px; color: #6b7280;">R$ {{ item.produto.preco }}</td>
-                        <td style="text-align: right; padding: 12px 15px; font-weight: 600; color: #f4a361;">R$ {{ item.calcular_subtotal }}</td>
+                        <td style="text-align: right; padding: 12px 15px; font-weight: 600; color: #f0834e;">R$ {{ item.calcular_subtotal }}</td>
                         <td style="text-align: center; padding: 12px 15px;">
                             <button type="button" 
                                     onclick="abrirModalRemover({{ item.id }}, '{{ item.produto.nome }}', {{ item.quantidade }})"
@@ -92,9 +92,9 @@
                     {% endfor %}
                 </tbody>
                 <tfoot>
-                    <tr style="background-color: #f9fafb; border-top: 2px solid #f4a361;">
+                    <tr style="background-color: #f9fafb; border-top: 2px solid #f0834e;">
                         <td colspan="4" style="text-align: right; padding: 15px; font-weight: 600; color: #1f2937; font-size: 1.125rem;">Total dos Produtos:</td>
-                        <td style="text-align: right; padding: 15px; font-weight: 700; color: #f4a361; font-size: 1.25rem;">R$ {{ carrinho.calcular_total }}</td>
+                        <td style="text-align: right; padding: 15px; font-weight: 700; color: #f0834e; font-size: 1.25rem;">R$ {{ carrinho.calcular_total }}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -103,7 +103,7 @@
     {% endif %}
 
     <h3 style="color: #374151; font-size: 1rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-        <div style="width: 4px; height: 20px; background-color: #f4a361; border-radius: 2px;"></div>
+        <div style="width: 4px; height: 20px; background-color: #f0834e; border-radius: 2px;"></div>
         Escolha o Tipo de Entrega
     </h3>
     

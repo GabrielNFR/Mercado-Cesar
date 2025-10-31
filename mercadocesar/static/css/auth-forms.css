@@ -16,7 +16,7 @@ body {
 
 .auth-card {
   background: white;
-  border: 2px solid #f4a361;
+  border: 2px solid #f0834e;
   border-radius: 16px;
   padding: 48px 40px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
@@ -26,7 +26,7 @@ body {
 
 
 .auth-title {
-  color: #f4a361;
+  color: #f0834e;
   font-size: 2rem;
   font-weight: 600;
   text-align: center;
@@ -64,7 +64,7 @@ body {
 
 .auth-input:focus,
 .form-group input:focus {
-  border-color: #f4a361;
+  border-color: #f0834e;
   box-shadow: 0 0 0 3px rgba(244, 163, 97, 0.1);
   background: white;
 }
@@ -81,7 +81,7 @@ body {
   font-size: 1rem;
   font-weight: 500;
   color: white;
-  background-color: #f4a361;
+  background-color: #f0834e;
   border: none;
   border-radius: 8px;
   cursor: pointer;

@@ -5,7 +5,8 @@ from .views import (pagina_inicial, register, estoque_baixo, buscar_itens, cadas
                     finalizar_pedido, gerenciar_lojas, ativar_desativar_loja, visualizar_pedidos, 
                     gerenciar_produtos, adicionar_produto, editar_produto, deletar_produto, 
                     gerenciar_armazens, adicionar_armazem, editar_armazem, deletar_armazem, 
-                    gerenciar_estoque, adicionar_estoque, editar_estoque, deletar_estoque)
+                    gerenciar_estoque, adicionar_estoque, editar_estoque, deletar_estoque,
+                    politica_privacidade, termos_uso)
 
 urlpatterns = [
     path('', pagina_inicial, name='home'),
@@ -36,4 +37,6 @@ urlpatterns = [
     path('estoque/adicionar/', adicionar_estoque, name='adicionar_estoque'),
     path('estoque/editar/<int:estoque_id>/', editar_estoque, name='editar_estoque'),
     path('estoque/deletar/<int:estoque_id>/', deletar_estoque, name='deletar_estoque'),
+    path('politica-privacidade/', politica_privacidade, name='politica_privacidade'),
+    path('termos-de-uso/', termos_uso, name='termos_uso'),
 ]

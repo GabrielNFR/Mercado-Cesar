@@ -49,7 +49,37 @@ class PedidoTemporario:
 
 @login_required
 def pagina_inicial(request):
-    return render(request, 'home.html')
+    """Landing page com produtos em destaque e informações"""
+    from django.db.models import Sum
+    
+    # Buscar produtos em destaque (primeiros 3 de cada categoria)
+    produtos_destaque = []
+    categorias = Produto.objects.values_list('categoria', flat=True).distinct()[:3]
+    
+    for categoria in categorias:
+        produto = Produto.objects.filter(categoria=categoria).first()
+        if produto:
+            produtos_destaque.append(produto)
+    
+    # Buscar lojas ativas
+    lojas = Loja.objects.filter(ativa=True)[:3]
+    
+    contexto = {
+        'produtos_destaque': produtos_destaque,
+        'lojas': lojas,
+    }
+    
+    return render(request, 'home.html', contexto)
+
+
+def politica_privacidade(request):
+    """Página de Política de Privacidade"""
+    return render(request, 'politica_privacidade.html')
+
+
+def termos_uso(request):
+    """Página de Termos de Uso"""
+    return render(request, 'termos_uso.html')
 
 def register(request):
     if request.method == 'POST':

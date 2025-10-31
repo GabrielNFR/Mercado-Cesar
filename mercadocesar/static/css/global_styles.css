@@ -22,7 +22,7 @@ input:focus,
 textarea:focus,
 select:focus {
     outline: none !important;
-    border-color: #f4a361 !important;
+    border-color: #f0834e !important;
     box-shadow: 0 0 0 3px rgba(244, 163, 97, 0.1) !important;
 }
 
@@ -38,19 +38,19 @@ label {
 }
 
 .form-control:focus {
-    border-color: #f4a361 !important;
+    border-color: #f0834e !important;
     box-shadow: 0 0 0 0.2rem rgba(244, 163, 97, 0.25) !important;
 }
 
 h1, h2 {
-    color: #f4a361 !important;
+    color: #f0834e !important;
     font-weight: 600 !important;
 }
 
 main h2 {
     font-size: 1.75rem !important;
     padding-bottom: 15px !important;
-    border-bottom: 2px solid #f4a361 !important;
+    border-bottom: 2px solid #f0834e !important;
     margin-bottom: 30px !important;
 }
 
@@ -76,7 +76,7 @@ main h2 {
         text-align: center;
         padding: 8px;
         background: #fff5f0;
-        color: #f4a361;
+        color: #f0834e;
         font-size: 0.75rem;
         font-weight: 600;
         border-radius: 0 0 8px 8px;
