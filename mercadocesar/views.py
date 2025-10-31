@@ -17,6 +17,8 @@ def obter_carrinho_ativo(usuario):
 class PedidoTemporario:
     """Classe para representar um pedido antes de ser salvo no banco"""
     def __init__(self, dados, carrinho, loja=None):
+        self.id = None  # Pedido ainda não foi criado
+        self.cartao = None  # Cartão ainda não foi selecionado
         self.tipo_entrega = dados['tipo_entrega']
         self.custo_entrega = Decimal(dados['custo_entrega'])
         self.prazo_dias = dados['prazo_dias']
@@ -61,7 +63,25 @@ def register(request):
 
 @user_passes_test(lambda u: u.is_staff)
 def estoque_baixo(request):
-    estoques = Estoque.abaixo_estoque_minimo()
+    # Pegar estoques com quantidade < 30
+    estoques = list(Estoque.abaixo_estoque_minimo())
+    
+    # Adicionar produtos que não têm nenhum registro de estoque (estoque total = 0)
+    from django.db.models import Sum
+    produtos_sem_estoque = Produto.objects.annotate(
+        total_estoque=Sum('estoque__quantidade')
+    ).filter(total_estoque__isnull=True)
+    
+    # Criar objetos fictícios de Estoque para produtos sem estoque
+    class EstoqueFicticio:
+        def __init__(self, produto):
+            self.produto = produto
+            self.quantidade = 0
+            self.armazem = type('obj', (object,), {'nome': 'Nenhum'})()
+    
+    for produto in produtos_sem_estoque:
+        estoques.append(EstoqueFicticio(produto))
+    
     return render(request, 'estoque_baixo.html', {'estoques': estoques})
 
 @login_required
@@ -271,6 +291,77 @@ def checkout(request):
 
 
 @login_required
+def atualizar_quantidade_carrinho(request, item_id):
+    """Atualiza a quantidade de um item no carrinho"""
+    if request.method != 'POST':
+        return redirect('checkout')
+    
+    try:
+        item = ItemCarrinho.objects.get(id=item_id, carrinho__usuario=request.user, carrinho__ativo=True)
+        acao = request.POST.get('acao') 
+        
+        estoque_total = item.produto.estoque_total()
+        
+        if acao == 'aumentar':
+            if item.quantidade >= estoque_total:
+                messages.warning(request, f'Estoque insuficiente. Apenas {estoque_total} unidade(s) disponível(is).')
+            else:
+                item.quantidade += 1
+                item.save()
+        elif acao == 'diminuir':
+            if item.quantidade <= 1:
+                # Quantidade chegou a 0, remover item
+                produto_nome = item.produto.nome
+                item.delete()
+                messages.success(request, f'"{produto_nome}" removido do carrinho.')
+            else:
+                item.quantidade -= 1
+                item.save()
+    
+    except ItemCarrinho.DoesNotExist:
+        messages.error(request, 'Item não encontrado no carrinho.')
+    
+    return redirect('checkout')
+
+
+@login_required
+def remover_item_carrinho(request, item_id):
+    """Remove quantidade específica de um item do carrinho"""
+    if request.method != 'POST':
+        return redirect('checkout')
+    
+    try:
+        item = ItemCarrinho.objects.get(id=item_id, carrinho__usuario=request.user, carrinho__ativo=True)
+        produto_nome = item.produto.nome
+        quantidade_atual = item.quantidade
+        
+        # Obter quantidade a remover (padrão é tudo)
+        quantidade_remover = int(request.POST.get('quantidade_remover', quantidade_atual))
+        
+        # Validar quantidade
+        if quantidade_remover <= 0:
+            messages.error(request, 'Quantidade inválida.')
+            return redirect('checkout')
+        
+        if quantidade_remover >= quantidade_atual:
+            # Remover item completamente
+            item.delete()
+            messages.success(request, f'"{produto_nome}" removido completamente do carrinho.')
+        else:
+            # Reduzir quantidade
+            item.quantidade -= quantidade_remover
+            item.save()
+            messages.success(request, f'{quantidade_remover} unidade(s) de "{produto_nome}" removida(s). Restam {item.quantidade} no carrinho.')
+    
+    except ItemCarrinho.DoesNotExist:
+        messages.error(request, 'Item não encontrado no carrinho.')
+    except ValueError:
+        messages.error(request, 'Quantidade inválida.')
+    
+    return redirect('checkout')
+
+
+@login_required
 def processar_entrega_domicilio(request):
     """View para processar entrega em domicílio"""
     if request.method != 'POST':
@@ -424,6 +515,20 @@ def finalizar_pedido(request):
     
     from .models import ItemPedido
     
+    # Validar estoque disponível antes de criar o pedido
+    erros_estoque = []
+    for item in carrinho.itens.all():
+        estoque_disponivel = item.produto.estoque_total()
+        if estoque_disponivel < item.quantidade:
+            erros_estoque.append(
+                f"{item.produto.nome}: estoque insuficiente (disponível: {estoque_disponivel}, solicitado: {item.quantidade})"
+            )
+    
+    if erros_estoque:
+        for erro in erros_estoque:
+            messages.error(request, erro)
+        return redirect('checkout')
+    
     # Criar o pedido real
     if pedido_dados['tipo_entrega'] == 'DOMICILIO':
         pedido = Pedido.objects.create(
@@ -460,6 +565,33 @@ def finalizar_pedido(request):
             quantidade=item_carrinho.quantidade,
             preco_unitario=item_carrinho.produto.preco
         )
+    
+    # Reduzir estoque dos produtos
+    for item_carrinho in carrinho.itens.all():
+        quantidade_restante = item_carrinho.quantidade
+        
+        # Buscar estoques do produto ordenados por quantidade decrescente
+        # (prioriza armazéns com mais estoque)
+        estoques = Estoque.objects.filter(
+            produto=item_carrinho.produto, 
+            quantidade__gt=0
+        ).order_by('-quantidade')
+        
+        # Reduzir estoque de um ou mais armazéns conforme necessário
+        for estoque in estoques:
+            if quantidade_restante <= 0:
+                break
+            
+            if estoque.quantidade >= quantidade_restante:
+                # Este armazém tem estoque suficiente
+                estoque.quantidade -= quantidade_restante
+                quantidade_restante = 0
+            else:
+                # Este armazém não tem estoque suficiente, usar tudo
+                quantidade_restante -= estoque.quantidade
+                estoque.quantidade = 0
+            
+            estoque.save()
     
     # Desativar o carrinho
     carrinho.ativo = False

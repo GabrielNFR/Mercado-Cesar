@@ -1,11 +1,11 @@
 from django.urls import path
 from .views import (pagina_inicial, register, estoque_baixo, buscar_itens, cadastrar_cartao, 
-                    listar_cartoes, deletar_cartao, checkout, processar_entrega_domicilio, 
-                    processar_entrega_retirada, finalizar_pedido, gerenciar_lojas, ativar_desativar_loja, 
-                    visualizar_pedidos, gerenciar_produtos, adicionar_produto, editar_produto, 
-                    deletar_produto, gerenciar_armazens, adicionar_armazem, editar_armazem, 
-                    deletar_armazem, gerenciar_estoque, adicionar_estoque, editar_estoque, 
-                    deletar_estoque)
+                    listar_cartoes, deletar_cartao, checkout, atualizar_quantidade_carrinho,
+                    remover_item_carrinho, processar_entrega_domicilio, processar_entrega_retirada, 
+                    finalizar_pedido, gerenciar_lojas, ativar_desativar_loja, visualizar_pedidos, 
+                    gerenciar_produtos, adicionar_produto, editar_produto, deletar_produto, 
+                    gerenciar_armazens, adicionar_armazem, editar_armazem, deletar_armazem, 
+                    gerenciar_estoque, adicionar_estoque, editar_estoque, deletar_estoque)
 
 urlpatterns = [
     path('', pagina_inicial, name='home'),
@@ -16,6 +16,8 @@ urlpatterns = [
     path('cartoes/', listar_cartoes, name='listar_cartoes'),
     path('cartoes/deletar/<int:cartao_id>/', deletar_cartao, name='deletar_cartao'),
     path('checkout/', checkout, name='checkout'),
+    path('carrinho/atualizar/<int:item_id>/', atualizar_quantidade_carrinho, name='atualizar_quantidade_carrinho'),
+    path('carrinho/remover/<int:item_id>/', remover_item_carrinho, name='remover_item_carrinho'),
     path('checkout/domicilio/', processar_entrega_domicilio, name='processar_entrega_domicilio'),
     path('checkout/retirada/', processar_entrega_retirada, name='processar_entrega_retirada'),
     path('checkout/finalizar/', finalizar_pedido, name='finalizar_pedido'),
