@@ -202,10 +202,10 @@ def cenario2_compravelha_feita(base_url):
         print("[Cenário 2] Produto para entregar na loja física")
         time.sleep(2)
 
-        botao3 = driver.find_element(By.XPATH, "//input[@type='radio']")
-        driver.execute_script("arguments[0].scrollIntoView(true);", botao3)
+        radio_bo3 = driver.find_element(By.XPATH, "//input[@type='radio']")
+        driver.execute_script("arguments[0].scrollIntoView(true);", radio_bo3)
         time.sleep(1)
-        driver.execute_script("arguments[0].click();", botao3)
+        driver.execute_script("arguments[0].click();", radio_bo3)
         print("[Cenário 2] Meio de pagamento escolhido")
 
         botao4=driver.find_element(By.XPATH,"//button[contains(text(), 'Finalizar Pedido')]")
