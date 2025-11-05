@@ -309,14 +309,60 @@ def deletar_cartao(request, cartao_id):
 @login_required
 def checkout(request):
     """View para escolher tipo de entrega"""
-    # Verificar se há carrinho ativo com itens
+    
+    # Verificar se é requisição AJAX para repetir pedido
+    if request.method == 'POST':
+        import json
+        from django.http import JsonResponse
+        
+        try:
+            data = json.loads(request.body)
+            
+            if data.get('acao') == 'repetir_pedido':
+                pedido_id = data.get('pedido_id')
+                
+                # Buscar pedido original (apenas do usuário logado por segurança)
+                try:
+                    from .models import ItemPedido
+                    pedido_original = Pedido.objects.get(id=pedido_id, usuario=request.user)
+                except Pedido.DoesNotExist:
+                    return JsonResponse({'success': False, 'error': 'Pedido não encontrado ou não pertence a você'})
+                
+                # Desativar carrinho atual (se existir)
+                Carrinho.objects.filter(usuario=request.user, ativo=True).update(ativo=False)
+                
+                # Criar novo carrinho
+                novo_carrinho = Carrinho.objects.create(usuario=request.user, ativo=True)
+                
+                # Recriar itens do carrinho baseado no pedido
+                itens_pedido = ItemPedido.objects.filter(pedido=pedido_original).select_related('produto')
+                
+                for item in itens_pedido:
+                    ItemCarrinho.objects.create(
+                        carrinho=novo_carrinho,
+                        produto=item.produto,
+                        quantidade=item.quantidade
+                    )
+                
+                return JsonResponse({
+                    'success': True, 
+                    'message': f'Pedido #{pedido_id} adicionado ao carrinho com {itens_pedido.count()} itens!'
+                })
+        
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    
+    # GET request normal - exibir checkout
     carrinho = obter_carrinho_ativo(request.user)
     
-    if not carrinho or not carrinho.itens.exists():
-        messages.warning(request, "Seu carrinho está vazio. Adicione produtos antes de finalizar.")
-        return redirect('busca')
-    
+    # Sempre renderizar a página checkout para permitir que o JavaScript
+    # de compra rápida execute. O template vai mostrar mensagem apropriada
+    # se o carrinho estiver vazio após o JavaScript executar.
     lojas = Loja.objects.filter(ativa=True)
+    
+    # Se carrinho vazio, deixar o template decidir (pode ser compra rápida via JS)
+    if not carrinho or not carrinho.itens.exists():
+        return render(request, 'checkout.html', {'lojas': lojas, 'carrinho': None})
     return render(request, 'checkout.html', {'lojas': lojas, 'carrinho': carrinho})
 
 
@@ -1011,3 +1057,44 @@ def editar_estoque(request, estoque_id):
 def deletar_estoque(request, estoque_id):
     """Redireciona para a view unificada"""
     return redirect(f'gerenciar_estoque?action=delete&id={estoque_id}')
+
+@login_required
+def pedidos_recentes(request):
+    """View para visualizar pedidos recém-feitos com filtros"""
+    from .models import Pedido
+
+    # Obter parâmetros de filtro
+    usuario = request.GET.get('usuario', '')
+    data_fim = request.GET.get('data_fim', '')
+    tipo_entrega = request.GET.get('tipo_entrega', '')
+    valor = request.GET.get('custo_entrega', '')
+    
+    # Query base com otimização
+    pedidos = Pedido.objects.filter(usuario=request.user) \
+        .select_related('usuario', 'loja') \
+        .prefetch_related('itens__produto')
+    # Aplicar filtros
+    if usuario:
+        pedidos = pedidos.filter(usuario__username__icontains=usuario)
+    
+    if data_fim:
+        pedidos = pedidos.filter(data_criacao__date__lte=data_fim)
+    
+    if tipo_entrega:
+        pedidos = pedidos.filter(tipo_entrega=tipo_entrega)
+    
+    if valor:
+        pedidos = pedidos.filter(custo_entrega=valor)
+
+    # Ordenar por data de criação (mais recentes primeiro)
+    pedidos = pedidos.order_by('-data_criacao')
+
+    context = {
+        'usuario': usuario,
+        'pedidos': pedidos,
+        'tipo_entrega': tipo_entrega,
+        'valor': valor,
+        'data_fim': data_fim
+    }
+
+    return render(request, 'pedidos_recentes.html', context)

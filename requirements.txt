@@ -25,3 +25,4 @@ websocket-client==1.8.0
 whitenoise==6.6.0
 wsproto==1.2.0
 dj-database-url==2.1.0
+

@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
-    <h2 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f0834e; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f0834e;">
+    <h2 style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #f4a361; font-size: 2rem; font-weight: 600; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #f4a361;">
         <svg xmlns="http://www.w3.org/2000/svg" style="width: 32px; height: 32px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
@@ -21,80 +21,35 @@
 
     <!-- Resumo do Carrinho -->
     {% if carrinho %}
-    <div style="background-color: #fff5f0; padding: 25px; border-radius: 12px; margin-bottom: 40px; border-left: 4px solid #f0834e; border-right: 4px solid #f0834e;">
+    <div style="background-color: #fff5f0; padding: 25px; border-radius: 12px; margin-bottom: 40px; border-left: 4px solid #f4a361; border-right: 4px solid #f4a361;">
         <h3 style="color: #374151; font-size: 1.25rem; font-weight: 600; margin-top: 0; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-            <span style="color: #f0834e; font-size: 1.5rem;">🛒</span>
+            <span style="color: #f4a361; font-size: 1.5rem;">🛒</span>
             Itens no Carrinho
         </h3>
         <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
             <table style="width: 100%; min-width: 500px; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden;">
                 <thead>
-                    <tr style="background-color: #f0834e; color: white;">
+                    <tr style="background-color: #f4a361; color: white;">
                         <th style="text-align: left; padding: 12px 15px; font-weight: 600;">Produto</th>
                         <th style="text-align: center; padding: 12px 15px; font-weight: 600;">Quantidade</th>
                         <th style="text-align: right; padding: 12px 15px; font-weight: 600;">Preço Unit.</th>
                         <th style="text-align: right; padding: 12px 15px; font-weight: 600;">Subtotal</th>
-                        <th style="text-align: center; padding: 12px 15px; font-weight: 600;">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in carrinho.itens.all %}
                     <tr style="border-bottom: 1px solid #e5e7eb;">
                         <td style="padding: 12px 15px; font-weight: 500; color: #1f2937;">{{ item.produto.nome }}</td>
-                        <td style="text-align: center; padding: 12px 15px; color: #6b7280;">
-                            <div style="display: inline-flex; align-items: center; gap: 8px;">
-                                <!-- Botão Diminuir -->
-                                <form method="post" action="{% url 'atualizar_quantidade_carrinho' item.id %}" style="display: inline;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="acao" value="diminuir">
-                                    <button type="submit" 
-                                            {% if item.quantidade <= 1 %}onclick="return confirm('Isso irá remover o item do carrinho. Confirma?')"{% endif %}
-                                            style="background-color: #f59e0b; color: white; border: none; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 1rem; font-weight: 700; transition: background-color 0.2s; line-height: 1;"
-                                            onmouseover="this.style.backgroundColor='#d97706'"
-                                            onmouseout="this.style.backgroundColor='#f59e0b'">
-                                        −
-                                    </button>
-                                </form>
-                                
-                                <span style="font-weight: 600; font-size: 1rem; min-width: 30px; text-align: center;">{{ item.quantidade }}</span>
-                                
-                                <!-- Botão Aumentar -->
-                                <form method="post" action="{% url 'atualizar_quantidade_carrinho' item.id %}" style="display: inline;">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="acao" value="aumentar">
-                                    <button type="submit" 
-                                            {% if item.quantidade >= item.produto.estoque_total %}disabled{% endif %}
-                                            style="background-color: {% if item.quantidade >= item.produto.estoque_total %}#9ca3af{% else %}#10b981{% endif %}; color: white; border: none; padding: 4px 10px; border-radius: 6px; cursor: {% if item.quantidade >= item.produto.estoque_total %}not-allowed{% else %}pointer{% endif %}; font-size: 1rem; font-weight: 700; transition: background-color 0.2s; line-height: 1;"
-                                            {% if item.quantidade < item.produto.estoque_total %}
-                                            onmouseover="this.style.backgroundColor='#059669'"
-                                            onmouseout="this.style.backgroundColor='#10b981'"
-                                            {% endif %}>
-                                        +
-                                    </button>
-                                </form>
-                            </div>
-                            <small style="display: block; color: #9ca3af; font-size: 0.75rem; margin-top: 4px;">
-                                Estoque: {{ item.produto.estoque_total }}
-                            </small>
-                        </td>
+                        <td style="text-align: center; padding: 12px 15px; color: #6b7280;">{{ item.quantidade }}</td>
                         <td style="text-align: right; padding: 12px 15px; color: #6b7280;">R$ {{ item.produto.preco }}</td>
-                        <td style="text-align: right; padding: 12px 15px; font-weight: 600; color: #f0834e;">R$ {{ item.calcular_subtotal }}</td>
-                        <td style="text-align: center; padding: 12px 15px;">
-                            <button type="button" 
-                                    onclick="abrirModalRemover({{ item.id }}, '{{ item.produto.nome }}', {{ item.quantidade }})"
-                                    style="background-color: #ef4444; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: background-color 0.2s;"
-                                    onmouseover="this.style.backgroundColor='#dc2626'"
-                                    onmouseout="this.style.backgroundColor='#ef4444'">
-                                🗑️ Remover
-                            </button>
-                        </td>
+                        <td style="text-align: right; padding: 12px 15px; font-weight: 600; color: #f4a361;">R$ {{ item.calcular_subtotal }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
                 <tfoot>
-                    <tr style="background-color: #f9fafb; border-top: 2px solid #f0834e;">
-                        <td colspan="4" style="text-align: right; padding: 15px; font-weight: 600; color: #1f2937; font-size: 1.125rem;">Total dos Produtos:</td>
-                        <td style="text-align: right; padding: 15px; font-weight: 700; color: #f0834e; font-size: 1.25rem;">R$ {{ carrinho.calcular_total }}</td>
+                    <tr style="background-color: #f9fafb; border-top: 2px solid #f4a361;">
+                        <td colspan="3" style="text-align: right; padding: 15px; font-weight: 600; color: #1f2937; font-size: 1.125rem;">Total dos Produtos:</td>
+                        <td style="text-align: right; padding: 15px; font-weight: 700; color: #f4a361; font-size: 1.25rem;">R$ {{ carrinho.calcular_total }}</td>
                     </tr>
                 </tfoot>
             </table>
@@ -103,7 +58,7 @@
     {% endif %}
 
     <h3 style="color: #374151; font-size: 1rem; font-weight: 600; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
-        <div style="width: 4px; height: 20px; background-color: #f0834e; border-radius: 2px;"></div>
+        <div style="width: 4px; height: 20px; background-color: #f4a361; border-radius: 2px;"></div>
         Escolha o Tipo de Entrega
     </h3>
     
@@ -248,85 +203,43 @@
     </div>
 </div>
 
-<!-- Modal para remover item -->
-<div id="modalRemover" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; align-items: center; justify-content: center;">
-    <div style="background: white; border-radius: 12px; padding: 30px; max-width: 400px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
-        <h3 style="color: #374151; margin-top: 0; margin-bottom: 20px; font-size: 1.25rem; font-weight: 600; display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 1.5rem;">🗑️</span>
-            Remover Item
-        </h3>
-        
-        <p style="color: #6b7280; margin-bottom: 20px;">
-            Remover <strong id="modalProdutoNome" style="color: #1f2937;"></strong>
-        </p>
-        
-        <form id="formRemover" method="post" action="">
-            {% csrf_token %}
-            <div style="margin-bottom: 20px;">
-                <label for="quantidade_remover" style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151;">
-                    Quantidade a remover:
-                </label>
-                <input type="number" 
-                       id="quantidade_remover" 
-                       name="quantidade_remover" 
-                       min="1" 
-                       required
-                       style="width: 100%; padding: 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem;">
-                <small id="quantidadeInfo" style="color: #9ca3af; font-size: 0.85rem; margin-top: 4px; display: block;"></small>
-            </div>
-            
-            <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button type="button" 
-                        onclick="fecharModalRemover()"
-                        style="padding: 10px 20px; background-color: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background-color 0.2s;"
-                        onmouseover="this.style.backgroundColor='#4b5563'"
-                        onmouseout="this.style.backgroundColor='#6b7280'">
-                    Cancelar
-                </button>
-                <button type="submit" 
-                        style="padding: 10px 20px; background-color: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 500; transition: background-color 0.2s;"
-                        onmouseover="this.style.backgroundColor='#dc2626'"
-                        onmouseout="this.style.backgroundColor='#ef4444'">
-                    Confirmar Remoção
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <script>
-function abrirModalRemover(itemId, produtoNome, quantidadeAtual) {
-    // Atualizar informações no modal
-    document.getElementById('modalProdutoNome').textContent = produtoNome;
-    document.getElementById('quantidade_remover').value = quantidadeAtual;
-    document.getElementById('quantidade_remover').max = quantidadeAtual;
-    document.getElementById('quantidadeInfo').textContent = `Máximo: ${quantidadeAtual} unidade(s) disponível(is)`;
+// Sistema de Compra Rápida - Detectar pedido_id do sessionStorage
+window.addEventListener('DOMContentLoaded', function() {
+    const pedidoId = sessionStorage.getItem('pedido_id');
     
-    // Atualizar action do formulário
-    document.getElementById('formRemover').action = `/carrinho/remover/${itemId}/`;
-    
-    // Mostrar modal
-    const modal = document.getElementById('modalRemover');
-    modal.style.display = 'flex';
-}
-
-function fecharModalRemover() {
-    document.getElementById('modalRemover').style.display = 'none';
-}
-
-// Fechar modal ao clicar fora
-document.getElementById('modalRemover').addEventListener('click', function(e) {
-    if (e.target === this) {
-        fecharModalRemover();
-    }
-});
-
-// Fechar modal com ESC
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        fecharModalRemover();
+    if (pedidoId) {
+        // Enviar pedido_id para o backend via AJAX
+        fetch('{% url "checkout" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                pedido_id: pedidoId,
+                acao: 'repetir_pedido'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log('✅ Carrinho recriado com sucesso!');
+                // Limpar sessionStorage
+                sessionStorage.removeItem('pedido_id');
+                // Recarregar página para mostrar novo carrinho
+                location.reload();
+            } else {
+                console.error('❌ Erro:', data.error);
+                alert('Erro ao recriar pedido: ' + data.error);
+                sessionStorage.removeItem('pedido_id');
+            }
+        })
+        .catch(error => {
+            console.error('❌ Erro de rede:', error);
+            sessionStorage.removeItem('pedido_id');
+        });
     }
 });
 </script>
-
 {% endblock %}

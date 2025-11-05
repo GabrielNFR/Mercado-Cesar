@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Pedidos Recém-Feitos | Mercado Cesar{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1200px; margin: 40px auto; padding: 0 20px;">
+    <h1 style="margin-bottom: 30px; color: #333;">Pedidos Recém-Feitos</h1>
+    
+    <div class="filtros" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+        <h3 style="margin-bottom: 15px; font-size: 1.1rem;">Filtrar Pedidos</h3>
+        <form method="get" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div>
+                <label for="usuario" style="display: block; margin-bottom: 5px; font-weight: 500;">Usuário:</label>
+                <input type="text" id="usuario" name="usuario" value="{{ usuario }}" placeholder="Nome do usuário" 
+                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            
+            <div>
+                <label for="tipo_entrega" style="display: block; margin-bottom: 5px; font-weight: 500;">Tipo de Entrega:</label>
+                <select id="tipo_entrega" name="tipo_entrega" 
+                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                    <option value="">Todos</option>
+                    <option value="DOMICILIO" {% if tipo_entrega == 'DOMICILIO' %}selected{% endif %}>Domicílio</option>
+                    <option value="RETIRADA" {% if tipo_entrega == 'RETIRADA' %}selected{% endif %}>Retirada</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="data_fim" style="display: block; margin-bottom: 5px; font-weight: 500;">Data Final:</label>
+                <input type="date" id="data_fim" name="data_fim" value="{{ data_fim }}" 
+                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            
+            <div>
+                <label for="custo_entrega" style="display: block; margin-bottom: 5px; font-weight: 500;">Custo Entrega:</label>
+                <input type="number" id="custo_entrega" name="custo_entrega" value="{{ pedido.custo_entrega }}"
+                       step="0.01" placeholder="Ex: 10.00" 
+                       style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            </div>
+            
+            <div style="display: flex; align-items: flex-end; gap: 10px;">
+                <button type="submit" 
+                        style="padding: 8px 20px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">
+                    Filtrar
+                </button>
+                <a href="{% url 'pedidos_recentes' %}" 
+                   style="padding: 8px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px; display: inline-block;">
+                    Limpar
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Lista de Pedidos -->
+    {% if pedidos %}
+        <div style="background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <p style="padding: 15px; background: #e9ecef; margin: 0; font-weight: 500;">
+                Total de pedidos encontrados: {{ pedidos.count }}
+            </p>
+            
+            {% for pedido in pedidos %}
+                <div style="border-bottom: 1px solid #dee2e6; padding: 20px;">
+                    <!-- Cabeçalho do Pedido -->
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                        <div>
+                            <a href="{% url 'checkout' %}" 
+                               onclick="sessionStorage.setItem('pedido_id', '{{ pedido.id }}'); return true;"
+                               style="display: inline-block; padding: 10px 20px; background: #28a745; color: #ffff;
+                                      text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 1.1rem;
+                                      transition: background 0.3s; margin-bottom: 8px;">
+                                Pedido #{{ pedido.id }} - Pedir Novamente
+                            </a>
+                            <p style="margin: 0; color: #666;">
+                                <strong>Cliente:</strong> {{ pedido.usuario.username }} | 
+                                <strong>Data:</strong> {{ pedido.data_criacao| date:"d/m/Y H:i" }}
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="padding: 5px 15px; border-radius: 20px; font-weight: 500; font-size: 0.9rem; 
+                                {% if pedido.tipo_entrega == 'DOMICILIO' %} background-color #d1ecf1; color: #0c5460; {% else %}background-color: #d4edda; color: #155724;{% endif %}">
+                                {% if pedido.tipo_entrega == 'DOMICILIO' %}Entrega Domicílio{% else %}Retirada na Loja{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Informações de Entrega -->
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 0.95rem;">
+                        {% if pedido.tipo_entrega == 'DOMICILIO' %}
+                            <p style="margin: 0 0 5px 0;"><strong>Endereço:</strong> {{ pedido.endereco }}, {{ pedido.numero }}{% if pedido.complemento %} - {{ pedido.complemento }}{% endif %}</p>
+                            <p style="margin: 0;"><strong>Bairro:</strong> {{ pedido.bairro }} | <strong>Cidade:</strong> {{ pedido.cidade }}/{{ pedido.estado }} | <strong>CEP:</strong> {{ pedido.cep }}</p>
+                        {% else %}
+                            <p style="margin: 0;"><strong>Loja:</strong> {{ pedido.loja.nome }}</p>
+                            <p style="margin: 0;"><strong>Endereço da Loja:</strong> {{ pedido.loja.endereco }}, {{ pedido.loja.numero }} - {{ pedido.loja.bairro }}, {{ pedido.loja.cidade }}/{{ pedido.loja.estado }}</p>
+                        {% endif %}
+                        <p style="margin: 5px 0 0 0;">
+                            <strong>Custo de Entrega:</strong> R$ {{ pedido.custo_entrega|floatformat:2 }} | 
+                            <strong>Prazo:</strong> {{ pedido.prazo_dias }} dia{{ pedido.prazo_dias|pluralize }}
+                        </p>
+                    </div>
+                    
+                    <!-- Itens do Pedido -->
+                    <div style="margin-bottom: 15px;">
+                        <h4 style="margin: 0 0 10px 0; font-size: 1rem; color: #495057;">Itens do Pedido:</h4>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #e9ecef;">
+                                    <th style="padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;">Produto</th>
+                                    <th style="padding: 10px; text-align: center; border-bottom: 2px solid #dee2e6;">Quantidade</th>
+                                    <th style="padding: 10px; text-align: right; border-bottom: 2px solid #dee2e6;">Preço Unit.</th>
+                                    <th style="padding: 10px; text-align: right; border-bottom: 2px solid #dee2e6;">Subtotal </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in pedido.itens.all %}
+                                    <tr>
+                                        <td style="padding: 10px; border-bottom: 1px solid #dee2e6; color: black;"><p>{{ item.produto.nome }}</p></td>
+                                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #dee2e6;">{{ item.quantidade }}</td>
+                                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #dee2e6; color: black ;">R$ {{ item.preco_unitario |floatformat:2 }}</p></td>
+                                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #dee2e6; color: black;">R$ {{ item.calcular_subtotal |floatformat:2 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 15px;">
+                            <p style="margin: 5px 0;"><strong>Subtotal Produtos:</strong> R$ {{ pedido.calcular_subtotal_produtos|floatformat:2 }}</p>
+                            <p style="margin: 5px 0;"><strong>Custo de Entrega:</strong> R$ {{ pedido.custo_entrega|floatformat:2 }}</p>
+                            <p style="margin: 10px 0 0 0; font-size: 1.3rem; color: #28a745;"><strong>Total:</strong> R$ {{ pedido.calcular_total|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="background: #fff3cd; padding: 20px; border-radius: 8px; text-align: center; color: #555;">
+            <p style="margin: 0; font-size: 1.1rem;">Nenhum pedido encontrado com os filtros selecionados.</p>
+        </div>
+    {% endif %}
+    
+    <div style="margin-top: 20px;">
+        <a href="{% url 'home' %}" style="color: #28a745; text-decoration: none; font-weight: 500;">← Voltar para Home</a>
+    </div>
+</div>
+{% endblock %}

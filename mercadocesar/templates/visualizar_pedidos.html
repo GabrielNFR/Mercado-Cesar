@@ -57,7 +57,7 @@
             <span style="color: #9ca3af; font-size: 1rem; font-weight: 400; margin-left: 8px;">({{ pedidos.count }} no total)</span>
         </h3>
         
-        {% if pedidos %}
+        {% if pedido.imagem %}
         {% for pedido in pedidos %}
         <div style="background-color: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 30px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.3s;"
              onmouseover="this.style.borderColor='#f0834e'; this.style.boxShadow='0 4px 12px rgba(240, 131, 78, 0.15)'"
