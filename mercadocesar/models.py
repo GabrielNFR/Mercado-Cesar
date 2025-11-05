@@ -180,3 +180,5 @@ class ItemPedido(models.Model):
     
     def calcular_subtotal(self):
         return self.preco_unitario * self.quantidade
+
+
