@@ -24,7 +24,6 @@ def fazer_login(driver, base_url):
     """Fazer login no sistema"""
     driver.get(f"{base_url}/accounts/login/")
     wait = WebDriverWait(driver, 10)
-
     
     username_field = wait.until(EC.presence_of_element_located((By.NAME, "username")))
     username_field.send_keys("admin")
@@ -35,7 +34,7 @@ def fazer_login(driver, base_url):
     time.sleep(2)
 
 def compra_produto(driver, base_url):
-    wait=WebDriverWait(driver, 10)
+    wait=WebDriverWait(driver, 3)
     driver.get(f"{base_url}/busca/")
     try:
         item_a_comprar=driver.find_elements(By.NAME, "Adicionar ao carrinho")
@@ -59,7 +58,7 @@ def compra_produto(driver, base_url):
 
 def cenario_1_comprarapida_incompleta(base_url):
     driver=criar_driver()
-    wait=WebDriverWait(driver, 10)
+    wait=WebDriverWait(driver, 3)
     
     try:
         # Fazer login
@@ -107,16 +106,17 @@ def cenario_1_comprarapida_incompleta(base_url):
         time.sleep(2)
 
 
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "//input[@type='radio']"))
+        )
         radio_cartao = driver.find_element(By.XPATH, "//input[@type='radio']")
-        driver.execute_script("arguments[0].scrollIntoView(true);", radio_cartao)
-        time.sleep(1)
         driver.execute_script("arguments[0].click();", radio_cartao)
         print("[Cenário 1] Meio de pagamento escolhido")
 
 
         botfin=driver.find_element(By.XPATH,"//button[contains(text(), 'Finalizar Pedido')]")
         driver.execute_script("arguments[0].scrollIntoView(true);", botfin)
-        driver.execute_script("arguments[0].click()",botfin)
+        driver.execute_script("arguments[0].click();",botfin)
         time.sleep(2)
         print("[Cenário 1] Compra concluída com sucesso")        
         
@@ -129,18 +129,14 @@ def cenario_1_comprarapida_incompleta(base_url):
         botao_pedir_novamente = wait.until(
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(), 'Pedir Novamente')]"))
         )
-        
-        # Extrair o ID do pedido do texto do botão (ex: "Pedido #27 - Pedir Novamente")
         texto_botao = botao_pedir_novamente.text
         pedido_id = texto_botao.split('#')[1].split(' ')[0]
         print(f"[Cenário 1] Repetindo pedido #{pedido_id}")
         
-        # Setar pedido_id no sessionStorage e navegar para checkout
         driver.execute_script(f"sessionStorage.setItem('pedido_id', '{pedido_id}');")
         driver.get(f"{base_url}/checkout/")
         print("[Cenário 1] Aguardando sistema de compra rápida processar...")
         
-        # Aguardar o AJAX criar o carrinho e a página recarregar
         wait_longo = WebDriverWait(driver, 10)
         wait_longo.until(
             EC.presence_of_element_located((By.XPATH, "//table//tbody//tr"))
@@ -168,10 +164,8 @@ def cenario_1_comprarapida_incompleta(base_url):
         driver.quit()
     
 def cenario2_compravelha_feita(base_url):
-    driver=criar_driver()
-   
+    driver=criar_driver()   
     wait=WebDriverWait(driver, 3)
-
     try:
         driver.get(f"{base_url}/accounts/login/")
         username_field = wait.until(EC.presence_of_element_located((By.NAME, "username")))
@@ -202,15 +196,15 @@ def cenario2_compravelha_feita(base_url):
         driver.execute_script("arguments[0].click();", botao2)
         print("[Cenário 2] Produto para entregar na loja física")
 
-        WebDriverWait(driver, 10).until(
+        wait.until(
             EC.presence_of_element_located((By.XPATH, "//input[@type='radio']"))
         )
-        radio = driver.find_element(By.XPATH, "//input[@type='radio']")
-        driver.execute_script("arguments[0].click",radio)
+        radio3 = driver.find_element(By.XPATH, "//input[@type='radio']")
+        driver.execute_script("arguments[0].click();", radio3)
 
         botao4=driver.find_element(By.XPATH,"//button[contains(text(), 'Finalizar Pedido')]")
         driver.execute_script("arguments[0].scrollIntoView(true);", botao4)
-        driver.execute_script("arguments[0].click()",botao4)
+        driver.execute_script("arguments[0].click();",botao4)
         time.sleep(2)
         print("[Cenário 2] Compra concluída com sucesso")
         return True
