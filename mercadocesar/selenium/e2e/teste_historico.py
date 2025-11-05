@@ -106,6 +106,7 @@ def cenario_1_comprarapida_incompleta(base_url):
         print("[Cenário 1] Produto para entregar na loja física")
         time.sleep(2)
 
+
         radio_cartao = driver.find_element(By.XPATH, "//input[@type='radio']")
         driver.execute_script("arguments[0].scrollIntoView(true);", radio_cartao)
         time.sleep(1)
@@ -168,7 +169,7 @@ def cenario_1_comprarapida_incompleta(base_url):
     
 def cenario2_compravelha_feita(base_url):
     driver=criar_driver()
-    driver.get(f"{base_url}/login/")
+   
     wait=WebDriverWait(driver, 3)
 
     try:
@@ -191,22 +192,21 @@ def cenario2_compravelha_feita(base_url):
         time.sleep(2)  # Aguardar página carregar
         botao1 = driver.find_element(By.XPATH, "//*[contains(text(), 'Mercado Cesar - Boa Viagem')]")
         driver.execute_script("arguments[0].scrollIntoView(true);", botao1)
-        wait
+        time.sleep(2)
         driver.execute_script("arguments[0].click();", botao1)
         print("[Cenário 2] Escolhido o local de entrega")
 
         botao2=driver.find_element(By.XPATH,"//button[contains(text(),'Retirar na Loja')]")
         driver.execute_script("arguments[0].scrollIntoView(true);", botao2)
-        wait
+        time.sleep(2)
         driver.execute_script("arguments[0].click();", botao2)
         print("[Cenário 2] Produto para entregar na loja física")
-        time.sleep(2)
 
-        botao3 = driver.find_element(By.XPATH, "//input[@type='radio']")
-        driver.execute_script("arguments[0].scrollIntoView(true);", botao3)
-        time.sleep(1)
-        driver.execute_script("arguments[0].click();", botao3)
-        print("[Cenário 2] Meio de pagamento escolhido")
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@type='radio']"))
+        )
+        radio = driver.find_element(By.XPATH, "//input[@type='radio']")
+        driver.execute_script("arguments[0].click",radio)
 
         botao4=driver.find_element(By.XPATH,"//button[contains(text(), 'Finalizar Pedido')]")
         driver.execute_script("arguments[0].scrollIntoView(true);", botao4)
@@ -233,7 +233,7 @@ def main():
     
     resultados = [
         cenario_1_comprarapida_incompleta(base_url),   
-        cenario2_compravelha_feita(base_url)
+        cenario2_compravelha_feita(base_url),
     ]
     
     total = len(resultados)
