@@ -18,7 +18,45 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
 
 # Importar models após setup do Django
-from mercadocesar.models import Produto, Estoque, Pedido, ItemPedido, Armazem
+from mercadocesar.models import Produto, Estoque, Pedido, ItemPedido, Armazem, CartaoCredito
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+def criar_cartao_teste(usuario_username='admin'):
+    """
+    Cria um cartão de crédito de teste para o usuário especificado.
+    """
+    try:
+        usuario = User.objects.get(username=usuario_username)
+        cartao = CartaoCredito.objects.create(
+            usuario=usuario,
+            bandeira='Visa',
+            ultimos_4_digitos='1234',
+            mes_validade=12,
+            ano_validade=2030,
+            apelido='Cartão de Teste E2E'
+        )
+        print(f"Cartão de teste criado (ID: {cartao.id}) para '{usuario_username}'")
+        return cartao
+    except User.DoesNotExist:
+        print(f"Usuário '{usuario_username}' não encontrado")
+        return None
+    except Exception as e:
+        print(f"Erro ao criar cartão de teste: {e}")
+        return None
+
+def deletar_cartao_teste(cartao):
+    """
+    Deleta o cartão de crédito de teste.
+    """
+    if cartao:
+        try:
+            cartao_id = cartao.id
+            cartao.delete()
+            print(f"Cartão de teste (ID: {cartao_id}) deletado com sucesso")
+        except Exception as e:
+            print(f"Erro ao deletar cartão: {e}")
 
 def criar_driver():
     """Criar novo WebDriver otimizado para CI/CD"""
@@ -83,12 +121,20 @@ def compra_produto(driver, base_url,i):
     
     # Selecionar cartão de crédito
     try:
-        cartao_radio = driver.find_elements(By.XPATH, "//input[@name='cartao_id']")
-        if cartao_radio:
-            driver.execute_script("arguments[0].click();", cartao_radio[0])
+        cartao_radios = wait.until(
+            EC.presence_of_all_elements_located((By.XPATH, "//input[@name='cartao_id']"))
+        )
+        if cartao_radios:
+            driver.execute_script("arguments[0].scrollIntoView(true);", cartao_radios[0])
+            time.sleep(0.5)
+            driver.execute_script("arguments[0].click();", cartao_radios[0])
+            print(f"[Cenário {i}] Cartão de crédito selecionado")
             time.sleep(1)
-    except:
-        pass
+        else:
+            raise Exception("Nenhum cartão de crédito disponível para seleção")
+    except Exception as e:
+        print(f"[Cenário {i}] ❌ ERRO ao selecionar cartão: {e}")
+        raise
 
     botfin = wait.until(EC.element_to_be_clickable((By.XPATH,"//button[contains(text(), 'Finalizar Pedido')]")))
     driver.execute_script("arguments[0].scrollIntoView(true);", botfin)
@@ -98,19 +144,27 @@ def compra_produto(driver, base_url,i):
     print(f"[Cenário {i}] Compra concluída com sucesso")
 
 def cenario_1_comprarapida(base_url):
-    driver=criar_driver()    
+    driver = criar_driver()
+    cartao_teste = None
+    
     try:
-        wait=WebDriverWait(driver, 30)  # AUMENTADO de 20 para 30
+        # PASSO 1: Criar cartão de teste para o usuário admin
+        cartao_teste = criar_cartao_teste('admin')
+        if not cartao_teste:
+            print("[Cenário 1] FALHOU - Não foi possível criar cartão de teste")
+            return False
         
-        # Fazer login
-        fazer_login(driver,base_url)
+        wait = WebDriverWait(driver, 30)
+        
+        # PASSO 2: Fazer login
+        fazer_login(driver, base_url)
         print("[Cenário 1] Login realizado com sucesso")
         
-        # Comprar (para ter histórico)
+        # PASSO 3: Comprar (para ter histórico)
         print("[Cenário 1] Iniciando compra para criar histórico...")
         
         driver.get(f"{base_url}/busca/")
-        time.sleep(3)  # AUMENTADO de 2 para 3
+        time.sleep(3)
 
         botoes_adicionar = driver.find_elements(By.XPATH, "//button[contains(text(), 'Adicionar ao Carrinho')]")
         if len(botoes_adicionar) > 2:
@@ -122,26 +176,29 @@ def cenario_1_comprarapida(base_url):
         else:
            raise ValueError(f"[Cenário 1] FALHOU - Nenhum botão 'Adicionar ao Carrinho' encontrado")
         
-        compra_produto(driver,base_url,1)
+        compra_produto(driver, base_url, 1)
         
-        # Pedidos recentes
+        # PASSO 4: Pedidos recentes
         driver.get(f"{base_url}/recentes/")
-        time.sleep(4)  # AUMENTADO de 2 para 4
+        time.sleep(4)
         print("[Cenário 1] Acessou página /recentes/")
         
-        # PASSO 5: Verificar se o carrinho foi recriado
+        # PASSO 5: Verificar se o histórico foi exibido
         if "/recentes" in driver.current_url:
-                print(f"[Cenário 1] Histórico exibido com sucesso- {driver.current_url}")
-                return True
+            print(f"[Cenário 1] PASSOU - Histórico exibido com sucesso")
+            return True
         else:
-                print(f"[Cenário 1] FALHOU - Não há nada - URL atual: {driver.current_url}")
-                return False    
+            print(f"[Cenário 1] FALHOU - Não há nada - URL atual: {driver.current_url}")
+            return False
+            
     except Exception as e:
         print(f"[Cenário 1] FALHOU - {e}")
         import traceback
         traceback.print_exc()
         return False
     finally:
+        # SEMPRE deletar o cartão de teste
+        deletar_cartao_teste(cartao_teste)
         driver.quit()
 
 def cenario2_dadoscompra(base_url):
@@ -168,33 +225,43 @@ def cenario2_dadoscompra(base_url):
         driver.quit()
 
 def cenario3_comprarefeita(base_url):
-    driver=criar_driver()
-    verificador=False  
+    driver = criar_driver()
+    cartao_teste = None
+    
     try:
-        wait=WebDriverWait(driver, 30)
-        fazer_login(driver,base_url)
+        # PASSO 1: Criar cartão de teste
+        cartao_teste = criar_cartao_teste('admin')
+        if not cartao_teste:
+            print("[Cenário 3] FALHOU - Não foi possível criar cartão de teste")
+            return False
+        
+        wait = WebDriverWait(driver, 30)
+        
+        # PASSO 2: Fazer login
+        fazer_login(driver, base_url)
         print("[Cenário 3] Login realizado com sucesso")
     
+        # PASSO 3: Acessar histórico
         driver.get(f"{base_url}/recentes/")
-        time.sleep(3)  # AUMENTADO de 2 para 3
+        time.sleep(3)
         
         botao_pedir_novamente = wait.until(
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(), 'Pedir Novamente')]"))
         )
         texto_botao = botao_pedir_novamente.text
         pedido_id = texto_botao.split('#')[1].split(' ')[0]
-        verificador=True
         print(f"[Cenário 3] Repetindo pedido #{pedido_id}")
         
+        # PASSO 4: Recriar carrinho a partir do pedido
         driver.execute_script(f"sessionStorage.setItem('pedido_id', '{pedido_id}');")
         driver.get(f"{base_url}/checkout/")
-        time.sleep(4)  # AUMENTADO de 3 para 4 - Aguardar JavaScript processar
+        time.sleep(4)
         
-        # Verificar se carrinho foi recriado
+        # PASSO 5: Verificar se carrinho foi recriado
         carrinho_items = driver.find_elements(By.XPATH, "//table//tbody//tr")
         if len(carrinho_items) > 0:
             print(f"[Cenário 3] Carrinho recriado com {len(carrinho_items)} item(ns)")
-            compra_produto(driver,base_url,3)
+            compra_produto(driver, base_url, 3)
             print(f"[Cenário 3] PASSOU - Compra refeita com sucesso")
             return True
         else:
@@ -207,33 +274,42 @@ def cenario3_comprarefeita(base_url):
         traceback.print_exc()
         return False
     finally:
+        # SEMPRE deletar o cartão de teste
+        deletar_cartao_teste(cartao_teste)
         driver.quit()
 
 def cenario4_compraindevida(base_url):
-    driver=criar_driver()
-    wait=WebDriverWait(driver, 30)
+    driver = criar_driver()
+    cartao_teste = None
+    wait = WebDriverWait(driver, 30)
     bloqueou_compra = False
-    total_pedidos_antes = 0  # Inicializar variável
+    total_pedidos_antes = 0
     
     try:
-        # PASSO 1: Configurar estoque usando Django ORM (MUITO MAIS RÁPIDO)
+        # PASSO 1: Criar cartão de teste
+        cartao_teste = criar_cartao_teste('admin')
+        if not cartao_teste:
+            print("[Cenário 4] FALHOU - Não foi possível criar cartão de teste")
+            return False
+        
+        # PASSO 2: Configurar estoque usando Django ORM
         print("[Cenário 4] - Configurando estoque via Django ORM...")
         produto = Produto.objects.get(id=9)
         
         # IMPORTANTE: ZERAR TODO O ESTOQUE do produto em TODOS os armazéns primeiro
         total_zerado = Estoque.objects.filter(produto=produto).update(quantidade=0)
-        print(f"[Cenário 4]- {total_zerado} registro(s) de estoque ZERADOS para '{produto.nome}'")
+        print(f"[Cenário 4] - {total_zerado} registro(s) de estoque ZERADOS para '{produto.nome}'")
         
         # Verificar estado após zerar
         estoques_apos_zerar = Estoque.objects.filter(produto=produto)
-        print(f"[Cenário 4]- Estoques após zerar:")
+        print(f"[Cenário 4] - Estoques após zerar:")
         for e in estoques_apos_zerar:
             print(f"  - {e.armazem.nome}: {e.quantidade} unidade(s)")
         
         # Buscar ou criar estoque para o produto em UM armazém específico
-        armazem = Armazem.objects.first()  # Pegar primeiro armazém disponível
+        armazem = Armazem.objects.first()
         if not armazem:
-            print(f"[Cenário 4]- Nenhum armazém cadastrado no sistema")
+            print(f"[Cenário 4] - Nenhum armazém cadastrado no sistema")
             return False
         
         estoque, criado = Estoque.objects.get_or_create(
@@ -243,7 +319,6 @@ def cenario4_compraindevida(base_url):
         )
         
         if not criado:
-            # Se já existia, atualizar para 1
             estoque.quantidade = 1
             estoque.save()
         
@@ -254,11 +329,11 @@ def cenario4_compraindevida(base_url):
         total_antes = sum(e.quantidade for e in estoques_antes_compra)
         print(f"[Cenário 4] - Total em estoque ANTES da compra: {total_antes} unidade(s)")
         
-        # PASSO 2: Login via Selenium
+        # PASSO 3: Login via Selenium
         fazer_login(driver, base_url)
         print("[Cenário 4] - Login realizado com sucesso")
         
-        # PASSO 3: PRIMEIRA COMPRA - Comprar a única unidade
+        # PASSO 4: PRIMEIRA COMPRA - Comprar a única unidade
         driver.get(f"{base_url}/busca/")
         time.sleep(2)
         
@@ -282,16 +357,14 @@ def cenario4_compraindevida(base_url):
         compra_produto(driver, base_url, 4)
         print("[Cenário 4] Primeira compra finalizada")
         
-        # Verificar que o estoque foi zerado - TODOS os estoques do produto
-        time.sleep(2)  # Aguardar transação do pedido ser commitada
+        # PASSO 5: Verificar que o estoque foi zerado
+        time.sleep(2)
         
-        # Contar pedidos DEPOIS da compra
         total_pedidos_depois = Pedido.objects.count()
         print(f"[Cenário 4] - Total de pedidos no sistema DEPOIS da compra: {total_pedidos_depois}")
         print(f"[Cenário 4] - Novos pedidos criados: {total_pedidos_depois - total_pedidos_antes}")
         
         # Verificar se pedido foi realmente criado
-        from django.contrib.auth.models import User
         usuario_admin = User.objects.get(username='admin')
         ultimo_pedido = Pedido.objects.filter(usuario=usuario_admin).order_by('-id').first()
         if ultimo_pedido:
@@ -314,7 +387,7 @@ def cenario4_compraindevida(base_url):
             print(f"[Cenário 4] ⚠️ AVISO: Ainda há {total_estoque} unidade(s) em estoque após compra!")
             print(f"[Cenário 4] Isso indica que havia estoque em outros armazéns que não foi considerado no teste")
 
-        # PASSO 4: Ir para histórico e tentar comprar via histórico (deveria bloquear)
+        # PASSO 6: Ir para histórico e tentar comprar via histórico (deveria bloquear)
         driver.get(f"{base_url}/recentes/")
         time.sleep(3)
         print("[Cenário 4] Acessou página de histórico")
@@ -362,10 +435,22 @@ def cenario4_compraindevida(base_url):
                 time.sleep(2)
                 
                 # Selecionar cartão
+                radio_cartao = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@type='radio']")))
+                driver.execute_script("arguments[0].scrollIntoView(true);", radio_cartao)
+                time.sleep(0.5)
+                driver.execute_script("arguments[0].click();", radio_cartao)
+                time.sleep(1)
+                
+                # Selecionar cartão 
                 try:
-                    cartao_radio = driver.find_elements(By.XPATH, "//input[@name='cartao_id']")
-                    if cartao_radio:
-                        driver.execute_script("arguments[0].click();", cartao_radio[0])
+                    cartao_radios = wait.until(
+                        EC.presence_of_all_elements_located((By.XPATH, "//input[@name='cartao_id']"))
+                    )
+                    if cartao_radios:
+                        driver.execute_script("arguments[0].scrollIntoView(true);", cartao_radios[0])
+                        time.sleep(0.5)
+                        driver.execute_script("arguments[0].click();", cartao_radios[0])
+                        print(f"[Cenário 4] Cartão de crédito selecionado")
                         time.sleep(1)
                 except:
                     pass
@@ -386,13 +471,13 @@ def cenario4_compraindevida(base_url):
                     # Verificar mensagens de erro
                     mensagens_erro = driver.find_elements(By.XPATH, "//*[contains(@class, 'alert') or contains(@class, 'error')]")
                     if mensagens_erro:
-                        print(f"[Cenário 4] ✓ Sistema bloqueou finalização - Mensagens de erro encontradas")
+                        print(f"[Cenário 4] Sistema bloqueou finalização - Mensagens de erro encontradas")
                         bloqueou_compra = True
                     else:
-                        print(f"[Cenário 4] ✓ Sistema bloqueou finalização - Voltou para checkout")
+                        print(f"[Cenário 4] Sistema bloqueou finalização - Voltou para checkout")
                         bloqueou_compra = True
                 elif "/finalizar/" in url_depois_finalizar:
-                    print(f"[Cenário 4] ⚠️ Sistema NÃO bloqueou - Pedido foi finalizado sem estoque!")
+                    print(f"[Cenário 4] Sistema NÃO bloqueou - Pedido foi finalizado sem estoque!")
                     bloqueou_compra = False
                 else:
                     print(f"[Cenário 4] URL inesperada após finalizar: {url_depois_finalizar}")
@@ -403,7 +488,7 @@ def cenario4_compraindevida(base_url):
                 bloqueou_compra = True  # Se deu erro, consideramos que bloqueou
         else:
             # Se carrinho está vazio, também está bloqueando (apenas de forma diferente)
-            print("[Cenário 4] ✓ Carrinho vazio - Sistema bloqueou na criação do carrinho")
+            print("[Cenário 4] Carrinho vazio - Sistema bloqueou na criação do carrinho")
             bloqueou_compra = True
 
         if bloqueou_compra:
@@ -419,6 +504,8 @@ def cenario4_compraindevida(base_url):
         traceback.print_exc()
         return False
     finally:
+        # Deletar o cartão de teste
+        deletar_cartao_teste(cartao_teste)
         driver.quit()
 
 def main():
