@@ -128,7 +128,6 @@ def cenario_1_entrega_domicilio_com_sucesso(base_url):
         
         # Deve exibir o custo de entrega (R$ 15,00 para Recife CEP 50xxx)
         # Deve exibir o prazo (2 dias úteis para CEP 50xxx)
-        # Página de confirmação deve mostrar "Revise seu Pedido" ou informações do pedido
         
         custo_encontrado = "15" in page_text or "15.00" in page_text
         prazo_encontrado = "2" in page_text and "dia" in page_text.lower()
