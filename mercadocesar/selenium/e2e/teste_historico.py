@@ -72,8 +72,8 @@ def criar_driver():
     
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
-    driver.implicitly_wait(30)  # AUMENTADO de 15 para 30
-    driver.set_page_load_timeout(60)  # Timeout de 60s para carregar páginas
+    driver.implicitly_wait(10) 
+    # driver.set_page_load_timeout não é necessário se não houver problemas
     return driver
 
 def fazer_login(driver, base_url):

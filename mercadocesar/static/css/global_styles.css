@@ -42,7 +42,9 @@ label {
     box-shadow: 0 0 0 0.2rem rgba(244, 163, 97, 0.25) !important;
 }
 
-h1, h2 {
+/* Títulos gerais - NÃO aplica em seções especiais da landing page */
+main h1:not([style*="color: #ffffff"]),
+main h2:not([style*="color: #ffffff"]) {
     color: #f0834e !important;
     font-weight: 600 !important;
 }
