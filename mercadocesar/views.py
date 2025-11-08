@@ -50,16 +50,20 @@ class PedidoTemporario:
 @login_required
 def pagina_inicial(request):
     """Landing page com produtos em destaque e informações"""
-    from django.db.models import Sum
+    from django.db.models import Sum, Count
     
-    # Buscar produtos em destaque (primeiros 3 de cada categoria)
-    produtos_destaque = []
-    categorias = Produto.objects.values_list('categoria', flat=True).distinct()[:3]
+    # Buscar os 3 produtos mais pedidos (baseado na quantidade total vendida)
+    produtos_mais_pedidos = Produto.objects.annotate(
+        total_vendido=Sum('itempedido__quantidade')
+    ).filter(
+        total_vendido__isnull=False  # Apenas produtos que já foram pedidos
+    ).order_by('-total_vendido')[:3]
     
-    for categoria in categorias:
-        produto = Produto.objects.filter(categoria=categoria).first()
-        if produto:
-            produtos_destaque.append(produto)
+    # Se não houver produtos pedidos ainda, mostra os primeiros 3 produtos disponíveis
+    if not produtos_mais_pedidos.exists():
+        produtos_destaque = Produto.objects.all()[:3]
+    else:
+        produtos_destaque = produtos_mais_pedidos
     
     # Buscar lojas ativas
     lojas = Loja.objects.filter(ativa=True)[:3]

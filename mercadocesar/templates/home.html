@@ -89,15 +89,36 @@
 <section style="padding: 80px 20px; background-color: white;">
     <div style="max-width: 1200px; margin: 0 auto;">
         <div style="text-align: center; margin-bottom: 60px;">
-            <h2 style="font-size: 2.5rem; font-weight: 700; color: #1f2937; margin-bottom: 12px;">Produtos em Destaque</h2>
-            <p style="font-size: 1.125rem; color: #6b7280;">Confira nossas ofertas especiais</p>
+            <h2 style="font-size: 2.5rem; font-weight: 700; color: #1f2937; margin-bottom: 12px;">Produtos Mais Vendidos</h2>
+            <p style="font-size: 1.125rem; color: #6b7280;">Os favoritos dos nossos clientes</p>
         </div>
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 40px;">
             {% for produto in produtos_destaque %}
-            <div style="background: white; border: 2px solid #e5e7eb; border-radius: 16px; overflow: hidden; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05);"
+            <div style="background: white; border: 2px solid #e5e7eb; border-radius: 16px; overflow: hidden; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: relative;"
                  onmouseover="this.style.borderColor='#f0834e'; this.style.transform='translateY(-8px)'; this.style.boxShadow='0 8px 20px rgba(240, 131, 78, 0.15)'"
                  onmouseout="this.style.borderColor='#e5e7eb'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)'">
+                
+                <!-- Badge de Ranking -->
+                <div style="position: absolute; top: 16px; right: 16px; z-index: 10;">
+                    {% if forloop.counter == 1 %}
+                        <div style="background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); color: #854d0e; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.875rem; box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4); display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 1.25rem;">🥇</span>
+                            <span>1º Mais Vendido</span>
+                        </div>
+                    {% elif forloop.counter == 2 %}
+                        <div style="background: linear-gradient(135deg, #c0c0c0 0%, #e5e5e5 100%); color: #374151; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.875rem; box-shadow: 0 4px 12px rgba(192, 192, 192, 0.4); display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 1.25rem;">🥈</span>
+                            <span>2º Mais Vendido</span>
+                        </div>
+                    {% elif forloop.counter == 3 %}
+                        <div style="background: linear-gradient(135deg, #cd7f32 0%, #e5a868 100%); color: #451a03; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.875rem; box-shadow: 0 4px 12px rgba(205, 127, 50, 0.4); display: flex; align-items: center; gap: 6px;">
+                            <span style="font-size: 1.25rem;">🥉</span>
+                            <span>3º Mais Vendido</span>
+                        </div>
+                    {% endif %}
+                </div>
+
                 <div style="height: 240px; background: linear-gradient(135deg, #f0834e 0%, #fbbf24 100%); display: flex; align-items: center; justify-content: center;">
                     <svg xmlns="http://www.w3.org/2000/svg" style="width: 80px; height: 80px; color: white; opacity: 0.7;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
