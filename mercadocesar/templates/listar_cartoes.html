@@ -47,7 +47,7 @@
                     <div class="cartao-acoes">
                         <form method="post" action="{% url 'deletar_cartao' cartao.id %}" style="display: inline;">
                             {% csrf_token %}
-                            <button type="submit" onclick="return confirm('Deseja realmente excluir este cartão?');" style="background: none; border: none; color: red; cursor: pointer; text-decoration: underline;">
+                            <button type="submit" onclick="return confirm('Deseja realmente excluir este cartão?');" style="background: none; border: none; color: red; cursor: pointer;">
                                 Excluir
                             </button>
                         </form>
