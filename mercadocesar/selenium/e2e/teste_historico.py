@@ -294,7 +294,11 @@ def cenario4_compraindevida(base_url):
         
         # PASSO 2: Configurar estoque usando Django ORM
         print("[Cenário 4] - Configurando estoque via Django ORM...")
-        produto = Produto.objects.get(id=9)
+        produto = Produto.objects.first()
+        if not produto:
+            print("[Cenário 4] FALHOU - Nenhum produto encontrado no sistema")
+            deletar_cartao_teste(cartao_teste.id)
+            return False
         
         # IMPORTANTE: ZERAR TODO O ESTOQUE do produto em TODOS os armazéns primeiro
         total_zerado = Estoque.objects.filter(produto=produto).update(quantidade=0)
