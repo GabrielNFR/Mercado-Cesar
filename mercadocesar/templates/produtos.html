@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load l10n %}
 
 {% block title %}Gerenciar Produtos{% endblock %}
 
@@ -241,7 +242,7 @@
                         <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px;">
                             💰 Preço de Custo (R$) *
                         </label>
-                        <input type="number" name="preco_custo" value="{{ produto.preco_custo|default:'' }}" required step="0.01" min="0" 
+                        <input type="number" name="preco_custo" value="{% if produto.preco_custo is not None %}{{ produto.preco_custo|unlocalize }}{% endif %}" required step="0.01" min="0" 
                                style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none;" 
                                placeholder="0.00"
                                onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
@@ -252,7 +253,7 @@
                         <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px;">
                             💵 Preço de Venda (R$) *
                         </label>
-                        <input type="number" name="preco" value="{{ produto.preco|default:'' }}" required step="0.01" min="0" 
+                        <input type="number" name="preco" value="{% if produto.preco is not None %}{{ produto.preco|unlocalize }}{% endif %}" required step="0.01" min="0" 
                                style="width: 100%; padding: 14px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 1rem; transition: all 0.2s; outline: none;" 
                                placeholder="0.00"
                                onfocus="this.style.borderColor='#f0834e'; this.style.boxShadow='0 0 0 3px rgba(240, 131, 78, 0.1)'"
