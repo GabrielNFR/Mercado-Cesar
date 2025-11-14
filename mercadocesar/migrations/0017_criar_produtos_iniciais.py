@@ -5,11 +5,12 @@ def create_produtos(apps, schema_editor):
     Produto = apps.get_model('mercadocesar', 'Produto')
     
     # Lista de produtos: (nome, codigo, categoria, imagem)
+    # Public IDs exatos do Cloudinary (sem prefixo de pasta)
     produtos = [
-        ('Detergente Ypê Clear', 'YPE-001', 'Limpeza', 'product_images/ypeclear_k2utb4'),
-        ('Arroz Prato Fino', 'PRA-001', 'Alimentos', 'product_images/arrozbrancocamil_d7lrh9'),
-        ('Feijão Preto Camil', 'CAM-001', 'Alimentos', 'product_images/feijaopretocamil_nlefpu'),
-        ('Macarrão Adria', 'ADR-001', 'Alimentos', 'product_images/adria_przoip'),
+        ('Detergente Ypê Clear', 'YPE-001', 'Limpeza', 'ypeclear_k2utb4'),
+        ('Arroz Prato Fino', 'PRA-001', 'Alimentos', 'arrozbrancocamil_d7lrh9'),
+        ('Feijão Preto Camil', 'CAM-001', 'Alimentos', 'feijaopretocamil_nlefpu'),
+        ('Macarrão Adria', 'ADR-001', 'Alimentos', 'adria_przoip'),
     ]
     
     for nome, codigo, categoria, imagem in produtos:
