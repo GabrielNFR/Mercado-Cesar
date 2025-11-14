@@ -73,30 +73,43 @@
         <div id="allProductsGridContainer" style="display: block;">
             <div class="all-products-grid product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;"> 
                 {% for produto in todos_produtos %}
-                    <div class="product-card" data-categoria="{{ produto.categoria }}" style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); {% if produto.estoque_total == 0 %}opacity: 0.5; filter: grayscale(50%);{% endif %}"
+                    <div class="product-card" data-categoria="{{ produto.categoria }}" style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; display: flex; flex-direction: column; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.05); {% if produto.estoque_total == 0 %}opacity: 0.5; filter: grayscale(50%);{% endif %}"
                          {% if produto.estoque_total > 0 %}onmouseover="this.style.borderColor='#f0834e'; this.style.boxShadow='0 4px 12px rgba(240, 131, 78, 0.2)'"
                          onmouseout="this.style.borderColor='#e5e7eb'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.05)'"{% endif %}>
-                        <h3 class="nomeProduto" style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px;">{{ produto.nome|default:'Nome Ausente' }}</h3> 
-                        <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 10px; line-height: 1.4;">{{ produto.descricao }}</p>
-                        <p style="color: #f0834e; font-size: 1.5rem; font-weight: 700; margin: 15px 0;">R$ {{ produto.preco|default:'???' }}</p>
                         
-                        {% if produto.estoque_total == 0 %}
-                            <p class="estoque" style="color: #ef4444; font-size: 0.875rem; font-weight: 600; margin-bottom: 15px;">✗ Produto indisponível (Estoque Esgotado)</p>
-                        {% else %}
-                            <p class="estoque" style="color: #059669; font-size: 0.875rem; font-weight: 500; margin-bottom: 15px;">✓ {{ produto.estoque_total }} unidades disponíveis</p>
-                        {% endif %}
+                        <div style="height: 200px; background: #ffffff; border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                            {% if produto.imagem %}
+                                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" style="max-width: 100%; max-height: 100%; object-fit: contain; padding: 20px;">
+                            {% else %}
+                                <svg xmlns="http://www.w3.org/2000/svg" style="width: 60px; height: 60px; color: #9ca3af;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                </svg>
+                            {% endif %}
+                        </div>
+
+                        <div style="padding: 20px; display: flex; flex-direction: column; flex-grow: 1;">
+                            <h3 class="nomeProduto" style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px;">{{ produto.nome|default:'Nome Ausente' }}</h3> 
+                            <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 10px; line-height: 1.4; flex-grow: 1;">{{ produto.descricao }}</p>
+                            <p style="color: #f0834e; font-size: 1.5rem; font-weight: 700; margin: 15px 0;">R$ {{ produto.preco|default:'???' }}</p>
                         
-                        <form method="post" action="{% url 'busca' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="produto_id" value="{{ produto.id }}">
-                            <button type="submit" 
-                                    {% if produto.estoque_total == 0 %}disabled{% endif %}
-                                    style="width: 100%; padding: 12px; background-color: {% if produto.estoque_total == 0 %}#9ca3af{% else %}#f0834e{% endif %}; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: {% if produto.estoque_total == 0 %}not-allowed{% else %}pointer{% endif %}; transition: background-color 0.2s;"
-                                    {% if produto.estoque_total > 0 %}onmouseover="this.style.backgroundColor='#d97440'"
-                                    onmouseout="this.style.backgroundColor='#f0834e'"{% endif %}>
-                                {% if produto.estoque_total == 0 %}Produto Indisponível{% else %}+ Adicionar ao Carrinho{% endif %}
-                            </button>
-                        </form>
+                            {% if produto.estoque_total == 0 %}
+                                <p class="estoque" style="color: #ef4444; font-size: 0.875rem; font-weight: 600; margin-bottom: 15px;">✗ Produto indisponível (Estoque Esgotado)</p>
+                            {% else %}
+                                <p class="estoque" style="color: #059669; font-size: 0.875rem; font-weight: 500; margin-bottom: 15px;">✓ {{ produto.estoque_total }} unidades disponíveis</p>
+                            {% endif %}
+                            
+                            <form method="post" action="{% url 'busca' %}" style="margin-top: auto;">
+                                {% csrf_token %}
+                                <input type="hidden" name="produto_id" value="{{ produto.id }}">
+                                <button type="submit" 
+                                        {% if produto.estoque_total == 0 %}disabled{% endif %}
+                                        style="width: 100%; padding: 12px; background-color: {% if produto.estoque_total == 0 %}#9ca3af{% else %}#f0834e{% endif %}; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: {% if produto.estoque_total == 0 %}not-allowed{% else %}pointer{% endif %}; transition: background-color 0.2s;"
+                                        {% if produto.estoque_total > 0 %}onmouseover="this.style.backgroundColor='#d97440'"
+                                        onmouseout="this.style.backgroundColor='#f0834e'"{% endif %}>
+                                    {% if produto.estoque_total == 0 %}Produto Indisponível{% else %}+ Adicionar ao Carrinho{% endif %}
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 {% endfor %}
             </div>

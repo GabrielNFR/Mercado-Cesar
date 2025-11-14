@@ -20,6 +20,7 @@ class Produto(models.Model):
 		validators=[MinValueValidator(0)] 
 	)
 	unidade_medida = models.CharField(max_length=20)
+	imagem = models.ImageField(upload_to='product_images/', blank=True, null=True, verbose_name="Imagem do Produto")
 
 	class Meta:
 		constraints = [
