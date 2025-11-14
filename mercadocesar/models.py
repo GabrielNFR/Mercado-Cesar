@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import CheckConstraint, Q
 from django.core.validators import MinValueValidator
 from django.conf import settings
+from cloudinary.models import CloudinaryField
 
 
 class Produto(models.Model):
@@ -20,7 +21,7 @@ class Produto(models.Model):
 		validators=[MinValueValidator(0)] 
 	)
 	unidade_medida = models.CharField(max_length=20)
-	imagem = models.ImageField(upload_to='product_images/', blank=True, null=True, verbose_name="Imagem do Produto")
+	imagem = CloudinaryField('image', blank=True, null=True)
 
 	class Meta:
 		constraints = [
