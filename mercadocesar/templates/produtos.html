@@ -1,10 +1,81 @@
-{% extends 'base.html' %}
+E{% extends 'base.html' %}
 {% load l10n %}
 
 {% block title %}Gerenciar Produtos{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8" style="max-width: 1400px;">
+    <!-- Mensagens de Sucesso/Erro -->
+    {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+                <div class="message-alert {% if message.tags %}{{ message.tags }}{% endif %}" 
+                     style="padding: 16px 20px; margin-bottom: 16px; border-radius: 8px; display: flex; align-items: center; gap: 12px; font-weight: 500; box-shadow: 0 2px 8px rgba(0,0,0,0.1); animation: slideIn 0.3s ease-out; {% if 'success' in message.tags %}background-color: #d1fae5; color: #065f46; border-left: 4px solid #10b981;{% elif 'error' in message.tags %}background-color: #fee2e2; color: #991b1b; border-left: 4px solid #ef4444;{% elif 'warning' in message.tags %}background-color: #fef3c7; color: #92400e; border-left: 4px solid #f59e0b;{% else %}background-color: #dbeafe; color: #1e40af; border-left: 4px solid #3b82f6;{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px; flex-shrink: 0;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        {% if 'success' in message.tags %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        {% elif 'error' in message.tags %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        {% elif 'warning' in message.tags %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        {% else %}
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        {% endif %}
+                    </svg>
+                    <span style="flex: 1;">{{ message }}</span>
+                    <button onclick="this.parentElement.remove()" style="background: none; border: none; cursor: pointer; padding: 4px; opacity: 0.6; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.6'">
+                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <style>
+            @keyframes slideIn {
+                from {
+                    transform: translateY(-20px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+                to {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+            }
+            
+            .message-alert.fading-out {
+                animation: fadeOut 0.3s ease-out forwards;
+            }
+        </style>
+        
+        <script>
+            // Auto-dismiss mensagens após 5 segundos
+            document.addEventListener('DOMContentLoaded', function() {
+                const messages = document.querySelectorAll('.message-alert');
+                messages.forEach(function(message) {
+                    setTimeout(function() {
+                        message.classList.add('fading-out');
+                        setTimeout(function() {
+                            message.remove();
+                        }, 300); // Tempo da animação
+                    }, 5000); // 5 segundos
+                });
+            });
+        </script>
+    {% endif %}
+
     {% if action == 'list' %}
         <!-- LISTAGEM DE PRODUTOS -->
         <div class="mb-8">

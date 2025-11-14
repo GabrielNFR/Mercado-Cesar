@@ -973,13 +973,54 @@ def gerenciar_estoque(request):
         estoque = get_object_or_404(Estoque, id=estoque_id)
         if request.method == 'POST':
             try:
-                estoque.quantidade = int(request.POST.get('quantidade'))
-                estoque.save()
-                messages.success(request, f'Estoque de "{estoque.produto.nome}" em "{estoque.armazem.nome}" atualizado para {estoque.quantidade} unidades!')
+                nova_quantidade = int(request.POST.get('quantidade'))
+                novo_armazem_id = int(request.POST.get('armazem'))
+                
+                # Se mudou o armazém
+                if novo_armazem_id != estoque.armazem.id:
+                    novo_armazem = Armazem.objects.get(id=novo_armazem_id)
+                    produto = estoque.produto
+                    armazem_antigo = estoque.armazem
+                    
+                    # Verifica se já existe estoque do mesmo produto no novo armazém
+                    estoque_existente = Estoque.objects.filter(
+                        produto=produto,
+                        armazem=novo_armazem
+                    ).first()
+                    
+                    if estoque_existente:
+                        # Soma as quantidades
+                        estoque_existente.quantidade += nova_quantidade
+                        estoque_existente.save()
+                        # Remove o estoque antigo
+                        estoque.delete()
+                        messages.success(
+                            request, 
+                            f'Estoque de "{produto.nome}" transferido de "{armazem_antigo.nome}" para "{novo_armazem.nome}". '
+                            f'Quantidade somada: {estoque_existente.quantidade} unidades no total.'
+                        )
+                    else:
+                        # Move para o novo armazém
+                        estoque.armazem = novo_armazem
+                        estoque.quantidade = nova_quantidade
+                        estoque.save()
+                        messages.success(
+                            request, 
+                            f'Estoque de "{produto.nome}" transferido de "{armazem_antigo.nome}" para "{novo_armazem.nome}" '
+                            f'com {nova_quantidade} unidades!'
+                        )
+                else:
+                    # Apenas atualiza a quantidade
+                    estoque.quantidade = nova_quantidade
+                    estoque.save()
+                    messages.success(request, f'Estoque de "{estoque.produto.nome}" em "{estoque.armazem.nome}" atualizado para {estoque.quantidade} unidades!')
+                
                 return redirect('gerenciar_estoque')
             except Exception as e:
                 messages.error(request, f'Erro ao atualizar estoque: {str(e)}')
-        return render(request, 'estoque.html', {'action': 'edit', 'estoque': estoque})
+        
+        armazens = Armazem.objects.all().order_by('nome')
+        return render(request, 'estoque.html', {'action': 'edit', 'estoque': estoque, 'armazens': armazens})
     
     if action == 'add':
         if request.method == 'POST':
