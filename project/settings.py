@@ -176,9 +176,11 @@ if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
         pass  # Cloudinary not installed in development
 
 # Use Cloudinary for media storage in production (when DATABASE_URL is set)
-# This is more reliable than checking DEBUG which might have issues
-if DATABASE_URL and CLOUDINARY_CLOUD_NAME:
+# Check if we're in production by looking for DATABASE_URL environment variable
+IS_PRODUCTION = config('DATABASE_URL', default=None) is not None
+if IS_PRODUCTION and CLOUDINARY_CLOUD_NAME:
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    print(f"[CLOUDINARY] Using MediaCloudinaryStorage with cloud_name: {CLOUDINARY_CLOUD_NAME}")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
