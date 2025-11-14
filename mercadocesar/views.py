@@ -318,42 +318,59 @@ def checkout(request):
     if request.method == 'POST':
         import json
         from django.http import JsonResponse
+        import logging
+        
+        logger = logging.getLogger(__name__)
         
         try:
-            data = json.loads(request.body)
+            # Verificar se é JSON
+            content_type = request.content_type
+            if 'application/json' in content_type:
+                data = json.loads(request.body)
+                
+                if data.get('acao') == 'repetir_pedido':
+                    pedido_id = data.get('pedido_id')
+                    logger.info(f"[Compra Rápida] Tentando recriar pedido #{pedido_id} para usuário {request.user.username}")
+                    
+                    # Buscar pedido original (apenas do usuário logado por segurança)
+                    try:
+                        from .models import ItemPedido
+                        pedido_original = Pedido.objects.get(id=pedido_id, usuario=request.user)
+                    except Pedido.DoesNotExist:
+                        logger.error(f"[Compra Rápida] Pedido #{pedido_id} não encontrado")
+                        return JsonResponse({'success': False, 'error': 'Pedido não encontrado ou não pertence a você'})
+                    
+                    # Desativar carrinho atual (se existir)
+                    Carrinho.objects.filter(usuario=request.user, ativo=True).update(ativo=False)
+                    
+                    # Criar novo carrinho
+                    novo_carrinho = Carrinho.objects.create(usuario=request.user, ativo=True)
+                    
+                    # Recriar itens do carrinho baseado no pedido
+                    itens_pedido = ItemPedido.objects.filter(pedido=pedido_original).select_related('produto')
+                    
+                    itens_criados = 0
+                    for item in itens_pedido:
+                        ItemCarrinho.objects.create(
+                            carrinho=novo_carrinho,
+                            produto=item.produto,
+                            quantidade=item.quantidade
+                        )
+                        itens_criados += 1
+                    
+                    logger.info(f"[Compra Rápida] Carrinho recriado com {itens_criados} itens")
+                    
+                    return JsonResponse({
+                        'success': True, 
+                        'message': f'Pedido #{pedido_id} adicionado ao carrinho com {itens_criados} itens!',
+                        'itens_count': itens_criados
+                    })
             
-            if data.get('acao') == 'repetir_pedido':
-                pedido_id = data.get('pedido_id')
-                
-                # Buscar pedido original (apenas do usuário logado por segurança)
-                try:
-                    from .models import ItemPedido
-                    pedido_original = Pedido.objects.get(id=pedido_id, usuario=request.user)
-                except Pedido.DoesNotExist:
-                    return JsonResponse({'success': False, 'error': 'Pedido não encontrado ou não pertence a você'})
-                
-                # Desativar carrinho atual (se existir)
-                Carrinho.objects.filter(usuario=request.user, ativo=True).update(ativo=False)
-                
-                # Criar novo carrinho
-                novo_carrinho = Carrinho.objects.create(usuario=request.user, ativo=True)
-                
-                # Recriar itens do carrinho baseado no pedido
-                itens_pedido = ItemPedido.objects.filter(pedido=pedido_original).select_related('produto')
-                
-                for item in itens_pedido:
-                    ItemCarrinho.objects.create(
-                        carrinho=novo_carrinho,
-                        produto=item.produto,
-                        quantidade=item.quantidade
-                    )
-                
-                return JsonResponse({
-                    'success': True, 
-                    'message': f'Pedido #{pedido_id} adicionado ao carrinho com {itens_pedido.count()} itens!'
-                })
-        
+        except json.JSONDecodeError as e:
+            logger.error(f"[Compra Rápida] Erro ao decodificar JSON: {e}")
+            return JsonResponse({'success': False, 'error': 'Dados inválidos'})
         except Exception as e:
+            logger.error(f"[Compra Rápida] Erro inesperado: {e}")
             return JsonResponse({'success': False, 'error': str(e)})
     
     # GET request normal - exibir checkout

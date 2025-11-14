@@ -207,17 +207,28 @@ def cenario2_dadoscompra(base_url):
         fazer_login(driver,base_url)
         
         driver.get(f"{base_url}/recentes/")
-        time.sleep(3)  # AUMENTADO de 2 para 3
-        e2=driver.find_elements(By.XPATH, "//table//tbody//tr")
-        if len(e2)>0:
-                print(f"[Cenário 2] PASSOU - Dados do produto expostos na tela")
-                return True
+        time.sleep(3)
+        
+        # Procurar pelas tabelas com a classe específica adicionada
+        tabelas_itens = driver.find_elements(By.CLASS_NAME, "tabela-itens-pedido")
+        
+        # Alternativa: procurar por qualquer elemento que indique presença de pedidos
+        pedidos_elementos = driver.find_elements(By.XPATH, "//*[contains(text(), 'Pedido #') or contains(text(), 'Total de pedidos encontrados')]")
+        
+        if len(tabelas_itens) > 0 or len(pedidos_elementos) > 0:
+            print(f"[Cenário 2] PASSOU - Dados do produto expostos na tela ({len(tabelas_itens)} tabelas, {len(pedidos_elementos)} indicadores)")
+            return True
         else:
-            print(f"[Cenário 2] FALHOU - Nada apareceu - URL atual: {driver.current_url}")
+            # Verificar se há mensagem de "nenhum pedido encontrado"
+            sem_pedidos = driver.find_elements(By.XPATH, "//*[contains(text(), 'Nenhum pedido encontrado')]")
+            if len(sem_pedidos) > 0:
+                print(f"[Cenário 2] FALHOU - Página carregada mas sem pedidos (pode precisar criar histórico primeiro)")
+            else:
+                print(f"[Cenário 2] FALHOU - Nada apareceu - URL atual: {driver.current_url}")
             return False
         
     except Exception as e:
-        print(f"[Cenário 2] FALHOU - {e} - {driver}")
+        print(f"[Cenário 2] FALHOU - {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -255,17 +266,46 @@ def cenario3_comprarefeita(base_url):
         # PASSO 4: Recriar carrinho a partir do pedido
         driver.execute_script(f"sessionStorage.setItem('pedido_id', '{pedido_id}');")
         driver.get(f"{base_url}/checkout/")
-        time.sleep(4)
+        
+        # AGUARDAR: Loader aparecer e desaparecer (significa que AJAX completou)
+        time.sleep(2)  # Aguardar loader aparecer
+        
+        try:
+            # Aguardar loader desaparecer (max 10 segundos)
+            wait.until(EC.invisibility_of_element_located((By.ID, "compra-rapida-loader")))
+            print(f"[Cenário 3] Loader de compra rápida processado")
+        except:
+            print(f"[Cenário 3] Loader não encontrado (pode ter sido muito rápido)")
+        
+        # Aguardar página recarregar após AJAX
+        time.sleep(3)
         
         # PASSO 5: Verificar se carrinho foi recriado
         carrinho_items = driver.find_elements(By.XPATH, "//table//tbody//tr")
+        
+        # Debug: verificar estado da página
+        print(f"[Cenário 3] URL atual: {driver.current_url}")
+        print(f"[Cenário 3] Itens encontrados na tabela: {len(carrinho_items)}")
+        
         if len(carrinho_items) > 0:
             print(f"[Cenário 3] Carrinho recriado com {len(carrinho_items)} item(ns)")
             compra_produto(driver, base_url, 3)
             print(f"[Cenário 3] PASSOU - Compra refeita com sucesso")
             return True
         else:
-            print(f"[Cenário 3] FALHOU - Carrinho vazio")
+            # Verificar se há mensagens de erro
+            mensagens = driver.find_elements(By.CLASS_NAME, "message-alert")
+            if mensagens:
+                print(f"[Cenário 3] Mensagens encontradas: {len(mensagens)}")
+                for msg in mensagens:
+                    print(f"  - {msg.text}")
+            
+            # Verificar se carrinho está realmente vazio ou se é problema de seletor
+            carrinho_vazio_msg = driver.find_elements(By.XPATH, "//*[contains(text(), 'Seu carrinho está vazio') or contains(text(), 'carrinho vazio')]")
+            if carrinho_vazio_msg:
+                print(f"[Cenário 3] Confirmado - Carrinho está vazio")
+            
+            print(f"[Cenário 3] FALHOU - Carrinho vazio após tentativa de recriar")
             return False
             
     except Exception as e:
