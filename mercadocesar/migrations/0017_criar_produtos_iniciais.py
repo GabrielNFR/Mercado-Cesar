@@ -6,10 +6,10 @@ def create_produtos(apps, schema_editor):
     
     # Lista de produtos: (nome, codigo, categoria, imagem)
     produtos = [
-        ('Detergente Ypê Clear', 'YPE-001', 'Limpeza', 'product_images/ypeclear'),
-        ('Arroz Prato Fino', 'PRA-001', 'Alimentos', 'product_images/arrozbrancopf'),
-        ('Feijão Preto Camil', 'CAM-001', 'Alimentos', 'product_images/feijaopretocamil'),
-        ('Macarrão Adria', 'ADR-001', 'Alimentos', 'product_images/adria'),
+        ('Detergente Ypê Clear', 'YPE-001', 'Limpeza', 'product_images/ypeclear_k2utb4'),
+        ('Arroz Prato Fino', 'PRA-001', 'Alimentos', 'product_images/arrozbrancocamil_d7lrh9'),
+        ('Feijão Preto Camil', 'CAM-001', 'Alimentos', 'product_images/feijaopretocamil_nlefpu'),
+        ('Macarrão Adria', 'ADR-001', 'Alimentos', 'product_images/adria_przoip'),
     ]
     
     for nome, codigo, categoria, imagem in produtos:
