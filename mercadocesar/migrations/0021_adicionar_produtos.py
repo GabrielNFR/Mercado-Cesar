@@ -9,7 +9,7 @@ def create_produtos(apps, schema_editor):
     produtos = [
         ('Pepsi', 'PEP-001', 'Bebidas', 'pepsi_mxkk3f'),
         ('Chocolate Diamante Negro', 'DIA-001', 'Alimentos', 'diamantenegro_wxuhwh'),
-        ('Café Tradicional 3 Corações', 'COR-001', 'Bebidas', 'fcafetrad3cor_qnpa7b'),
+        ('Café Tradicional 3 Corações', 'COR-001', 'Bebidas', 'cafetrad3cor_qnpa7b'),
         ('Refrigerante H2OH', 'HOH-001', 'Bebidas', 'h2ohlimao_krhz2n'),
     ]
     
