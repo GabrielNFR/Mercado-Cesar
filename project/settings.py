@@ -175,8 +175,9 @@ if CLOUDINARY_CLOUD_NAME and CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET:
     except ImportError:
         pass  # Cloudinary not installed in development
 
-# Use Cloudinary for media storage in production only if configured
-if not DEBUG and CLOUDINARY_CLOUD_NAME:
+# Use Cloudinary for media storage in production (when DATABASE_URL is set)
+# This is more reliable than checking DEBUG which might have issues
+if DATABASE_URL and CLOUDINARY_CLOUD_NAME:
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 # Default primary key field type
