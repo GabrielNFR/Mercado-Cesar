@@ -370,6 +370,15 @@ window.addEventListener('DOMContentLoaded', function() {
     const pedidoId = sessionStorage.getItem('pedido_id');
     
     if (pedidoId) {
+        console.log('🔄 Recriando carrinho do pedido #' + pedidoId + '...');
+        
+        // Mostrar indicador de carregamento
+        const body = document.body;
+        const loader = document.createElement('div');
+        loader.id = 'compra-rapida-loader';
+        loader.innerHTML = '<div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); z-index: 10000; text-align: center;"><div style="font-size: 1.2rem; color: #f0834e; margin-bottom: 10px;">🔄 Recriando carrinho...</div><div style="color: #666;">Aguarde um momento</div></div>';
+        body.appendChild(loader);
+        
         // Enviar pedido_id para o backend via AJAX
         fetch('{% url "checkout" %}', {
             method: 'POST',
@@ -388,16 +397,21 @@ window.addEventListener('DOMContentLoaded', function() {
                 console.log('✅ Carrinho recriado com sucesso!');
                 // Limpar sessionStorage
                 sessionStorage.removeItem('pedido_id');
+                // Remover loader
+                if (loader) loader.remove();
                 // Recarregar página para mostrar novo carrinho
-                location.reload();
+                window.location.href = '{% url "checkout" %}';
             } else {
                 console.error('❌ Erro:', data.error);
+                if (loader) loader.remove();
                 alert('Erro ao recriar pedido: ' + data.error);
                 sessionStorage.removeItem('pedido_id');
             }
         })
         .catch(error => {
             console.error('❌ Erro de rede:', error);
+            if (loader) loader.remove();
+            alert('Erro ao conectar com o servidor: ' + error.message);
             sessionStorage.removeItem('pedido_id');
         });
     }
