@@ -39,6 +39,9 @@ jobs:
       run: |
         echo "SECRET_KEY=test-secret-key-e2e" >> $GITHUB_ENV
         echo "DEBUG=True" >> $GITHUB_ENV
+        echo "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}" >> $GITHUB_ENV
+        echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> $GITHUB_ENV
+        echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> $GITHUB_ENV
     
     - name: Prepare Django app
       run: |
