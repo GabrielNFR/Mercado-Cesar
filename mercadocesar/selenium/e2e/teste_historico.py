@@ -265,20 +265,37 @@ def cenario3_comprarefeita(base_url):
         
         # PASSO 4: Recriar carrinho a partir do pedido
         driver.execute_script(f"sessionStorage.setItem('pedido_id', '{pedido_id}');")
+        
+        # Adicionar flag para detectar quando página recarregar
+        driver.execute_script("window.isReloading = false;")
+        
         driver.get(f"{base_url}/checkout/")
         
-        # AGUARDAR: Loader aparecer e desaparecer (significa que AJAX completou)
-        time.sleep(2)  # Aguardar loader aparecer
+        # AGUARDAR: Loader aparecer e JavaScript processar
+        time.sleep(2)
         
         try:
-            # Aguardar loader desaparecer (max 10 segundos)
+            # Aguardar loader desaparecer (AJAX completou)
             wait.until(EC.invisibility_of_element_located((By.ID, "compra-rapida-loader")))
-            print(f"[Cenário 3] Loader de compra rápida processado")
+            print(f"[Cenário 3] Loader de compra rápida desapareceu (AJAX completou)")
         except:
-            print(f"[Cenário 3] Loader não encontrado (pode ter sido muito rápido)")
+            print(f"[Cenário 3] Loader não encontrado ou sumiu muito rápido")
         
-        # Aguardar página recarregar após AJAX
-        time.sleep(3)
+        # CRÍTICO: Aguardar o reload da página acontecer
+        # O JavaScript faz window.location.href = checkout após AJAX sucesso
+        print(f"[Cenário 3] Aguardando página recarregar...")
+        time.sleep(5)  # Aguardar reload da página completar
+        
+        # Verificar se sessionStorage foi limpo (sinal de que reload aconteceu)
+        pedido_id_pos_reload = driver.execute_script("return sessionStorage.getItem('pedido_id');")
+        if pedido_id_pos_reload is None:
+            print(f"[Cenário 3] Confirmado: página recarregou (sessionStorage limpo)")
+        else:
+            print(f"[Cenário 3] ⚠️ Página pode não ter recarregado ainda")
+        
+        # Aguardar DOM estabilizar
+        wait.until(lambda d: d.execute_script('return document.readyState') == 'complete')
+        time.sleep(2)
         
         # PASSO 5: Verificar se carrinho foi recriado
         carrinho_items = driver.find_elements(By.XPATH, "//table//tbody//tr")
