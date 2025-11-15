@@ -359,6 +359,11 @@ def checkout(request):
                         itens_criados += 1
                     
                     logger.info(f"[Compra Rápida] Carrinho recriado com {itens_criados} itens")
+                    logger.info(f"[Compra Rápida] Carrinho ID: {novo_carrinho.id}, Ativo: {novo_carrinho.ativo}")
+                    
+                    # Verificar se itens foram salvos
+                    itens_verificacao = ItemCarrinho.objects.filter(carrinho=novo_carrinho).count()
+                    logger.info(f"[Compra Rápida] Verificação: {itens_verificacao} itens no banco para carrinho {novo_carrinho.id}")
                     
                     return JsonResponse({
                         'success': True, 
@@ -374,7 +379,17 @@ def checkout(request):
             return JsonResponse({'success': False, 'error': str(e)})
     
     # GET request normal - exibir checkout
+    import logging
+    logger = logging.getLogger(__name__)
+    
     carrinho = obter_carrinho_ativo(request.user)
+    logger.info(f"[Checkout GET] Usuário: {request.user.username}, Carrinho: {carrinho}")
+    
+    if carrinho:
+        itens_count = carrinho.itens.count()
+        logger.info(f"[Checkout GET] Carrinho ID {carrinho.id} tem {itens_count} itens")
+    else:
+        logger.info(f"[Checkout GET] Nenhum carrinho ativo encontrado")
     
     # Sempre renderizar a página checkout para permitir que o JavaScript
     # de compra rápida execute. O template vai mostrar mensagem apropriada
@@ -383,7 +398,10 @@ def checkout(request):
     
     # Se carrinho vazio, deixar o template decidir (pode ser compra rápida via JS)
     if not carrinho or not carrinho.itens.exists():
+        logger.info(f"[Checkout GET] Renderizando com carrinho=None")
         return render(request, 'checkout.html', {'lojas': lojas, 'carrinho': None})
+    
+    logger.info(f"[Checkout GET] Renderizando com carrinho={carrinho.id}")
     return render(request, 'checkout.html', {'lojas': lojas, 'carrinho': carrinho})
 
 

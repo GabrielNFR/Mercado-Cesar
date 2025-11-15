@@ -283,6 +283,13 @@ def cenario3_comprarefeita(base_url):
         pedido_id = texto_botao.split('#')[1].split(' ')[0]
         print(f"[Cenário 3] Repetindo pedido #{pedido_id} que acabamos de criar")
         
+        # DEBUG: Verificar se o pedido existe e tem itens no banco
+        pedido_obj = Pedido.objects.get(id=pedido_id)
+        itens_pedido = ItemPedido.objects.filter(pedido=pedido_obj)
+        print(f"[Cenário 3] DEBUG - Pedido #{pedido_id} tem {itens_pedido.count()} item(ns) no banco:")
+        for item in itens_pedido:
+            print(f"  - {item.produto.nome}: {item.quantidade} unidade(s)")
+        
         # PASSO 5: Recriar carrinho a partir do pedido
         driver.execute_script(f"sessionStorage.setItem('pedido_id', '{pedido_id}');")
         
@@ -304,7 +311,7 @@ def cenario3_comprarefeita(base_url):
         # CRÍTICO: Aguardar o reload da página acontecer
         # O JavaScript faz window.location.href = checkout após AJAX sucesso
         print(f"[Cenário 3] Aguardando página recarregar...")
-        time.sleep(5)  # Aguardar reload da página completar
+        time.sleep(7)  # AUMENTADO: Aguardar reload e renderização completar
         
         # Verificar se sessionStorage foi limpo (sinal de que reload aconteceu)
         pedido_id_pos_reload = driver.execute_script("return sessionStorage.getItem('pedido_id');")
@@ -317,12 +324,40 @@ def cenario3_comprarefeita(base_url):
         wait.until(lambda d: d.execute_script('return document.readyState') == 'complete')
         time.sleep(2)
         
+        # DEBUG: Verificar logs do console do navegador
+        try:
+            logs = driver.get_log('browser')
+            if logs:
+                print(f"[Cenário 3] DEBUG - Logs do navegador:")
+                for log in logs:
+                    if 'Compra' in log['message'] or 'carrinho' in log['message'] or 'pedido' in log['message']:
+                        print(f"  {log['level']}: {log['message']}")
+        except:
+            print(f"[Cenário 3] DEBUG - Não foi possível obter logs do navegador")
+        
+        # DEBUG: Verificar se carrinho foi criado no banco
+        from mercadocesar.models import Carrinho, ItemCarrinho
+        carrinho_db = Carrinho.objects.filter(usuario__username='admin', ativo=True).first()
+        if carrinho_db:
+            itens_carrinho_db = ItemCarrinho.objects.filter(carrinho=carrinho_db)
+            print(f"[Cenário 3] DEBUG - Carrinho no banco tem {itens_carrinho_db.count()} item(ns):")
+            for item in itens_carrinho_db:
+                print(f"  - {item.produto.nome}: {item.quantidade} unidade(s)")
+        else:
+            print(f"[Cenário 3] DEBUG - Nenhum carrinho ativo encontrado no banco!")
+        
         # PASSO 6: Verificar se carrinho foi recriado
         carrinho_items = driver.find_elements(By.XPATH, "//table//tbody//tr")
         
         # Debug: verificar estado da página
         print(f"[Cenário 3] URL atual: {driver.current_url}")
         print(f"[Cenário 3] Itens encontrados na tabela: {len(carrinho_items)}")
+        
+        # DEBUG: Verificar se há elementos que indicam carrinho vazio ou cheio
+        h3_textos = driver.find_elements(By.TAG_NAME, "h3")
+        print(f"[Cenário 3] DEBUG - Títulos H3 encontrados na página:")
+        for h3 in h3_textos[:5]:  # Primeiros 5
+            print(f"  - {h3.text}")
         
         if len(carrinho_items) > 0:
             print(f"[Cenário 3] Carrinho recriado com {len(carrinho_items)} item(ns)")
