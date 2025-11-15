@@ -251,8 +251,28 @@ def cenario3_comprarefeita(base_url):
         # PASSO 2: Fazer login
         fazer_login(driver, base_url)
         print("[Cenário 3] Login realizado com sucesso")
+        
+        # PASSO 3: Fazer uma compra primeiro para criar histórico
+        print("[Cenário 3] Criando pedido para testar repetição...")
+        driver.get(f"{base_url}/busca/")
+        time.sleep(2)
+        
+        # Adicionar um produto ao carrinho
+        botoes_adicionar = driver.find_elements(By.XPATH, "//button[contains(text(), 'Adicionar ao Carrinho')]")
+        if len(botoes_adicionar) > 0:
+            driver.execute_script("arguments[0].scrollIntoView(true);", botoes_adicionar[0])
+            time.sleep(1)
+            driver.execute_script("arguments[0].click();", botoes_adicionar[0])
+            print(f"[Cenário 3] Produto adicionado ao carrinho")
+            time.sleep(2)
+        else:
+            raise ValueError("[Cenário 3] FALHOU - Nenhum produto disponível")
+        
+        # Finalizar a compra
+        compra_produto(driver, base_url, 3)
+        print("[Cenário 3] Primeira compra finalizada")
     
-        # PASSO 3: Acessar histórico
+        # PASSO 4: Acessar histórico para pegar o pedido que acabamos de criar
         driver.get(f"{base_url}/recentes/")
         time.sleep(3)
         
@@ -261,9 +281,9 @@ def cenario3_comprarefeita(base_url):
         )
         texto_botao = botao_pedir_novamente.text
         pedido_id = texto_botao.split('#')[1].split(' ')[0]
-        print(f"[Cenário 3] Repetindo pedido #{pedido_id}")
+        print(f"[Cenário 3] Repetindo pedido #{pedido_id} que acabamos de criar")
         
-        # PASSO 4: Recriar carrinho a partir do pedido
+        # PASSO 5: Recriar carrinho a partir do pedido
         driver.execute_script(f"sessionStorage.setItem('pedido_id', '{pedido_id}');")
         
         # Adicionar flag para detectar quando página recarregar
@@ -297,7 +317,7 @@ def cenario3_comprarefeita(base_url):
         wait.until(lambda d: d.execute_script('return document.readyState') == 'complete')
         time.sleep(2)
         
-        # PASSO 5: Verificar se carrinho foi recriado
+        # PASSO 6: Verificar se carrinho foi recriado
         carrinho_items = driver.find_elements(By.XPATH, "//table//tbody//tr")
         
         # Debug: verificar estado da página
