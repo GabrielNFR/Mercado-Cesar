@@ -110,7 +110,15 @@ def compra_produto(driver, base_url,i):
     time.sleep(1)
     driver.execute_script("arguments[0].click();", bt2)
     print(f"[Cenário {i}] Produto para entregar na loja física")
-    time.sleep(2)  # AUMENTADO de 1 para 2
+    
+    # CRÍTICO: Aguardar navegação para página de confirmação
+    # Após clicar "Retirar na Loja", a página processa e vai para confirmação
+    time.sleep(3)
+    
+    # Verificar se está na página de confirmação
+    wait.until(lambda d: 'confirmacao' in d.current_url or len(d.find_elements(By.XPATH, "//input[@name='cartao_id']")) > 0)
+    print(f"[Cenário {i}] Página de confirmação carregada")
+    time.sleep(1)
 
     radio_cartao = wait.until(EC.presence_of_element_located((By.XPATH, "//input[@type='radio']")))
     driver.execute_script("arguments[0].scrollIntoView(true);", radio_cartao)
@@ -139,9 +147,29 @@ def compra_produto(driver, base_url,i):
     botfin = wait.until(EC.element_to_be_clickable((By.XPATH,"//button[contains(text(), 'Finalizar Pedido')]")))
     driver.execute_script("arguments[0].scrollIntoView(true);", botfin)
     time.sleep(1)
+    
+    # Salvar URL antes de clicar
+    url_antes = driver.current_url
+    
     driver.execute_script("arguments[0].click();",botfin)
+    
+    # CRÍTICO: Aguardar processamento do pedido
     time.sleep(3)
-    print(f"[Cenário {i}] Compra concluída com sucesso")
+    
+    # Verificar se houve mudança de página ou mensagem de sucesso
+    url_depois = driver.current_url
+    
+    # Verificar se finalizou com sucesso (URL mudou ou há mensagem de confirmação)
+    if url_depois != url_antes or len(driver.find_elements(By.XPATH, "//*[contains(text(), 'confirmado com sucesso')]")) > 0:
+        print(f"[Cenário {i}] Compra concluída com sucesso")
+    else:
+        # Verificar se há mensagem de erro
+        erros = driver.find_elements(By.CLASS_NAME, "message-alert")
+        if erros:
+            print(f"[Cenário {i}] ⚠️ Possível erro ao finalizar:")
+            for erro in erros[:3]:  # Mostrar até 3 erros
+                print(f"  - {erro.text}")
+        print(f"[Cenário {i}] Compra processada (verificar se foi criada)")
 
 def cenario_1_comprarapida(base_url):
     driver = criar_driver()
