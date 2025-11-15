@@ -23,6 +23,38 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+def garantir_estoque_produtos():
+    """
+    Garante que todos os produtos tenham estoque adequado para os testes.
+    """
+    try:
+        armazem = Armazem.objects.first()
+        if not armazem:
+            print("⚠️ Nenhum armazém encontrado no sistema")
+            return False
+        
+        produtos = Produto.objects.all()
+        if produtos.count() == 0:
+            print("⚠️ Nenhum produto encontrado no sistema")
+            return False
+        
+        for produto in produtos:
+            estoque, criado = Estoque.objects.get_or_create(
+                produto=produto,
+                armazem=armazem,
+                defaults={'quantidade': 100}
+            )
+            
+            if not criado and estoque.quantidade < 10:
+                estoque.quantidade = 100
+                estoque.save()
+        
+        print(f"✓ Estoque garantido para {produtos.count()} produtos no {armazem.nome}")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao garantir estoque: {e}")
+        return False
+
 def criar_cartao_teste(usuario_username='admin'):
     """
     Cria um cartão de crédito de teste para o usuário especificado.
@@ -154,22 +186,42 @@ def compra_produto(driver, base_url,i):
     driver.execute_script("arguments[0].click();",botfin)
     
     # CRÍTICO: Aguardar processamento do pedido
-    time.sleep(3)
+    time.sleep(4)
     
     # Verificar se houve mudança de página ou mensagem de sucesso
     url_depois = driver.current_url
     
-    # Verificar se finalizou com sucesso (URL mudou ou há mensagem de confirmação)
-    if url_depois != url_antes or len(driver.find_elements(By.XPATH, "//*[contains(text(), 'confirmado com sucesso')]")) > 0:
+    # DEBUG: Mostrar URLs e estado
+    print(f"[Cenário {i}] DEBUG - URL antes: {url_antes}")
+    print(f"[Cenário {i}] DEBUG - URL depois: {url_depois}")
+    
+    # Verificar mensagens na página
+    mensagens_sucesso = driver.find_elements(By.XPATH, "//*[contains(text(), 'confirmado com sucesso') or contains(text(), 'Pedido #')]")
+    mensagens_erro = driver.find_elements(By.XPATH, "//*[contains(@class, 'error') or contains(@class, 'alert-danger')]")
+    
+    if mensagens_sucesso:
+        print(f"[Cenário {i}] ✓ Mensagem de sucesso encontrada:")
+        for msg in mensagens_sucesso[:2]:
+            print(f"  - {msg.text}")
         print(f"[Cenário {i}] Compra concluída com sucesso")
+    elif mensagens_erro:
+        print(f"[Cenário {i}] ❌ Erro ao finalizar pedido:")
+        for erro in mensagens_erro[:3]:
+            print(f"  - {erro.text}")
+        print(f"[Cenário {i}] Compra FALHOU")
+    elif url_depois != url_antes and 'checkout' not in url_depois:
+        # URL mudou e não voltou para checkout
+        print(f"[Cenário {i}] Compra concluída com sucesso (navegou para: {url_depois})")
     else:
-        # Verificar se há mensagem de erro
-        erros = driver.find_elements(By.CLASS_NAME, "message-alert")
-        if erros:
-            print(f"[Cenário {i}] ⚠️ Possível erro ao finalizar:")
-            for erro in erros[:3]:  # Mostrar até 3 erros
-                print(f"  - {erro.text}")
-        print(f"[Cenário {i}] Compra processada (verificar se foi criada)")
+        # Ainda em checkout ou voltou para checkout
+        print(f"[Cenário {i}] ⚠️ ATENÇÃO: Ainda em checkout ou voltou")
+        # Capturar todas as mensagens
+        todas_msgs = driver.find_elements(By.CLASS_NAME, "message-alert")
+        if todas_msgs:
+            print(f"[Cenário {i}] Mensagens encontradas:")
+            for msg in todas_msgs:
+                print(f"  - {msg.text}")
+        print(f"[Cenário {i}] Compra pode ter FALHOU - verificar banco de dados")
 
 def cenario_1_comprarapida(base_url):
     driver = criar_driver()
@@ -312,6 +364,19 @@ def cenario3_comprarefeita(base_url):
             time.sleep(2)
         else:
             raise ValueError("[Cenário 3] FALHOU - Produtos insuficientes disponíveis")
+        
+        # Obter usuário admin para verificações
+        usuario_admin = User.objects.get(username='admin')
+        
+        # DEBUG: Verificar carrinho ANTES de finalizar
+        carrinho_antes = Carrinho.objects.filter(usuario=usuario_admin, ativo=True).first()
+        if carrinho_antes:
+            itens_antes = ItemCarrinho.objects.filter(carrinho=carrinho_antes)
+            print(f"[Cenário 3] DEBUG - Carrinho ANTES de finalizar tem {itens_antes.count()} item(ns)")
+            for item in itens_antes:
+                print(f"  - {item.produto.nome}: {item.quantidade} unidade(s)")
+        else:
+            print(f"[Cenário 3] ⚠️ ATENÇÃO: Nenhum carrinho ativo antes de finalizar!")
         
         # Finalizar a compra
         compra_produto(driver, base_url, 3)
@@ -671,6 +736,11 @@ def main():
     print("=" * 70)
     print("TESTES E2E - HISTÓRIA 8: PEDIDOS BASEADOS EM HISTÓRICO DE COMPRAS")
     print("=" * 70)
+    
+    # Garantir que produtos têm estoque antes de começar os testes
+    if not garantir_estoque_produtos():
+        print("\n❌ ERRO: Não foi possível garantir estoque dos produtos")
+        return 1
     
     base_url = "http://localhost:8000"
     
