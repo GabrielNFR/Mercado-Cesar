@@ -18,7 +18,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
 django.setup()
 
 # Importar models após setup do Django
-from mercadocesar.models import Produto, Estoque, Pedido, ItemPedido, Armazem, CartaoCredito
+from mercadocesar.models import Produto, Estoque, Pedido, ItemPedido, Armazem, CartaoCredito, Carrinho, ItemCarrinho
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -236,6 +236,17 @@ def cenario2_dadoscompra(base_url):
         driver.quit()
 
 def cenario3_comprarefeita(base_url):
+    """
+    Cenário 3: Testar funcionalidade de repetir pedido do histórico
+    
+    Fluxo:
+    1. Criar cartão e fazer login
+    2. Fazer uma compra completa (criar pedido com itens)
+    3. Verificar que o pedido foi criado corretamente com itens
+    4. Usar a funcionalidade "Pedir Novamente" para repetir o pedido
+    5. Verificar que o carrinho foi recriado com os mesmos itens
+    6. Finalizar a compra novamente para confirmar que funciona
+    """
     driver = criar_driver()
     cartao_teste = None
     
@@ -252,141 +263,144 @@ def cenario3_comprarefeita(base_url):
         fazer_login(driver, base_url)
         print("[Cenário 3] Login realizado com sucesso")
         
-        # PASSO 3: Fazer uma compra primeiro para criar histórico
-        print("[Cenário 3] Criando pedido para testar repetição...")
-        driver.get(f"{base_url}/busca/")
-        time.sleep(2)
+        # PASSO 3: Fazer uma compra completa para criar histórico
+        print("[Cenário 3] Criando pedido inicial para testar repetição...")
         
-        # Adicionar um produto ao carrinho
+        # Contar pedidos ANTES da compra
+        total_pedidos_antes = Pedido.objects.count()
+        print(f"[Cenário 3] Total de pedidos no sistema ANTES: {total_pedidos_antes}")
+        
+        # Adicionar produto ao carrinho
+        driver.get(f"{base_url}/busca/")
+        time.sleep(3)
+        
         botoes_adicionar = driver.find_elements(By.XPATH, "//button[contains(text(), 'Adicionar ao Carrinho')]")
-        if len(botoes_adicionar) > 0:
-            driver.execute_script("arguments[0].scrollIntoView(true);", botoes_adicionar[0])
+        if len(botoes_adicionar) > 1:
+            # Adicionar o segundo produto (índice 1) para ter certeza que tem estoque
+            driver.execute_script("arguments[0].scrollIntoView(true);", botoes_adicionar[1])
             time.sleep(1)
-            driver.execute_script("arguments[0].click();", botoes_adicionar[0])
+            driver.execute_script("arguments[0].click();", botoes_adicionar[1])
             print(f"[Cenário 3] Produto adicionado ao carrinho")
             time.sleep(2)
         else:
-            raise ValueError("[Cenário 3] FALHOU - Nenhum produto disponível")
+            raise ValueError("[Cenário 3] FALHOU - Produtos insuficientes disponíveis")
         
         # Finalizar a compra
         compra_produto(driver, base_url, 3)
-        print("[Cenário 3] Primeira compra finalizada")
-    
-        # PASSO 4: Acessar histórico para pegar o pedido que acabamos de criar
+        print("[Cenário 3] Primeira compra finalizada com sucesso")
+        time.sleep(2)
+        
+        # PASSO 4: Verificar que o pedido foi criado corretamente
+        total_pedidos_depois = Pedido.objects.count()
+        print(f"[Cenário 3] Total de pedidos no sistema DEPOIS: {total_pedidos_depois}")
+        print(f"[Cenário 3] Novos pedidos criados: {total_pedidos_depois - total_pedidos_antes}")
+        
+        if total_pedidos_depois <= total_pedidos_antes:
+            print("[Cenário 3] FALHOU - Nenhum pedido foi criado!")
+            return False
+        
+        # Buscar o último pedido criado pelo admin
+        usuario_admin = User.objects.get(username='admin')
+        ultimo_pedido = Pedido.objects.filter(usuario=usuario_admin).order_by('-id').first()
+        
+        if not ultimo_pedido:
+            print("[Cenário 3] FALHOU - Não foi possível encontrar o pedido criado")
+            return False
+        
+        pedido_id = ultimo_pedido.id
+        print(f"[Cenário 3] Pedido criado: #{pedido_id}")
+        
+        # Verificar se o pedido tem itens
+        itens_pedido = ItemPedido.objects.filter(pedido=ultimo_pedido)
+        print(f"[Cenário 3] Itens no pedido: {itens_pedido.count()}")
+        
+        if itens_pedido.count() == 0:
+            print("[Cenário 3] FALHOU - Pedido foi criado mas não tem itens!")
+            print("[Cenário 3] Isso indica um problema no fluxo de finalização de pedido")
+            return False
+        
+        for item in itens_pedido:
+            print(f"  - {item.produto.nome}: {item.quantidade} unidade(s) @ R${item.preco_unitario}")
+        
+        # PASSO 5: Acessar histórico
         driver.get(f"{base_url}/recentes/")
         time.sleep(3)
+        print("[Cenário 3] Acessou página de histórico")
         
+        # Verificar que o pedido aparece no histórico
         botao_pedir_novamente = wait.until(
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(), 'Pedir Novamente')]"))
         )
-        texto_botao = botao_pedir_novamente.text
-        pedido_id = texto_botao.split('#')[1].split(' ')[0]
-        print(f"[Cenário 3] Repetindo pedido #{pedido_id} que acabamos de criar")
+        print(f"[Cenário 3] Encontrou botão 'Pedir Novamente' no histórico")
         
-        # DEBUG: Verificar se o pedido existe e tem itens no banco
-        pedido_obj = Pedido.objects.get(id=pedido_id)
-        itens_pedido = ItemPedido.objects.filter(pedido=pedido_obj)
-        print(f"[Cenário 3] DEBUG - Pedido #{pedido_id} tem {itens_pedido.count()} item(ns) no banco:")
-        for item in itens_pedido:
-            print(f"  - {item.produto.nome}: {item.quantidade} unidade(s)")
+        # PASSO 6: Usar funcionalidade "Pedir Novamente"
+        print(f"[Cenário 3] Clicando em 'Pedir Novamente' para pedido #{pedido_id}")
         
-        # PASSO 5: Recriar carrinho a partir do pedido
+        # Setar pedido_id no sessionStorage e navegar para checkout
         driver.execute_script(f"sessionStorage.setItem('pedido_id', '{pedido_id}');")
-        
-        # Adicionar flag para detectar quando página recarregar
-        driver.execute_script("window.isReloading = false;")
-        
         driver.get(f"{base_url}/checkout/")
         
-        # AGUARDAR: Loader aparecer e JavaScript processar
-        time.sleep(2)
+        # Aguardar JavaScript processar e fazer AJAX
+        time.sleep(3)
         
+        # Aguardar loader aparecer e desaparecer
         try:
-            # Aguardar loader desaparecer (AJAX completou)
             wait.until(EC.invisibility_of_element_located((By.ID, "compra-rapida-loader")))
-            print(f"[Cenário 3] Loader de compra rápida desapareceu (AJAX completou)")
+            print(f"[Cenário 3] Processamento AJAX concluído")
         except:
-            print(f"[Cenário 3] Loader não encontrado ou sumiu muito rápido")
+            print(f"[Cenário 3] Loader não detectado (pode ter sido rápido)")
         
-        # CRÍTICO: Aguardar o reload da página acontecer
-        # O JavaScript faz window.location.href = checkout após AJAX sucesso
-        print(f"[Cenário 3] Aguardando página recarregar...")
-        time.sleep(7)  # AUMENTADO: Aguardar reload e renderização completar
+        # Aguardar reload da página
+        time.sleep(5)
         
-        # Verificar se sessionStorage foi limpo (sinal de que reload aconteceu)
-        pedido_id_pos_reload = driver.execute_script("return sessionStorage.getItem('pedido_id');")
-        if pedido_id_pos_reload is None:
-            print(f"[Cenário 3] Confirmado: página recarregou (sessionStorage limpo)")
-        else:
-            print(f"[Cenário 3] ⚠️ Página pode não ter recarregado ainda")
-        
-        # Aguardar DOM estabilizar
+        # Aguardar página carregar completamente
         wait.until(lambda d: d.execute_script('return document.readyState') == 'complete')
         time.sleep(2)
         
-        # DEBUG: Verificar logs do console do navegador
-        try:
-            logs = driver.get_log('browser')
-            if logs:
-                print(f"[Cenário 3] DEBUG - Logs do navegador:")
-                for log in logs:
-                    if 'Compra' in log['message'] or 'carrinho' in log['message'] or 'pedido' in log['message']:
-                        print(f"  {log['level']}: {log['message']}")
-        except:
-            print(f"[Cenário 3] DEBUG - Não foi possível obter logs do navegador")
+        # PASSO 7: Verificar que carrinho foi recriado
+        print(f"[Cenário 3] Verificando se carrinho foi recriado...")
         
-        # DEBUG: Verificar se carrinho foi criado no banco
-        from mercadocesar.models import Carrinho, ItemCarrinho
-        carrinho_db = Carrinho.objects.filter(usuario__username='admin', ativo=True).first()
+        # Verificar no banco de dados
+        carrinho_db = Carrinho.objects.filter(usuario=usuario_admin, ativo=True).first()
         if carrinho_db:
             itens_carrinho_db = ItemCarrinho.objects.filter(carrinho=carrinho_db)
-            print(f"[Cenário 3] DEBUG - Carrinho no banco tem {itens_carrinho_db.count()} item(ns):")
+            print(f"[Cenário 3] Carrinho no banco: {itens_carrinho_db.count()} item(ns)")
             for item in itens_carrinho_db:
                 print(f"  - {item.produto.nome}: {item.quantidade} unidade(s)")
         else:
-            print(f"[Cenário 3] DEBUG - Nenhum carrinho ativo encontrado no banco!")
+            print(f"[Cenário 3] ⚠️ Nenhum carrinho ativo no banco")
         
-        # PASSO 6: Verificar se carrinho foi recriado
+        # Verificar na interface
         carrinho_items = driver.find_elements(By.XPATH, "//table//tbody//tr")
-        
-        # Debug: verificar estado da página
-        print(f"[Cenário 3] URL atual: {driver.current_url}")
-        print(f"[Cenário 3] Itens encontrados na tabela: {len(carrinho_items)}")
-        
-        # DEBUG: Verificar se há elementos que indicam carrinho vazio ou cheio
-        h3_textos = driver.find_elements(By.TAG_NAME, "h3")
-        print(f"[Cenário 3] DEBUG - Títulos H3 encontrados na página:")
-        for h3 in h3_textos[:5]:  # Primeiros 5
-            print(f"  - {h3.text}")
+        print(f"[Cenário 3] Itens na tabela da interface: {len(carrinho_items)}")
         
         if len(carrinho_items) > 0:
-            print(f"[Cenário 3] Carrinho recriado com {len(carrinho_items)} item(ns)")
+            print(f"[Cenário 3] ✓ Carrinho recriado com sucesso!")
+            
+            # PASSO 8: Finalizar a compra novamente para confirmar que funciona
+            print(f"[Cenário 3] Finalizando compra repetida...")
             compra_produto(driver, base_url, 3)
-            print(f"[Cenário 3] PASSOU - Compra refeita com sucesso")
+            print(f"[Cenário 3] PASSOU - Compra repetida finalizada com sucesso!")
             return True
         else:
-            # Verificar se há mensagens de erro
+            print(f"[Cenário 3] FALHOU - Carrinho não foi recriado")
+            print(f"[Cenário 3] URL atual: {driver.current_url}")
+            
+            # Debug adicional
             mensagens = driver.find_elements(By.CLASS_NAME, "message-alert")
             if mensagens:
-                print(f"[Cenário 3] Mensagens encontradas: {len(mensagens)}")
+                print(f"[Cenário 3] Mensagens na tela:")
                 for msg in mensagens:
                     print(f"  - {msg.text}")
             
-            # Verificar se carrinho está realmente vazio ou se é problema de seletor
-            carrinho_vazio_msg = driver.find_elements(By.XPATH, "//*[contains(text(), 'Seu carrinho está vazio') or contains(text(), 'carrinho vazio')]")
-            if carrinho_vazio_msg:
-                print(f"[Cenário 3] Confirmado - Carrinho está vazio")
-            
-            print(f"[Cenário 3] FALHOU - Carrinho vazio após tentativa de recriar")
             return False
             
     except Exception as e:
-        print(f"[Cenário 3] FALHOU - {e}")
+        print(f"[Cenário 3] FALHOU - Exceção: {e}")
         import traceback
         traceback.print_exc()
         return False
     finally:
-        # SEMPRE deletar o cartão de teste
         deletar_cartao_teste(cartao_teste)
         driver.quit()
 
