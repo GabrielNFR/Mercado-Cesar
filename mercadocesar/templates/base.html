@@ -192,6 +192,7 @@
                     {% if user.is_authenticated %}
                         <li class="menu-title"><span class="text-gray-500">Compras</span></li>
                         <li><a href="{% url 'busca' %}" class="text-gray-700 hover:bg-[#f0834e] hover:text-white">Buscar Produtos</a></li>
+                        <li><a href="{% url 'pedidos_recentes' %}" class="text-gray-700 hover:bg-[#f0834e] hover:text-white">Pedidos Recentes</a></li>
                         <li><a href="{% url 'cadastrar_cartao' %}" class="text-gray-700 hover:bg-[#f0834e] hover:text-white">Cadastrar Cartão</a></li>
                         <li><a href="{% url 'listar_cartoes' %}" class="text-gray-700 hover:bg-[#f0834e] hover:text-white">Meus Cartões</a></li>
                         

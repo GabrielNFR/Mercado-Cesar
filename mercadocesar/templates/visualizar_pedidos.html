@@ -57,7 +57,7 @@
             <span style="color: #9ca3af; font-size: 1rem; font-weight: 400; margin-left: 8px;">({{ pedidos.count }} no total)</span>
         </h3>
         
-        {% if pedido.imagem %}
+        {% if pedidos %}
         {% for pedido in pedidos %}
         <div style="background-color: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 30px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: all 0.3s;"
              onmouseover="this.style.borderColor='#f0834e'; this.style.boxShadow='0 4px 12px rgba(240, 131, 78, 0.15)'"
@@ -97,7 +97,7 @@
             </div>
             
             <!-- Detalhes -->
-            <div class="pedido-detalhes-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+            <div class="pedido-detalhes-grid flex flex-col gap-6">
                 <!-- Coluna 1: Endereço/Loja -->
                 <div>
                     {% if pedido.tipo_entrega == 'DOMICILIO' %}
@@ -140,44 +140,47 @@
                     <h5 style="color: #374151; margin: 0 0 15px 0; font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 6px;">
                         📦 Itens do Pedido
                     </h5>
-                    <div style="background: white; border-radius: 8px; border: 1px solid #e5e7eb;">
-                        <!-- Header -->
-                        <div class="flex bg-[#f0834e] text-white text-sm font-semibold rounded-t-lg">
-                            <div class="flex-grow p-2.5 text-left">Produto</div>
-                            <div class="w-16 p-2.5 text-center">Qtd</div>
-                            <div class="flex-grow p-2.5 text-right">Preço</div>
-                            <div class="flex-grow p-2.5 text-right">Subtotal</div>
-                        </div>
-                        
-                        <!-- Items -->
-                        {% for item in pedido.itens.all %}
-                        <div class="flex border-b border-gray-100 text-sm">
-                            <div class="flex-grow p-2.5 text-left text-gray-800 font-medium">{{ item.produto.nome }}</div>
-                            <div class="w-16 p-2.5 text-center text-gray-600">{{ item.quantidade }}</div>
-                            <div class="flex-grow p-2.5 text-right text-gray-600">R$ {{ item.preco_unitario|floatformat:2 }}</div>
-                            <div class="flex-grow p-2.5 text-right font-semibold text-[#f0834e]">R$ {{ item.calcular_subtotal|floatformat:2 }}</div>
-                        </div>
-                        {% endfor %}
-                        
-                        <!-- Footer -->
-                        <div class="flex border-t-2 border-gray-200 bg-gray-50 text-sm">
-                            <div class="flex-grow p-2.5 text-right font-semibold text-gray-700 pr-2">Subtotal Produtos:</div>
-                            <div class="flex-grow p-2.5 text-right font-semibold text-gray-800">R$ {{ pedido.calcular_subtotal_produtos|floatformat:2 }}</div>
-                        </div>
-                        <div class="flex bg-gray-50 text-sm">
-                            <div class="flex-grow p-2.5 text-right text-gray-600 pr-2">Frete:</div>
-                            <div class="flex-grow p-2.5 text-right font-medium">
-                                {% if pedido.custo_entrega > 0 %}
-                                    <span class="text-gray-800">R$ {{ pedido.custo_entrega|floatformat:2 }}</span>
-                                {% else %}
-                                    <span class="text-green-600 font-semibold">Grátis</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="flex bg-[#fff5f0] border-t-2 border-[#f0834e] text-base rounded-b-lg">
-                            <div class="flex-grow p-3 text-right font-bold text-gray-800 pr-2">TOTAL:</div>
-                            <div class="flex-grow p-3 text-right font-bold text-green-600 text-lg">R$ {{ pedido.calcular_total|floatformat:2 }}</div>
-                        </div>
+                    <div style="background: white; border-radius: 8px; border: 1px solid #e5e7eb; overflow: hidden;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead style="background-color: #f0834e; color: white; font-size: 0.875rem; text-transform: uppercase;">
+                                <tr>
+                                    <th style="padding: 12px 15px; font-weight: 600;">Produto</th>
+                                    <th style="padding: 12px 15px; text-align: center; width: 100px;">Qtd</th>
+                                    <th style="padding: 12px 15px; text-align: right; width: 150px;">Preço</th>
+                                    <th style="padding: 12px 15px; text-align: right; width: 150px;">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody style="font-size: 0.9rem; color: #374151;">
+                                {% for item in pedido.itens.all %}
+                                <tr style="border-bottom: 1px solid #f3f4f6;">
+                                    <td style="padding: 12px 15px; font-weight: 500;">{{ item.produto.nome }}</td>
+                                    <td style="padding: 12px 15px; text-align: center; color: #6b7280;">{{ item.quantidade }}</td>
+                                    <td style="padding: 12px 15px; text-align: right; color: #6b7280;">R$ {{ item.preco_unitario|floatformat:2 }}</td>
+                                    <td style="padding: 12px 15px; text-align: right; font-weight: 600; color: #f0834e;">R$ {{ item.calcular_subtotal|floatformat:2 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot style="background-color: #f9fafb; font-size: 0.9rem;">
+                                <tr>
+                                    <td colspan="3" style="padding: 10px 15px; text-align: right; font-weight: 600; color: #4b5563;">Subtotal Produtos:</td>
+                                    <td style="padding: 10px 15px; text-align: right; font-weight: 600; color: #1f2937;">R$ {{ pedido.calcular_subtotal_produtos|floatformat:2 }}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="padding: 10px 15px; text-align: right; color: #4b5563;">Frete:</td>
+                                    <td style="padding: 10px 15px; text-align: right; font-weight: 500;">
+                                        {% if pedido.custo_entrega > 0 %}
+                                            <span style="color: #1f2937;">R$ {{ pedido.custo_entrega|floatformat:2 }}</span>
+                                        {% else %}
+                                            <span style="color: #10b981; font-weight: 600;">Grátis</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr style="background-color: #fff5f0; border-top: 2px solid #f0834e;">
+                                    <td colspan="3" style="padding: 15px; text-align: right; font-weight: 700; color: #1f2937; font-size: 1rem;">TOTAL:</td>
+                                    <td style="padding: 15px; text-align: right; font-weight: 700; color: #10b981; font-size: 1.125rem;">R$ {{ pedido.calcular_total|floatformat:2 }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>

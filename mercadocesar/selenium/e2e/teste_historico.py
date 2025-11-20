@@ -619,8 +619,18 @@ def cenario4_compraindevida(base_url):
         botao_pedir_novamente = wait.until(
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(), 'Pedir Novamente')]"))
         )
-        texto_botao = botao_pedir_novamente.text
-        pedido_id = texto_botao.split('#')[1].split(' ')[0]
+        
+        if ultimo_pedido:
+            pedido_id = ultimo_pedido.id
+        else:
+            # Fallback: tentar pegar do primeiro header de pedido encontrado na página
+            try:
+                header_pedido = driver.find_element(By.XPATH, "//h4[contains(text(), 'Pedido #')]")
+                pedido_id = header_pedido.text.split('#')[1].strip()
+            except:
+                print("[Cenário 4] FALHOU - Não foi possível identificar o ID do pedido")
+                return False
+                
         print(f"[Cenário 4] Tentando repetir pedido #{pedido_id} via histórico (estoque ZERADO)")
         
         # Setar pedido_id no sessionStorage e ir para checkout
