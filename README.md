@@ -146,3 +146,47 @@ O **Mercado Cesar** é um aplicativo web desenvolvido para otimizar a experiênc
   [📄 Link para o relatório](https://docs.google.com/document/d/18t_iI6TZSML6AZr-2HrT7N1Ynz0z88Nkn99jd7EkClU/edit?tab=t.0)
 
 </details>
+
+<details>
+<summary><strong>💻 Entrega 4 - Mais Testes E2E e Funcionalidades</strong></summary>
+
+### ✅ Funcionalidades Implementadas
+- ✅ Sistema de visualização e repetição de pedidos anteriores
+- ✅ Sistema de entrega em domicílio ou retirada na loja
+- ✅ Testes E2E da visualização e repetição de pedidos
+- ✅ Testes E2E da entrega em domicílio ou retirada na loja
+- ✅ Adicionadas imagens de produtos
+- ✅ Landing Page 
+
+### 📊 Gestão de Projeto
+
+**🏃‍♂️ Quadro da Sprint - Entrega 4**
+<img width="1345" height="419" alt="image" src="https://github.com/user-attachments/assets/6f95e078-e5c4-4a2d-a557-c1c85416d5e6" />
+
+**📋 Quadro do Backlog**
+<img width="1346" height="132" alt="image" src="https://github.com/user-attachments/assets/d1ce7fba-b1b4-4dcd-b9e5-b23fa9bd26f9" />
+
+**📋 Lista de Status**
+<img width="1627" height="467" alt="image" src="https://github.com/user-attachments/assets/0e63e68f-7da2-4a21-918e-50e3f12a30c8" />
+
+### 🐛 Controle de Issues
+- **Issue/Bug Tracker**
+
+<img width="1238" height="929" alt="image" src="https://github.com/user-attachments/assets/7a9e14ec-39b6-4dc6-a804-e45aa153f227" />
+
+
+### 🎥 Apresentação
+- **Screencast das Funcionalidades**
+
+  [▶️ Link para o screencast das novas funcionalidades]
+  
+  [▶️ Link para o screencast dos testes E2E]
+  
+  [▶️ Link para o screencast do deploy automático]
+
+### 📋 Documentação
+- **Relatório de Programação em Par**
+  
+  [📄 Link para o relatório](https://docs.google.com/document/d/18t_iI6TZSML6AZr-2HrT7N1Ynz0z88Nkn99jd7EkClU/edit?tab=t.0)
+
+</details>
