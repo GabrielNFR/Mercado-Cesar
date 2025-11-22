@@ -8,7 +8,7 @@ Bem vindos ao futuro do comércio eletrônico.
 - [Iniciando](#iniciando):
   - [1 Crie uma pasta](#1-crie-uma-pasta)
   - [2 Clone esse repositório](#2-clone-esse-repositório)
-  - [3 Crie um arquivo .env](#3-crie-um-arquivo-.env)
+  - [3 Crie um arquivo .env](#3-crie-um-arquivoenv)
   - [4 Crie um ambiente virtual](#4-crie-um-ambiente-virtual)
   - [5 Abra o ambiente virtual](#5-abra-o-ambiente-virtual)
   - [6 Instale as dependências](#6-instale-as-dependências)
@@ -51,7 +51,7 @@ Esse comando quando digitado, vai abrir o terminal de comandos do Windows
     
     git clone https://github.com/GabrielNFR/Mercado-Cesar.git
 
-## 3 Crie um arquivo .env
+## 3 Crie um arquivo.env
 Usando o prompt de comandos, escreva: 
 
      cd Mercado-Cesar
