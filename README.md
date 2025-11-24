@@ -180,7 +180,7 @@ O **Mercado Cesar** é um aplicativo web desenvolvido para otimizar a experiênc
 
   [▶️ Link para o screencast das novas funcionalidades(https://youtu.be/c2CbNK-awEs)]
   
-  [▶️ Link para o screencast dos testes E2E(https://youtu.be/pltjDgNhNRQ)]
+  [▶️ Link para o screencast dos testes E2E https://youtu.be/rictueg-HGA?si=q7Y_DXkY5D6b40C2]
   
   [▶️ Link para o screencast do deploy automático(https://youtu.be/hZeoeQoYYpA)
 
