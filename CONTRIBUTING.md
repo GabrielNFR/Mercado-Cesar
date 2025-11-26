@@ -1,4 +1,4 @@
-# Contributting.md para o Mercado Cesar
+# Contributing.md para o Mercado Cesar
 
 O Mercado Cesar foi desenvolvido com o intuito de aprimorar o processo de compra e revenda online, com suas próprias capacidades e tecnologias, contendo processos e desenvolvimentos até então únicos.
 Bem vindos ao futuro do comércio eletrônico.
