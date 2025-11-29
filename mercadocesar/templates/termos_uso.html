@@ -2,174 +2,334 @@
 
 {% block content %}
 <div style="max-width: 900px; margin: 0 auto; padding: 40px 20px;">
-    <h1 style="font-size: 2.5rem; font-weight: 700; color: #1f2937; margin-bottom: 20px;">Termos de Uso</h1>
-    <p style="color: #6b7280; margin-bottom: 40px;">Última atualização: 31 de outubro de 2025</p>
+    <!-- Aviso de Template/POC -->
+    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; border-radius: 12px; padding: 20px 24px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+            <span style="font-size: 1.5rem;">⚠️</span>
+            <div>
+                <p style="color: #92400e; font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;">Documento Ilustrativo – Prova de Conceito</p>
+                <p style="color: #78350f; line-height: 1.6; margin-bottom: 8px;">
+                    Este documento de <strong>Termos de Uso</strong> é apenas um <strong>template demonstrativo</strong> criado para fins acadêmicos e de desenvolvimento. 
+                    O <strong>Mercado Cesar</strong> é uma aplicação web desenvolvida como <strong>prova de conceito (POC)</strong> para um projeto universitário.
+                </p>
+                <p style="color: #78350f; line-height: 1.6; margin: 0;">
+                    <strong>Importante:</strong> Todos os dados de contato, CNPJ, endereços, e-mails e telefones listados nesta página são <strong>fictícios</strong> 
+                    e não representam canais de comunicação reais. Nenhuma transação comercial real é processada por esta plataforma.
+                </p>
+            </div>
+        </div>
+    </div>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">1. Aceitação dos Termos</h2>
+    <!-- Cabeçalho -->
+    <div style="border-bottom: 2px solid #e5e7eb; padding-bottom: 24px; margin-bottom: 40px;">
+        <h1 style="font-size: 2.5rem; font-weight: 700; color: #1f2937; margin-bottom: 12px;">Termos e Condições de Uso</h1>
+        <p style="color: #6b7280; font-size: 0.95rem;">
+            <strong>Última atualização:</strong> 29 de novembro de 2025<br>
+            <strong>Versão:</strong> 1.0
+        </p>
+    </div>
+
+    <!-- Índice -->
+    <nav style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 40px;">
+        <p style="font-weight: 600; color: #1f2937; margin-bottom: 12px;">📋 Índice</p>
+        <ol style="color: #4b5563; line-height: 2; margin-left: 20px; columns: 2; column-gap: 40px;">
+            <li><a href="#identificacao" style="color: #f0834e; text-decoration: none;">Identificação da Empresa</a></li>
+            <li><a href="#aceitacao" style="color: #f0834e; text-decoration: none;">Aceitação dos Termos</a></li>
+            <li><a href="#servicos" style="color: #f0834e; text-decoration: none;">Descrição dos Serviços</a></li>
+            <li><a href="#cadastro" style="color: #f0834e; text-decoration: none;">Cadastro e Conta</a></li>
+            <li><a href="#pedidos" style="color: #f0834e; text-decoration: none;">Pedidos e Pagamentos</a></li>
+            <li><a href="#entrega" style="color: #f0834e; text-decoration: none;">Entrega e Retirada</a></li>
+            <li><a href="#cancelamento" style="color: #f0834e; text-decoration: none;">Cancelamento e Devolução</a></li>
+            <li><a href="#uso" style="color: #f0834e; text-decoration: none;">Uso da Plataforma</a></li>
+            <li><a href="#propriedade" style="color: #f0834e; text-decoration: none;">Propriedade Intelectual</a></li>
+            <li><a href="#responsabilidade" style="color: #f0834e; text-decoration: none;">Responsabilidades</a></li>
+            <li><a href="#modificacoes" style="color: #f0834e; text-decoration: none;">Modificações</a></li>
+            <li><a href="#foro" style="color: #f0834e; text-decoration: none;">Lei Aplicável e Foro</a></li>
+        </ol>
+    </nav>
+
+    <section id="identificacao" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">1. Identificação da Empresa</h2>
+        <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; border: 1px dashed #d1d5db;">
+            <p style="color: #4b5563; line-height: 1.8; margin-bottom: 8px;"><strong>Nome do Projeto:</strong> Mercado Cesar (Prova de Conceito)</p>
+            <p style="color: #4b5563; line-height: 1.8; margin-bottom: 8px;"><strong>Natureza:</strong> Projeto Acadêmico / Universitário</p>
+            <p style="color: #4b5563; line-height: 1.8; margin-bottom: 8px;"><strong>Repositório:</strong> <a href="https://github.com/GabrielNFR/Mercado-Cesar" style="color: #f0834e;">github.com/GabrielNFR/Mercado-Cesar</a></p>
+            <p style="color: #4b5563; line-height: 1.8;"><strong>Deploy:</strong> <a href="https://mercado-cesar.onrender.com" style="color: #f0834e;">mercado-cesar.onrender.com</a></p>
+        </div>
+    </section>
+
+    <section id="aceitacao" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">2. Aceitação dos Termos</h2>
         <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            Ao acessar e usar o Mercado Cesar, você concorda com estes Termos de Uso e nossa Política de Privacidade. 
-            Se você não concorda com algum termo, não deve utilizar nossos serviços.
+            Ao acessar, navegar ou utilizar o site e os serviços do <strong>Mercado Cesar</strong>, você declara ter lido, 
+            compreendido e concordado integralmente com estes Termos de Uso e com nossa 
+            <a href="{% url 'politica_privacidade' %}" style="color: #f0834e;">Política de Privacidade</a>.
+        </p>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
+            Caso não concorde com qualquer disposição destes termos, solicitamos que não utilize nossos serviços. 
+            A continuidade do uso implica aceitação tácita de eventuais atualizações.
         </p>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">2. Descrição dos Serviços</h2>
+    <section id="servicos" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">3. Descrição dos Serviços</h2>
         <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            O Mercado Cesar é uma plataforma de e-commerce que oferece produtos alimentícios frescos 
-            com opções de entrega em domicílio ou retirada na loja. Nos reservamos o direito de modificar, 
-            suspender ou descontinuar qualquer aspecto dos serviços a qualquer momento.
+            O Mercado Cesar é uma plataforma de comércio eletrônico (<em>e-commerce</em>) especializada na comercialização 
+            de produtos alimentícios, incluindo itens frescos, industrializados e de mercearia em geral, 
+            com opções de entrega em domicílio ou retirada em loja física.
+        </p>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
+            Reservamo-nos o direito de, a qualquer momento e sem aviso prévio, modificar, suspender ou descontinuar 
+            funcionalidades ou serviços, respeitando sempre os pedidos já confirmados e os direitos dos consumidores 
+            previstos na legislação vigente.
         </p>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">3. Cadastro e Conta de Usuário</h2>
-        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 12px;">Para realizar compras, você deve:</p>
+    <section id="cadastro" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">4. Cadastro e Conta de Usuário</h2>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 12px;">Para realizar compras em nossa plataforma, o usuário deve:</p>
         <ul style="color: #4b5563; line-height: 1.8; margin-left: 20px; margin-bottom: 16px;">
-            <li>Ter pelo menos 18 anos de idade</li>
-            <li>Fornecer informações verdadeiras, precisas e atualizadas</li>
-            <li>Manter a confidencialidade de sua senha</li>
-            <li>Ser responsável por todas as atividades em sua conta</li>
-            <li>Notificar-nos imediatamente sobre qualquer uso não autorizado</li>
+            <li>Ter capacidade civil plena ou, sendo menor de 18 anos, estar devidamente representado ou assistido por responsável legal</li>
+            <li>Fornecer informações verdadeiras, precisas, atuais e completas no momento do cadastro</li>
+            <li>Manter seus dados cadastrais sempre atualizados</li>
+            <li>Manter a confidencialidade de sua senha e credenciais de acesso</li>
+            <li>Responsabilizar-se por todas as atividades realizadas em sua conta</li>
+            <li>Notificar-nos imediatamente em caso de suspeita de uso não autorizado da conta</li>
         </ul>
+        <p style="color: #4b5563; line-height: 1.8;">
+            O Mercado Cesar reserva-se o direito de recusar, suspender ou cancelar cadastros que contenham informações 
+            falsas ou que violem estes Termos, sem prejuízo de outras medidas cabíveis.
+        </p>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">4. Pedidos e Pagamentos</h2>
-        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">4.1 Realização de Pedidos</h3>
+    <section id="pedidos" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">5. Pedidos e Pagamentos</h2>
+        
+        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">5.1 Realização de Pedidos</h3>
         <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            Ao fazer um pedido, você está fazendo uma oferta de compra. Todos os pedidos estão sujeitos 
-            à disponibilidade de produtos e à confirmação do pagamento.
+            Ao finalizar um pedido, o consumidor realiza uma proposta de compra. A efetivação do contrato 
+            está condicionada à disponibilidade dos produtos em estoque e à aprovação do pagamento. 
+            Você receberá confirmação por e-mail após a aprovação do pedido.
         </p>
         
-        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">4.2 Preços</h3>
+        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">5.2 Preços e Ofertas</h3>
         <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            Os preços exibidos incluem impostos aplicáveis. Nos reservamos o direito de alterar preços 
-            a qualquer momento, mas os preços vigentes no momento da confirmação do pedido serão respeitados.
+            Todos os preços são exibidos em Reais (R$) e incluem os impostos aplicáveis, conforme determina 
+            o art. 6º, III, do Código de Defesa do Consumidor. Eventuais taxas de entrega serão informadas 
+            separadamente antes da finalização da compra. Os preços podem ser alterados a qualquer momento, 
+            mas serão respeitados os valores vigentes no momento da confirmação do pedido.
         </p>
 
-        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">4.3 Pagamento</h3>
+        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">5.3 Formas de Pagamento</h3>
         <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            Aceitamos cartões de crédito. O pagamento será processado no momento da confirmação do pedido. 
-            Em caso de recusa do pagamento, o pedido será cancelado.
+            Aceitamos pagamento por cartão de crédito das principais bandeiras. O processamento é realizado 
+            por operadoras certificadas com padrão PCI-DSS. Em caso de recusa do pagamento pela operadora, 
+            o pedido será automaticamente cancelado e você será notificado.
+        </p>
+
+        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">5.4 Nota Fiscal</h3>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
+            A nota fiscal eletrônica (NF-e) será emitida e enviada para o e-mail cadastrado após a confirmação 
+            do pagamento, conforme legislação tributária vigente.
         </p>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">5. Entrega e Retirada</h2>
-        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">5.1 Entrega em Domicílio</h3>
+    <section id="entrega" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">6. Entrega e Retirada</h2>
+        
+        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">6.1 Entrega em Domicílio</h3>
         <ul style="color: #4b5563; line-height: 1.8; margin-left: 20px; margin-bottom: 16px;">
-            <li>Prazo estimado: 1 a 3 dias úteis (pode variar conforme localização)</li>
-            <li>Taxa de entrega calculada no checkout</li>
-            <li>É necessário ter alguém disponível para receber</li>
+            <li><strong>Prazo estimado:</strong> 1 a 3 dias úteis, podendo variar conforme a região de entrega</li>
+            <li><strong>Taxa de entrega:</strong> calculada e informada antes da finalização do pedido</li>
+            <li><strong>Recebimento:</strong> é necessária a presença de pessoa apta a receber no endereço indicado</li>
+            <li><strong>Conferência:</strong> recomendamos conferir os produtos no ato da entrega</li>
         </ul>
 
-        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">5.2 Retirada na Loja</h3>
+        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">6.2 Retirada na Loja</h3>
         <ul style="color: #4b5563; line-height: 1.8; margin-left: 20px; margin-bottom: 16px;">
-            <li>Disponível em lojas selecionadas</li>
-            <li>Você será notificado quando o pedido estiver pronto</li>
-            <li>Apresente documento com foto e número do pedido</li>
-        </ul>
-    </section>
-
-    <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">6. Política de Cancelamento e Devolução</h2>
-        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">6.1 Cancelamento pelo Cliente</h3>
-        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            Você pode cancelar seu pedido até o momento do início da separação dos produtos. 
-            Após esse momento, o cancelamento não será possível.
-        </p>
-
-        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">6.2 Direito de Arrependimento (CDC)</h3>
-        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            Conforme o Código de Defesa do Consumidor, você tem até 7 dias corridos após o recebimento 
-            para desistir da compra (exceto produtos perecíveis ou com prazo de validade curto).
-        </p>
-
-        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">6.3 Produtos com Defeito</h3>
-        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            Se você receber produtos danificados, vencidos ou em desacordo com o pedido, 
-            entre em contato em até 24 horas para reembolso ou troca.
-        </p>
-    </section>
-
-    <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">7. Uso Adequado da Plataforma</h2>
-        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 12px;">É proibido:</p>
-        <ul style="color: #4b5563; line-height: 1.8; margin-left: 20px; margin-bottom: 16px;">
-            <li>Usar a plataforma para fins ilegais ou não autorizados</li>
-            <li>Tentar acessar áreas restritas do sistema</li>
-            <li>Interferir no funcionamento da plataforma</li>
-            <li>Fazer engenharia reversa do software</li>
-            <li>Coletar dados de outros usuários</li>
-            <li>Usar bots ou sistemas automatizados sem autorização</li>
+            <li>Disponível nas lojas participantes, conforme indicado no checkout</li>
+            <li>O cliente será notificado por e-mail quando o pedido estiver disponível para retirada</li>
+            <li>Prazo para retirada: até 48 horas após notificação (produtos perecíveis podem ter prazo menor)</li>
+            <li>Documentos necessários: documento oficial com foto e número do pedido</li>
         </ul>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">8. Propriedade Intelectual</h2>
+    <section id="cancelamento" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">7. Cancelamento, Devolução e Reembolso</h2>
+        
+        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">7.1 Cancelamento pelo Cliente</h3>
         <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            Todo o conteúdo da plataforma (textos, imagens, logos, design) é de propriedade do Mercado Cesar 
-            ou de seus licenciadores, protegido por leis de direitos autorais e propriedade intelectual.
+            O cancelamento pode ser solicitado sem ônus até o início da separação dos produtos. 
+            Após esse momento, poderão incidir custos operacionais, que serão informados previamente.
+        </p>
+
+        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">7.2 Direito de Arrependimento (Art. 49 do CDC)</h3>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
+            Conforme o art. 49 do Código de Defesa do Consumidor (Lei nº 8.078/90), o consumidor pode desistir 
+            da compra realizada fora do estabelecimento comercial no prazo de <strong>7 (sete) dias corridos</strong> 
+            a contar do recebimento do produto, com direito à restituição integral dos valores pagos, 
+            incluindo frete, monetariamente atualizados.
+        </p>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px; padding: 12px; background-color: #fef3c7; border-radius: 6px;">
+            <strong>⚠️ Exceção:</strong> O direito de arrependimento não se aplica a produtos perecíveis, 
+            produtos refrigerados/congelados, ou itens com prazo de validade curto, devido à sua natureza específica.
+        </p>
+
+        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">7.3 Produtos com Vício ou Defeito (Arts. 18 e 26 do CDC)</h3>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
+            Se você receber produtos com vício de qualidade (danificados, vencidos, impróprios para consumo, 
+            ou em desacordo com o pedido), entre em contato conosco em até <strong>24 horas</strong> para produtos 
+            perecíveis ou até <strong>30 dias</strong> para produtos não perecíveis. Você poderá optar por:
+        </p>
+        <ul style="color: #4b5563; line-height: 1.8; margin-left: 20px; margin-bottom: 16px;">
+            <li>Substituição do produto por outro da mesma espécie</li>
+            <li>Restituição imediata da quantia paga, monetariamente atualizada</li>
+            <li>Abatimento proporcional do preço</li>
+        </ul>
+
+        <h3 style="font-size: 1.2rem; font-weight: 600; color: #374151; margin-bottom: 12px;">7.4 Procedimento de Reembolso</h3>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
+            O reembolso será efetuado pela mesma forma de pagamento utilizada na compra, no prazo de até 
+            10 (dez) dias úteis após a aprovação da solicitação. Para cartões de crédito, o estorno poderá 
+            aparecer em até 2 faturas subsequentes, dependendo da operadora.
         </p>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">9. Limitação de Responsabilidade</h2>
+    <section id="uso" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">8. Uso Adequado da Plataforma</h2>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 12px;">O usuário compromete-se a não:</p>
+        <ul style="color: #4b5563; line-height: 1.8; margin-left: 20px; margin-bottom: 16px;">
+            <li>Utilizar a plataforma para fins ilícitos, fraudulentos ou não autorizados</li>
+            <li>Violar direitos de propriedade intelectual, privacidade ou outros direitos de terceiros</li>
+            <li>Tentar acessar áreas restritas do sistema ou de outros usuários</li>
+            <li>Interferir no funcionamento regular da plataforma</li>
+            <li>Realizar engenharia reversa, descompilar ou modificar o software</li>
+            <li>Coletar, armazenar ou divulgar dados de outros usuários</li>
+            <li>Utilizar robôs, scrapers ou sistemas automatizados sem autorização expressa</li>
+            <li>Transmitir vírus, malware ou códigos maliciosos</li>
+        </ul>
+        <p style="color: #4b5563; line-height: 1.8;">
+            A violação destas regras poderá resultar em suspensão ou exclusão da conta, sem prejuízo 
+            das responsabilidades civis e criminais cabíveis.
+        </p>
+    </section>
+
+    <section id="propriedade" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">9. Propriedade Intelectual</h2>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
+            Todo o conteúdo disponível na plataforma — incluindo, mas não se limitando a textos, imagens, 
+            fotografias, logotipos, marcas, layout, design, código-fonte, softwares e base de dados — 
+            é de titularidade exclusiva do Mercado Cesar ou de seus licenciadores, estando protegido 
+            pelas leis brasileiras de propriedade intelectual (Lei nº 9.279/96 e Lei nº 9.610/98).
+        </p>
+        <p style="color: #4b5563; line-height: 1.8;">
+            É vedada a reprodução, distribuição, modificação ou utilização comercial de qualquer conteúdo 
+            sem autorização prévia e expressa por escrito.
+        </p>
+    </section>
+
+    <section id="responsabilidade" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">10. Responsabilidades e Limitações</h2>
         <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
             O Mercado Cesar não se responsabiliza por:
         </p>
         <ul style="color: #4b5563; line-height: 1.8; margin-left: 20px; margin-bottom: 16px;">
-            <li>Atrasos causados por casos fortuitos ou força maior</li>
-            <li>Problemas de conexão à internet ou falhas técnicas</li>
-            <li>Danos indiretos, incidentais ou consequenciais</li>
-            <li>Uso inadequado dos produtos adquiridos</li>
+            <li>Atrasos ou impossibilidade de entrega decorrentes de caso fortuito ou força maior (greves, desastres naturais, pandemia, etc.)</li>
+            <li>Interrupções temporárias de acesso por manutenção técnica ou falhas de infraestrutura de internet</li>
+            <li>Uso inadequado dos produtos adquiridos pelo consumidor</li>
+            <li>Informações incorretas fornecidas pelo usuário no cadastro ou no pedido</li>
         </ul>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
+            <strong>Importante:</strong> As limitações acima não excluem nem restringem os direitos do consumidor 
+            previstos no Código de Defesa do Consumidor e demais normas de ordem pública.
+        </p>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">10. Modificações dos Termos</h2>
+    <section id="modificacoes" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">11. Modificações dos Termos</h2>
         <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            Podemos modificar estes termos a qualquer momento. Alterações significativas serão notificadas 
-            por e-mail ou no site. O uso continuado da plataforma após as alterações constitui aceitação 
-            dos novos termos.
+            O Mercado Cesar poderá modificar estes Termos de Uso a qualquer tempo. Alterações substanciais 
+            serão comunicadas por e-mail aos usuários cadastrados ou mediante aviso destacado no site com 
+            antecedência mínima de 15 (quinze) dias antes de entrarem em vigor.
+        </p>
+        <p style="color: #4b5563; line-height: 1.8;">
+            A continuidade do uso da plataforma após as alterações constitui aceitação dos novos termos. 
+            Recomendamos a revisão periódica desta página.
+        </p>
+    </section>
+
+    <section id="foro" style="margin-bottom: 40px;">
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">12. Lei Aplicável e Foro</h2>
+        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
+            Estes Termos de Uso são regidos pela legislação da República Federativa do Brasil, em especial 
+            o Código Civil (Lei nº 10.406/2002), o Código de Defesa do Consumidor (Lei nº 8.078/90), 
+            o Marco Civil da Internet (Lei nº 12.965/2014) e a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).
+        </p>
+        <p style="color: #4b5563; line-height: 1.8;">
+            Para dirimir quaisquer controvérsias decorrentes destes Termos, fica eleito o foro da Comarca 
+            de São Paulo/SP, ressalvado o direito do consumidor de optar pelo foro de seu domicílio, 
+            conforme art. 101, I, do CDC.
         </p>
     </section>
 
     <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">11. Lei Aplicável e Foro</h2>
+        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">13. Canais de Atendimento (Ilustrativos)</h2>
         <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            Estes Termos são regidos pelas leis brasileiras. Fica eleito o foro da comarca de [Sua Cidade] 
-            para resolver quaisquer controvérsias, com renúncia expressa a qualquer outro, por mais privilegiado que seja.
+            Os canais abaixo são <strong>exemplos ilustrativos</strong> de como uma empresa real deveria disponibilizar 
+            formas de contato. <em>Estes canais não existem e não são monitorados.</em>
+        </p>
+        <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; border: 1px dashed #d1d5db;">
+            <p style="color: #9ca3af; font-style: italic; margin-bottom: 12px; font-size: 0.9rem;">📌 Dados fictícios para fins de demonstração:</p>
+            <ul style="color: #6b7280; line-height: 2; list-style: none; margin: 0; padding: 0;">
+                <li>📧 <strong>E-mail:</strong> contato@mercadocesar.com.br <span style="color: #f59e0b;">(fictício)</span></li>
+                <li>📞 <strong>SAC:</strong> 0800 123 4567 <span style="color: #f59e0b;">(fictício)</span></li>
+                <li>💬 <strong>WhatsApp:</strong> (11) 91234-5678 <span style="color: #f59e0b;">(fictício)</span></li>
+                <li>📍 <strong>Endereço:</strong> Rua Exemplo, nº 123, Centro, São Paulo/SP <span style="color: #f59e0b;">(fictício)</span></li>
+            </ul>
+        </div>
+        <p style="color: #4b5563; line-height: 1.8; margin-top: 16px;">
+            <strong>Para contato real sobre este projeto acadêmico:</strong> Acesse o repositório no GitHub em 
+            <a href="https://github.com/aceamanda/Mercado-Cesar" style="color: #f0834e;">github.com/aceamanda/Mercado-Cesar</a>
         </p>
     </section>
 
-    <section style="margin-bottom: 40px;">
-        <h2 style="font-size: 1.5rem; font-weight: 600; color: #1f2937; margin-bottom: 16px;">12. Contato</h2>
-        <p style="color: #4b5563; line-height: 1.8; margin-bottom: 16px;">
-            Para dúvidas sobre estes Termos de Uso:
+    <!-- Destaque CDC -->
+    <div style="margin-top: 60px; padding: 24px; background-color: #f0fdf4; border-left: 4px solid #10b981; border-radius: 8px;">
+        <p style="color: #1f2937; font-weight: 600; margin-bottom: 12px; font-size: 1.1rem;">✅ Sobre o Código de Defesa do Consumidor</p>
+        <p style="color: #4b5563; line-height: 1.7; margin-bottom: 12px;">
+            Em um cenário de produção, estes Termos de Uso não excluiriam, limitariam ou suspenderiam 
+            os direitos do consumidor estabelecidos no <strong>Código de Defesa do Consumidor (Lei nº 8.078/90)</strong> 
+            e demais legislações aplicáveis.
         </p>
-        <ul style="color: #4b5563; line-height: 1.8; margin-left: 20px; margin-bottom: 16px;">
-            <li><strong>E-mail:</strong> contato@mercadocesar.com.br</li>
-            <li><strong>Telefone:</strong> (XX) XXXX-XXXX</li>
-            <li><strong>SAC:</strong> sac@mercadocesar.com.br</li>
-        </ul>
-    </section>
-
-    <div style="margin-top: 60px; padding: 20px; background-color: #f0fdf4; border-left: 4px solid #10b981; border-radius: 8px;">
-        <p style="color: #1f2937; font-weight: 600; margin-bottom: 8px;">Seus Direitos como Consumidor</p>
-        <p style="color: #4b5563; line-height: 1.6;">
-            Estes termos não limitam seus direitos como consumidor previstos no Código de Defesa do Consumidor (Lei 8.078/90) 
-            e demais legislações aplicáveis. Em caso de conflito, prevalecem as normas consumeristas.
+        <p style="color: #4b5563; line-height: 1.7;">
+            Em caso de conflito entre qualquer disposição dos Termos e as normas consumeristas, 
+            prevaleceriam sempre as disposições mais favoráveis ao consumidor.
         </p>
     </div>
 
-    <div style="text-align: center; margin-top: 40px;">
+    <!-- Destaque Consumidor.gov -->
+    <div style="margin-top: 20px; padding: 24px; background-color: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 8px;">
+        <p style="color: #1f2937; font-weight: 600; margin-bottom: 12px;">🏛️ Plataforma Consumidor.gov.br - Informação Educativa</p>
+        <p style="color: #4b5563; line-height: 1.7;">
+            Em situações reais, caso o consumidor não conseguisse resolver sua demanda diretamente com a empresa, 
+            poderia registrar reclamação na plataforma oficial <strong>consumidor.gov.br</strong>, 
+            serviço público do Governo Federal para solução de conflitos de consumo.
+        </p>
+    </div>
+
+    <div style="text-align: center; margin-top: 50px;">
+        <a href="{% url 'politica_privacidade' %}" style="display: inline-block; background-color: #6b7280; color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-right: 12px;">
+            Ver Política de Privacidade
+        </a>
         <a href="{% url 'home' %}" style="display: inline-block; background-color: #f0834e; color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background-color 0.3s;"
            onmouseover="this.style.backgroundColor='#d97440'"
            onmouseout="this.style.backgroundColor='#f0834e'">
             Voltar para Home
         </a>
     </div>
+
+    <p style="text-align: center; color: #9ca3af; font-size: 0.85rem; margin-top: 40px;">
+        © 2025 Mercado Cesar - Projeto Acadêmico. Desenvolvido como prova de conceito.
+    </p>
 </div>
 {% endblock %}
